@@ -28,6 +28,7 @@ class CreateMedicalTestsTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->timestamps();
+            $table->softDeletes(); // Add soft deletes
 
             // Foreign key constraints (if needed)
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');
