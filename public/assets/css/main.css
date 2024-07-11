@@ -1,0 +1,18 @@
+.modalHeader{
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    color: rgb(5, 5, 5);
+    z-index: 20;
+    padding: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+.modalFooter{
+    position: sticky;
+    bottom: 0px;
+    background-color: #ffffff;
+    color: rgb(5, 5, 5);
+    z-index: 20;
+    padding: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
