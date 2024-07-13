@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\MedicalTestController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,8 +32,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/getOnePatient/{id}', [PatientController::class, 'getOnePatient']);
     Route::post('/updatePatient', [PatientController::class, 'update']);
     Route::delete('/deleteDoctor/{id}', [DoctorController::class, 'destroy']);
+<<<<<<< HEAD
     Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor');
     Route::get('/doctor_profiles', [DoctorController::class, 'show'])->name('doctor_profiles.index');
+=======
+
+    Route::resource('medical-tests', MedicalTestController::class);
+    Route::get('/medical-tests-list', [MedicalTestController::class, 'getMedicalTests'])->name('medical-tests.list');
+>>>>>>> 709f4577db313df4279aebeac691821795880ebb
 });
 
 require __DIR__.'/auth.php';

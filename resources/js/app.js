@@ -5,10 +5,11 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 
 Alpine.start();
-// resources/js/app.js
 
-// Import SweetAlert
-import swal from 'sweetalert2';
-window.Swal = swal;
-// DataTables Buttons
+import Swal from 'sweetalert2';
+window.Swal = Swal;
+
+// resources/js/app.js
+import toastr from 'toastr';
+window.toastr = toastr;
 
