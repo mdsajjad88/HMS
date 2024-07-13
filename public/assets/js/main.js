@@ -19,10 +19,15 @@ $(document).ready(function(){
         }
     });
 
+    $('#medicalTest').click(function(){
+        $.ajax({
+            url: '/medicalTest',
+            method: 'GET',
+            success:function(){
 
-
-    $('#alertBtn').click(function(){
-        alert('hello');
+            }
+        });
     })
+
 })
 

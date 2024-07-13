@@ -4,55 +4,74 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DoctorProfile;
+use App\Models\User;
 use App\Models\PatientProfile;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+
 class DoctorController extends Controller
 {
-    public function  index(){
+    public function index(){
+        return view('doctor.index');
+    }
+    public function  create(){
         return view('doctor.add');
     }
     public function store(Request $request){
       // dd($request->all());
-        $validatedData = $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email',
-            'mobile' => 'required|digits:11|numeric',
-            'gender' => 'required|in:Male,Female,Other',
-            'bmdc_number' => 'nullable|string',
-            'blood_group' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'nid' => 'required|string',
-            'specialist' => 'required|string',
-            'fee' => 'required|numeric',
-            'designation' => 'required|string',
-            'consultant_type' => 'nullable|string',
-            'address' => 'nullable|string',
-            'description' => 'nullable|string', // 2MB max
-        ]);
+           // try {
+                $validatedata = $request->validate([
+                    'first_name' => 'required|string',
+                    'last_name' => 'required|string',
+                    'email' => 'required|email|unique:doctor_profiles,email',
+                    'mobile' => 'required|digits:11|numeric',
+                    'gender' => 'required|in:Male,Female,Other',
+                    'bmdc_number' => 'nullable|string',
+                    'blood_group' => 'required|string',
+                    'date_of_birth' => 'required|date',
+                    'nid' => 'required|string',
+                    'specialist' => 'required|string',
+                    'fee' => 'required|numeric',
+                    'designation' => 'required|string',
+                    'consultant_type' => 'nullable|string',
+                    'address' => 'nullable|string',
+                    'description' => 'nullable|string', // 2MB max
+                ],[
+                    'email.unique'=>'Sorry!  This email already have taken !!!'
+                ]);
 
-        // Handle file upload (if photo is uploaded)
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/photos', $fileName);
-            $validatedData['photo'] = $fileName;
+                $doctor = new User();
+                $doctor->name = $request->input('first_name').' '.$request->input('last_name');
+                $doctor->email  = $request->input('email');
+                $doctor->email_verified_at = now();
+                $doctor->password = $request->mobile;
+                $doctor->save();
+
+                $doctorID = $doctor->id;
+
+                // Now create a new PatientProfile and associate it with the PatientUser
+                $doctorProfile = new DoctorProfile();
+                $doctorProfile->user_id  = $doctorID; // Assign patient_user_id
+                $doctorProfile->fill($validatedata);
+                $doctorProfile->save();
+                return response()->json(['success' => true]);
         }
+        public function show(Request $request){
+            if ($request->ajax()) {
+                $data = DoctorProfile::latest()->get(); // Fetch all doctor profiles
+                return DataTables::of($data)
+                    ->addColumn('action', function($row){
+                        $btn = '<a  data-id="'.$row->id.'" class="editDoctor btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
+                        $btn .= ' <a  data-id="'.$row->id.'" class="deleteDoctor btn btn-danger btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            }
 
-    if(DoctorProfile::create($validatedData)){
-        return response()->json(['success'=>'Doctor Added successfully.']);
-    }
-    else{
-        return response()->json(['error'=>'Something wrong please try again.']);
-    }
 
-
-    }
-    public function show(){
-        $doctors = DoctorProfile::all();
-        return response()->json(['data'=>$doctors]);
-    }
+        }
     public function edit($id){
         $doctor = DoctorProfile::find($id);
         return view('doctor.edit', compact('doctor'));
@@ -63,7 +82,7 @@ class DoctorController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:doctor_profiles,email,'.$id,
             'mobile' => 'required|digits:11|numeric',
             'gender' => 'required|in:Male,Female,Other',
             'bmdc_number' => 'nullable|string',
@@ -88,27 +107,8 @@ class DoctorController extends Controller
         // Update profile fields
         $doctorProfile->fill($request->all());
 
-        // Handle file upload (if photo is uploaded)
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $fileName = time() . '_' . $file->getClientOriginalName();
 
-            // Store the new file in the storage directory
-            $path = $file->storeAs('public/photos', $fileName);
 
-            // Check if file was stored successfully
-            if (!$path) {
-                return response()->json(['error' => 'Failed to store the photo.'], 500);
-            }
-
-            // Delete old photo if exists
-            if ($doctorProfile->photo) {
-                Storage::delete('public/photos/' . $doctorProfile->photo);
-            }
-
-            // Update photo field with new file name
-            $doctorProfile->photo = $fileName;
-        }
 
         // Save the updated doctor profile
         try {
@@ -129,4 +129,6 @@ class DoctorController extends Controller
          // Optionally, you can redirect back with a success message
          return response()->json(['success', 'Doctor deleted successfully!']);
     }
+
 }
+

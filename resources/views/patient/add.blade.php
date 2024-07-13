@@ -1,5 +1,5 @@
-<script src="{{asset('assets/js/main.js')}}"></script>
-<div class="modal modal-xl fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+
+<div class="modal  fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header modalHeader">
@@ -12,25 +12,25 @@
                     <div class="row g-3">
                     <div class="form-group col-md-6">
                         <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter first name" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" >
+                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter last name" >
                     </div>
                     <div class="form-group col-md-6">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter patient email" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="mobile">Mobile</label>
-                        <input type="number" class="form-control contact_no" id="mobile" name="mobile" required>
+                        <input type="number" class="form-control contact_no" id="mobile" name="mobile" placeholder="Enter contact no" required>
                         <small id="contact_no_res"></small>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="gender">Gender</label>
                         <select class="form-control" id="gender" name="gender" required>
-                            <option value="">Select your gender</option>
+                            <option value="">Select patient gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="nid">National ID</label>
-                        <input type="text" class="form-control" id="nid" name="nid">
+                        <input type="text" class="form-control" id="nid" placeholder="Patient NID no" name="nid">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="marital_status">Marital status </label>
@@ -57,15 +57,15 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="height_cm">Height (cm)</label>
-                        <input type="text" class="form-control" id="height_cm" name="height_cm" required>
+                        <input type="text" class="form-control" id="height_cm" placeholder="Enter Patient Height" name="height_cm" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="weight_kg">Weight (kg)</label>
-                        <input type="text" class="form-control" id="weight_kg" name="weight_kg" required>
+                        <input type="text" class="form-control" id="weight_kg" placeholder="Enter Patient Weight" name="weight_kg" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="blood_group">Blood Group</label>
-                        <select class="form-control" id="blood_group" name="blood_group" required>
+                        <select class="form-control" id="blood_group"  name="blood_group" required>
                             <option value="">Select blood group</option>
                             <option value="A+">A+</option>
                             <option value="B+">B+</option>
@@ -79,19 +79,19 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="emergency_phone">Emergency phone</label>
-                        <input type="number" class="form-control" id="emergency_phone" name="emergency_phone">
+                        <input type="number" class="form-control" id="emergency_phone" placeholder="Enter emergency contact no" name="emergency_phone">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="emergency_relation">Emergency relation</label>
-                        <input type="text" class="form-control" id="emergency_relation" name="emergency_relation">
+                        <input type="text" class="form-control" id="emergency_relation" placeholder="Ex: Brother/Wife/Husband/doughter's" name="emergency_relation">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="discount">Discount</label>
-                        <input type="number" class="form-control" id="discount" name="discount">
+                        <input type="number" class="form-control" id="discount" placeholder="If Special Discount" name="discount">
                     </div>
                     <div class="form-group col-md-6" >
                         <label for="address">Address</label>
-                        <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" required></textarea>
+                        <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" placeholder="Enter Patient address" required></textarea>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="city">City</label>
@@ -151,9 +151,17 @@
                 success: function(respons) {
                     $('#addNewPatient')[0].reset();
                     if(respons.success){
-                        alert(respons.success)
+
                         $('#closePatientModal').click();
                         $('#patientTable').DataTable().ajax.reload();
+                        Swal.fire({
+                        title: 'success!',
+                        text: 'Patient Added Successfully',
+                        icon: 'success', // 'success', 'error', 'warning', 'info', 'question'
+                        confirmButtonText: 'OK',
+                        timer: 2000
+                    });
+
                     }
                     if(respons.error){
                         alert(respons.error)
@@ -169,7 +177,12 @@
                     for (var key in errors) {
                         errorMessage += '- ' + errors[key].join('\n- ') + '\n'; // Accumulate error messages
                     }
-
+                    Swal.fire({
+                        title: 'error!',
+                        text: errorMessage,
+                        icon: 'error', // 'success', 'error', 'warning', 'info', 'question'
+                        confirmButtonText: 'OK'
+                    });
 
                 } else {
 

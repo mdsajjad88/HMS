@@ -1,27 +1,6 @@
-<script src="{{asset('assets/js/main.js')}}"></script>
-<style>
-    .modalHeader{
-        position: sticky;
-        top: 0;
-        background-color: #ffffff;
-        color: rgb(5, 5, 5);
-        z-index: 20;
-        padding: 1rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
-    .modalFooter{
-        position: sticky;
-        bottom: 0;
-        background-color: #ffffff;
-        color: rgb(5, 5, 5);
-        z-index: 20;
-        padding: 1rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
-</style>
-{{-- btm start --}}
+
 <!-- Bootstrap Modal -->
-<div class="modal modal-xl fade" id="doctorEditModal" tabindex="-1" aria-labelledby="doctorModalLabel" aria-hidden="true">
+<div class="modal  fade" id="doctorEditModal" tabindex="-1" aria-labelledby="doctorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <!-- Modal Header -->
@@ -33,7 +12,7 @@
             <!-- Modal Body -->
             <div class="modal-body">
                 <!-- Form -->
-                <form id="updateDoctor" method="POST" enctype="multipart/form-data">
+                <form id="updateDoctor"  method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row g-3">
                         <!-- First Name -->
@@ -131,17 +110,6 @@
                             <input type="text" class="form-control" id="consultant_type" name="consultant_type" placeholder="Enter consultant type">
                         </div>
 
-                        <!-- Photo -->
-                        {{-- <div class="col-md-6">
-                            <label for="photo" class="form-label">Photo</label>
-                            <input type="file" class="form-control" id="photo" name="photo">
-                        </div> --}}
-                        {{-- <div class="col-md-3">
-                            <label for="photo" class="form-label">Old Photo</label>
-                            <img src="{{asset('photos/'.$doctor->photo)}}" height="60px" width="60px" alt="Doctor">
-
-                        </div> --}}
-
                         <!-- Address -->
                         <div class="col-md-6">
                             <label for="address" class="form-label">Address</label>
@@ -165,163 +133,7 @@
         </div>
     </div>
 </div>
-
-
 {{-- btm end --}}
-
-{{-- <div id="doctorEditModal" class="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
-    <div class="bg-white rounded-lg w-full md:w-1/2 lg:w-2/3 max-w-4xl mt-40 mb-10 overflow-auto max-h-screen">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center border-b-2 border-gray-200 pb-4 p-5 mb-4 modalHeader">
-                <h2 class="text-lg font-bold">Edit Doctor {{$doctor->first_name }} Profile</h2>
-                <button id="closeEditModal" class="text-gray-600 hover:text-gray-800 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Modal Body -->
-            <div id="modalBody" class="pl-5 pr-5">
-
-
-                <!-- Form -->
-                <form  id="updateDoctor" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- First Name -->
-                        <div class="">
-                            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
-                            <input type="text" name="first_name" id="first_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter First Name" required>
-                            <input type="hidden" name="doctorId" id="doctorId" >
-                        </div>
-
-                        <!-- Last Name -->
-                        <div class="">
-                            <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                            <input type="text" name="last_name" id="last_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter last Name" required>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="">
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" id="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter valid email address" required>
-                        </div>
-
-                        <!-- Mobile -->
-                        <div class="">
-                            <label for="mobile" class="block text-sm font-medium text-gray-700">Mobile</label>
-                            <input type="text" name="mobile" id="mobile" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter contact no">
-                        </div>
-
-                        <!-- Gender -->
-                        <div >
-                            <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
-                            <select name="gender" id="gender" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <!-- BMDC Number -->
-                        <div>
-                            <label for="bmdc_number" class="block text-sm font-medium text-gray-700">BMDC Number</label>
-                            <input type="text" name="bmdc_number" id="bmdc_number" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter BMDC number ">
-                        </div>
-
-                        <!-- Blood Group -->
-                        <div>
-                            <label for="blood_group" class="block text-sm font-medium text-gray-700">Blood Group</label>
-                            <select name="blood_group" id="blood_group" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-                                <option value="">Select Gender</option>
-                                <option value="A+">A+</option>
-                                <option value="B+">B+</option>
-                                <option value="AB+">AB+</option>
-                                <option value="O+">O+</option>
-                                <option value="A-">A-</option>
-                                <option value="B-">B-</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O-">O-</option>
-                            </select>
-                        </div>
-
-
-                        <!-- Date of Birth -->
-                        <div >
-                            <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                            <input type="date" name="date_of_birth" id="date_of_birth" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        </div>
-
-                        <!-- NID -->
-                        <div >
-                            <label for="nid" class="block text-sm font-medium text-gray-700">NID</label>
-                            <input type="text" name="nid" id="nid" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter NID no">
-                        </div>
-
-                        <!-- Specialist -->
-                        <div >
-                            <label for="specialist" class="block text-sm font-medium text-gray-700">Specialist</label>
-                            <input type="text" name="specialist" id="specialist" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter doctor specialist">
-                        </div>
-
-                        <!-- Fee -->
-                        <div >
-                            <label for="fee" class="block text-sm font-medium text-gray-700">Fee</label>
-                            <input type="number" name="fee" id="fee" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter doctor fee">
-                        </div>
-
-                        <!-- Designation -->
-                        <div >
-                            <label for="designation" class="block text-sm font-medium text-gray-700">Designation</label>
-                            <input type="text" name="designation" id="designation" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter doctor designation">
-                        </div>
-
-                        <!-- Consultant Type -->
-                        <div >
-                            <label for="consultant_type" class="block text-sm font-medium text-gray-700">Consultant Type</label>
-                            <input type="text" name="consultant_type" id="consultant_type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter consultant type">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="photo" class="block text-sm font-medium text-gray-700">Photo</label>
-                                <input type="file" name="photo" id="photo" class="mt-1 block w-full border-gray-800  p-1 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            </div>
-                            <div>
-                                <label for="photo" class="block text-sm font-medium text-gray-700">Old Photo</label>
-                               <img id="imgShow" src="{{ asset('public/photos/' . $doctor->photo) }}" alt="OldImg" height="100px" width="100px">
-                            </div>
-
-                        </div>
-
-                        <!-- Address -->
-                        <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-                            <textarea name="address" id="address" rows="2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter doctor address"></textarea>
-                        </div>
-
-                        <!-- Description -->
-                        <div >
-                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description" id="description" rows="2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter comments"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="mt-4 mb-3 flex justify-end">
-                        <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
-                            Update
-                        </button>
-
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div> --}}
 
 <script>
     $(document).ready(function(){
@@ -363,7 +175,7 @@
         dataInsert();
 
 
-        $('#updateDoctor').off('submit').on('submit', function(e){
+        $('#updateDoctor').off('submit').on( 'submit', function(e){
             e.preventDefault(); // Prevent default form submission
             var submitBtn = $(this).find('button[type="submit"]');
             submitBtn.prop('disabled', true);
@@ -376,14 +188,28 @@
                 contentType: false, // Ensure to set these options for FormData
                 processData: false,
                 success: function(respons) {
+
                     if(respons.success){
-                        alert(respons.success)
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'success!!',
+                                text: 'Doctor Profile Updated',
+
+                                confirmButtonText: 'OK',
+                                timer:2000
+                            });
                         $('#closeEditModal').click();
-                        $('#doctorTable').DataTable().ajax.reload();
+                        $('#doctorProfilesTable').DataTable().ajax.reload();
 
                     }
                     if(respons.error){
-                        alert(respons.error)
+                        Swal.fire({
+                                icon: 'error',
+                                title: 'Opps!!',
+                                text: respons.error,
+
+                                confirmButtonText: 'OK'
+                            });
                     }
                 },
                 error: function(xhr, status, error) {
@@ -409,6 +235,7 @@
             }
             });
         });
+
 
     })
 </script>

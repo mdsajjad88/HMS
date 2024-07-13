@@ -7,14 +7,13 @@
         <button class="addPatient btn btn-primary btn-sm m-1"><i class="fa-solid fa-plus"></i>Add</button>
     </div>
 </div>
-
 <div class="row">
     <div class="col">
         <section id="patientSection">
             <table id="patientTable" class="table table-bordered text-center">
-                <thead >
-                    <tr >
-                        <th >ID</th>
+                <thead>
+                    <tr>
+                        <th>ID</th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
@@ -22,7 +21,7 @@
 
                         <th>Blood</th>
 
-                        <th class="text-center">Action</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,17 +29,19 @@
             </table>
         </section>
     </div>
+
 </div>
 </div>
+
+
 @endsection
 @section('scripts')
 <script>
-    $(document).ready(function() {
-        $('#patientTable').DataTable({
+$(document).ready(function(){
+    $('#patientTable').DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ route('patient_profiles.index') }}",
-        dom: '<"row"<"col-md-4"l><"col-md-4"B><"col-md-4"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>', // Layout definition
         columns: [
             { data: 'id', name: 'id' },
             { data: 'first_name', name: 'first_name' },
@@ -50,18 +51,20 @@
             { data: 'blood_group', name: 'blood_group' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
-
+        dom: '<"row"<"col-md-4"l><"col-md-4"B><"col-md-4"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>', // Layout definition
         buttons: [
-            'copy','csv', 'print' // Buttons configuration
+            'copy','csv','print' // Buttons configuration
         ],
         language: {
             searchPlaceholder: 'Search...', // Change search placeholder text
 
         },
 
-
     });
-    function addNewPatient(){
+
+
+
+        function addNewPatient(){
             $.ajax({
                 method: 'GET',
                 url: '/addPatient',
@@ -75,6 +78,7 @@
         $('.addPatient').click(function(){
             addNewPatient();
         })
+
 
     $(document).off('click').on('click', '.deletePatient', function() {
             var deleteButton = $(this);
@@ -151,7 +155,7 @@
 
             })
             })
-    function patientProfileEdit(patientId) {
+            function patientProfileEdit(patientId) {
             $.ajax({
                 method: 'GET',
                 url: '/editPatient/' + patientId,
@@ -165,6 +169,7 @@
             var patientId = $(this).data('id');
             patientProfileEdit(patientId);
         })
-        });
+
+});
 </script>
 @endsection

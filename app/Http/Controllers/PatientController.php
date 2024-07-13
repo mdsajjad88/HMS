@@ -6,8 +6,10 @@ use App\Models\DoctorProfile;
 use Illuminate\Http\Request;
 use App\Models\PatientProfile;
 use App\Models\PatientUser;
+use finfo;
 use Illuminate\Support\Facades\Auth;
 use  Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 class PatientController extends Controller
 {
     /**
@@ -15,8 +17,23 @@ class PatientController extends Controller
      */
     public function index()
     {
-        $patients = PatientProfile::all();
-        return response()->json(['data'=>$patients]);
+       return view('patient.index');
+    }
+    public function getPatient(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = PatientProfile::latest()->get(); // Fetch all doctor profiles
+            return DataTables::of($data)
+                ->addColumn('action', function($row){
+                    $btn = '<a  data-id="'.$row->id.'"  class="editPatient btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
+                    $btn .= ' </i><a  data-id="'.$row->id.'" class="deletePatient btn btn-danger btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+
     }
 
     /**
@@ -67,7 +84,6 @@ class PatientController extends Controller
         $patientProfile->modified = now(); // Assign patient_user_id
         $patientProfile->fill($validatedData); // Fill other validated data
 
-
         if($patientProfile->save()){
             return response()->json(['success'=>'Patient Added successfully.']);
         }
@@ -90,6 +106,7 @@ class PatientController extends Controller
      */
     public function edit(string $id)
     {
+
         return view('patient.edit', compact('id'));
     }
     public function  getOnePatient($id){
@@ -141,5 +158,15 @@ class PatientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-   
+    public function destroy($id)
+    {
+         // Find the patient by ID
+         $patient = PatientProfile::findOrFail($id);
+
+         // Delete the patient
+         $patient->delete();
+
+         // Optionally, you can redirect back with a success message
+         return response()->json(['success', 'Patient deleted successfully!']);
+    }
 }

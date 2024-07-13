@@ -1,5 +1,5 @@
-<script src="{{asset('assets/js/main.js')}}"></script>
-<div class="modal modal-xl fade" id="updatePatientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+
+<div class="modal  fade" id="updatePatientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header modalHeader">
@@ -127,8 +127,7 @@
                     <!-- Add more fields based on your schema -->
                 </div>
                 <div class="modal-footer modalFooter">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save </button>
+                    <button type="submit" class="btn btn-primary">Update Patient </button>
                 </div>
             </form>
         </div>
@@ -136,7 +135,7 @@
 </div>
 <script>
     $(document).ready(function(){
-       
+
         var pId = '<?php echo $id ?>';
 
         // $('#first_name').empty();
@@ -202,12 +201,22 @@
                 processData: false,
                 success: function(respons) {
                     if(respons.success){
-                        alert(respons.success)
+                        Swal.fire({
+                        icon: 'success',
+                        title: 'Patient Profile Updated successfuly!',
+                        timer: 3000 // 3 seconds
+
+                    });
                         $('#closePatientEditModal').click();
                         $('#patientTable').DataTable().ajax.reload();
                     }
                     if(respons.error){
-                        alert(respons.error)
+                        Swal.fire({
+                        icon: 'error',
+                        title: respons.error,
+                        timer: 3000 // 3 seconds
+
+                    });
                     }
                 },
                 error: function(xhr, status, error) {
@@ -220,7 +229,12 @@
                     for (var key in errors) {
                         errorMessage += '- ' + errors[key].join('\n- ') + '\n'; // Accumulate error messages
                     }
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorMessage,
+                        timer: 3000 // 3 seconds
 
+                    });
 
                 } else {
 
