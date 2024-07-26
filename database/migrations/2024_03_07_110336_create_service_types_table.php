@@ -23,8 +23,7 @@ class CreateServiceTypesTable extends Migration
             $table->string('token_name', 20)->nullable();
             $table->decimal('price', 10, 2)->default(0.00);
             $table->integer('service_time_in_minutes')->nullable();
-            $table->dateTime('created_at')->default(now());
-            $table->dateTime('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('appointment_type_id')->references('id')->on('appointment_types')->onDelete('cascade');

@@ -21,11 +21,10 @@ class CreateOrganizationEquipmentsTable extends Migration
             $table->string('equipment_name', 255);
             $table->integer('equipment_quantity');
             $table->text('description')->nullable();
-            $table->dateTime('created')->nullable();
-            $table->dateTime('modified')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints (if needed)
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');
             $table->foreign('x_first_division_code_id')->references('id')->on('x_first_division_codes')->onDelete('cascade');

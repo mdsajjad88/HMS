@@ -19,8 +19,8 @@ class CreateUserTokensTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('device_type', 100)->nullable();
             $table->string('device_id', 100)->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             // Foreign key
            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

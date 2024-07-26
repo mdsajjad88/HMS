@@ -25,11 +25,10 @@ class CreateOrganizationAcademicCoursesTable extends Migration
             $table->integer('sanction_seats_gov');
             $table->integer('sanction_seats_nongov');
             $table->integer('sanction_seats_foreign');
-            $table->dateTime('created')->nullable();
-            $table->dateTime('modified')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');
             $table->foreign('x_first_division_code_id')->references('id')->on('x_first_division_codes')->onDelete('cascade');

@@ -19,7 +19,8 @@ class CreateClinicRoleHasPermissionsTable extends Migration
 
             // Primary key
             $table->primary(['permission_id', 'clinic_role_id']);
-
+            $table->timestamps();
+           
             // Foreign key constraints
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
             $table->foreign('clinic_role_id')->references('id')->on('clinic_roles')->onDelete('cascade');

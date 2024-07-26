@@ -30,8 +30,7 @@ class CreatePatientSubscriptionTransactionsTable extends Migration
             $table->dateTime('transaction_approved_at')->nullable();
             $table->unsignedBigInteger('created_by')->default(0);
             $table->unsignedBigInteger('modified_by')->default(0);
-            $table->timestamp('created')->useCurrent();
-            $table->timestamp('modified')->useCurrent()->nullable();
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('patient_user_id')

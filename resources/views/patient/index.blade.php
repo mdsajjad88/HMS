@@ -1,6 +1,10 @@
 @extends('layouts.app')
+
+@section('title', 'Patients')
 @section('content')
-<div class="container">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+<div class="container-fluid">
 <div class="row">
     <div class="col-md-11"></div>
     <div class="col-md-1">
@@ -10,7 +14,7 @@
 <div class="row">
     <div class="col">
         <section id="patientSection">
-            <table id="patientTable" class="table table-bordered text-center">
+            <table id="patientTable" class="table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -18,8 +22,10 @@
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
-
+                        <th>Age</th>
                         <th>Blood</th>
+                        <th>Address</th>
+                        <th>City</th>
 
                         <th>Action</th>
                     </tr>
@@ -38,6 +44,7 @@
 @section('scripts')
 <script>
 $(document).ready(function(){
+
     $('#patientTable').DataTable({
         processing: true,
         serverSide: true,
@@ -48,12 +55,15 @@ $(document).ready(function(){
             { data: 'last_name', name: 'last_name' },
             { data: 'email', name: 'email' },
             { data: 'mobile', name: 'mobile' },
+            { data: 'age', name: 'age' },
             { data: 'blood_group', name: 'blood_group' },
+            { data: 'address', name: 'address' },
+            { data: 'district_name', name: 'district_name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         dom: '<"row"<"col-md-4"l><"col-md-4"B><"col-md-4"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>', // Layout definition
         buttons: [
-            'copy','csv','print' // Buttons configuration
+            'copy','csv','print', 'excel','pdf', // Buttons configuration
         ],
         language: {
             searchPlaceholder: 'Search...', // Change search placeholder text
@@ -75,7 +85,7 @@ $(document).ready(function(){
                 }
             })
         }
-        $('.addPatient').click(function(){
+        $('.addPatient').on('click', function(){
             addNewPatient();
         })
 
@@ -116,28 +126,21 @@ $(document).ready(function(){
 
                 },
                 error: function(xhr, status, error) {
-                // Handle error response
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    // If validation errors exist, display them
-                    var errors = xhr.responseJSON.errors;
                     var errorMessage = '';
-
-                    for (var key in errors) {
-                        errorMessage += '- ' + errors[key].join('\n- ') + '\n'; // Accumulate error messages
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage += xhr.responseJSON.message;
+                    } else {
+                        errorMessage += status;
                     }
+
                     Swal.fire({
-                        title: 'error!',
-                        text: errorMessage,
-                        icon: 'error', // 'success', 'error', 'warning', 'info', 'question'
-                        confirmButtonText: 'OK',
-                        timer:2000
-                    });
+                                icon: 'error',
+                                title: 'Opps',
+                                text: errorMessage,
+                                confirmButtonText: 'OK',
 
-                } else {
-
-                }
-                return false;
-            }
+                            });
+                    }
             });
             } else {
                 // Cancelled deletion

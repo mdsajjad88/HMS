@@ -19,9 +19,9 @@ class CreatePhinxlogTable extends Migration
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->tinyInteger('breakpoint')->default(0);
-
-            // Optionally, if you want timestamps managed by Laravel
             $table->timestamps();
+            // Optionally, if you want timestamps managed by Laravel
+
         });
     }
 

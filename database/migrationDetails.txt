@@ -1,0 +1,245 @@
+migration start
+
+
+***users /done
+***user_roles /done
+***user_roles_mapping (users and user_roles table) /done
+***user_tokens(relation users table)/done
+***x_agency
+***x_ownership_authorities
+***x_permission_license_types
+***x_relationship
+***x_academic_course_types
+***x_first_division_codes
+***x_second_division_codes
+***x_medicines
+***x_special_services
+***x_who_major_groups
+***x_who_isco_occupations(relation x_who_major_groups table)
+***countries
+***divisions (relation countries table)
+***district (relation division table)
+***upazilla(relation district table)
+***geo_divisions
+***geo_district (relation division table)
+***geo_city_corporations(relation division, district table)
+***geo_city_corporation_wards(relation division, district, city_corporation table)
+***geo_upazilla(relation district table)
+***geo_thanas (relation division, district table)
+***geo_union (relation division, district, upazila)
+***geo_municipalities (relation geo_division_id, geo_district_id,geo_upazila_id, users table )
+***geo_municipality_wards(relation geo_division_id, geo_district_id,geo_upazila_id,geo_municipality, users table )
+***geo_post_offices(relation geo_division, geo_district, geo_upozilas, geo_thana,user table)
+***x_organization_function
+***x_organization_type_groups
+***x_organization_types (relation x_organization_type_groups table)
+***x_organization_levels
+***organization profile (relations before multiple table)
+***patient_users
+***patient_users_old
+***patient_profiles (relation patient_users  table )
+***patient_profiles_old(relation patient_users  table )
+*activity_log (relation of organization prfile, patient_profiles and users table )
+**agent_commission (relation users table )
+***agent_profile(relation organization_profile, agent_commission, users table)
+***agent_payments(relation organization_profile, agent_profile and users table)
+***appointment_types (relation organization profile table)
+***cc (relation users table)
+***clinic_menus
+***clinic_roles
+***clinic_menus_clinic_roles (relation clinic_menus and clinic_roles table)
+***clinic_menus_copy1
+***clinic_roles_users (relation clinic_roles and users table)
+***permissions(relation clinic_menus table )
+***clinic_role_has_permissions(relation permissions and clinic_roles table)
+***clinic_settings (relation users table)
+***clinic_sms_template (relation users table)
+***custom_variables(relation users table)
+***diseases (relation users table)
+***doctor_advise(relation organization_profile table)
+***doctor_chambers (relation doctor_profile_id, doctor_user_id, organization_profile_id, x_organization_types and users table)
+***doctor_appointment_days (relation doctor_profile_id,doctor_user_id, doctor_chamber_id table )
+***profiles (relation users table)
+***doctor_assistants (relation profile, doctor_profile, users, doctor_chambers, organization_profile, profile table )
+***doctor_appointment_slots (relation doctor_chamber_id, doctor_profile, users, doctor_assistant_id, profiles, doctor_appointment_day table )
+
+***doctor_degrees (relation doctor_profile and users table)
+
+***doctor_specialities (relation doctor_profile and users table)
+
+***image_categories
+
+***investigation
+
+***agent_target_sales(organization_profile and users table)
+
+***reason
+
+
+***service_types (relation appointment_types,organization_profiles table )
+
+***subscriptions
+
+***patient_subscriptions (relation subscription and patient_users table )
+
+***service_appointment_days(relation service_types and users table )
+
+***service_appointment_slot (relation service_type, service_appointment_day_id and users table)
+
+
+
+***patient_appointment_requests (relation doctors_chamber, doctor_profiles, users,appointment_types,  services_types, patient_subscription_id, service_appointment_slot_id,service_appointment_day_id table)
+
+***call_details (relation  patient_appointment_request, reasons, and patient_users table)
+
+***disease_details_fields
+
+***lab_locations (relation organization_profiles and users table)
+
+***medical_tests (relation organization_profiles and users table)
+
+***medical_test_discounts(relation organization_profiles and users table)
+
+***medicine_meal
+
+***medicine_usage
+
+***memos
+
+***memo_notes (relation memos and users table)
+
+***memo_receivers(relation memos and users table)
+
+***memo_references(relation memos, patient_users and users table)
+
+
+***organization_academic_courses(relation organization_profiles, first_division_codes, second_division_codes, academic_course_types table )
+
+***organization_approval_information (relation organization_profiles,x_permission_license_type_id and users table)
+
+***organization_attachments(relation organization_profiles and users table)
+
+***organization_bed_assignments (relation organization_profiles, x_first_division_code, x_second_division_code and users table)
+
+***organization_equipments(relation organization_profiles, x_first_division_code, x_second_division_code and users table)
+
+
+***organization_file_uploads(relation organization_profiles, x_organization_types and users table )
+
+***image_category_id->
+
+***organization_galleries (relation organization_profile, image_category and users table)
+
+***organization_land_information (relation organization_profile, and users table )
+
+**organization_sanctioned_posts(relation organization_profile,first_division_codes,second_division_codes ,x_who_major_groups,x_who_isco_occupations ad users table)
+
+***organization_user_mapping (relation users, profiles, organizations_profiles and user_roles table)
+
+
+***pathologist_users
+
+
+***pathologist_profiles (relation pathologist_user table)
+
+***patients_additional_discounts (relation patient_users and service_types table )
+
+
+***patient_appointment_prescriptions
+
+
+***patient_appointment_attachments (relation with doctor_chambers, doctor_profiles, users,patient_users, doctor_assistants, patient_appointment_requests, patient_appointment_prescriptions table )
+
+
+***patient_appointment_prescriptions(relation with doctor_chambers, organization_profiles,doctor_profiles,  users,patient_users,  doctor_assistants,patient_appointment_requests table)
+
+***patient_appointment_transactions(relation with doctor_chambers, patient_appointment_requests,doctor_profiles,patient_users and users Table )
+
+***patient_attachments (relation with patient_users and users Table )
+
+***patient_attachments_bk(relation with patient_users and users Table )
+
+***patient_diseases(relation with patient_profiles, diseases and users table)
+
+
+***patient_medical_tests(relation with patient_users, doctor_profiles and users table)
+
+
+***patient_medical_test_mappings (relation with patient_medical_tests, medical_tests, lab_locations and users table)
+
+
+***patient_medical_test_reports (relation with patient_medical_tests, , patient_users and users table)
+
+***patient_medical_test_transactions(relation with patient_medical_tests, , patient_users and users table)
+
+
+***patient_reports (relation with doctors_chambers, organizations_profiles, doctor_profiles, users and patient_users table)
+
+
+***patient_report_attachments  (relation with patient_reports and users table )
+
+
+***patient_subscription_transactions (relation patient_subscriptions, users table)
+
+
+***patient_types (relation organization_profile table)
+
+
+***phinxlog
+
+
+***prescriptions(relation patient_appointment_requests, patient_users, users table)
+
+
+***prescribed_medicines(relation patient_users, users, doctor_profiles and prescriptions table)
+
+***prescribed_medicine_histories (relation prescriptions table)
+
+
+***prescription_advises(relation prescriptions table)
+
+***prescription_details(relation prescriptions table)
+
+
+***prescription_diagnoses (relation prescriptions table)
+
+
+***prescription_doctors(relation organizations_profiles, doctors_chambers, doctor_profiles, prescriptions and users table)
+
+
+***prescription_products (relation patient_users, doctor_profiles, prescriptions, users table)
+
+***prescription_templates(relation organizations_profiles, doctor_chambers table)
+
+
+***prescription_therapies(relation prescriptions, and users table )
+
+
+
+***questionnaire_templates (relation organizations_profiles, doctors_chambers table)
+
+
+***questionnaire_responses (relation questionnaire_templates, organization_profiles , doctor_chambers, patient_appointment_requests and patient_users table)
+
+
+***self_registration_entities(relation users table)
+
+
+***send_sms_user_lists(relation organizations_profiles,  users table)
+
+***sms_logs
+
+***ssl_orders
+
+***subscription_consultation_discounts(subscriptions, doctor_profiles and users table)
+
+***subscription_consultation_doctors(subscriptions, doctor_profiles and users table)
+
+
+***subscription_details(relation subscriptions, services_types, and users table)
+
+
+***user_relationship_mapping(relation users, x_relationship, table)
+
+
+

@@ -22,11 +22,10 @@ class CreatePatientReportAttachmentsTable extends Migration
             $table->string('remarks', 255)->nullable();
             $table->tinyInteger('file_secret')->default(0);
             $table->dateTime('report_added_on');
-            $table->dateTime('created');
-            $table->dateTime('modified');
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('patient_report_id')->references('id')->on('patient_reports')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

@@ -22,6 +22,7 @@ class CreateXSecondDivisionCodesTable extends Migration
             $table->integer('modified_by')->nullable();
             $table->dateTime('modified')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

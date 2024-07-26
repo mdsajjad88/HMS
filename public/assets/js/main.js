@@ -1,4 +1,7 @@
-$(document).ready(function(){
+(function ($) {
+
+
+    $(document).ready(function ($) {
 
     $('.contact_no').keyup(function() {
 
@@ -18,16 +21,11 @@ $(document).ready(function(){
                 '<p style="color:red">Contact no length must be 11 character</p>')
         }
     });
+   
 
-    $('#medicalTest').click(function(){
-        $.ajax({
-            url: '/medicalTest',
-            method: 'GET',
-            success:function(){
+});
+});
 
-            }
-        });
-    })
 
-})
+
 

@@ -28,6 +28,7 @@ class CreateXWhoIscoOccupationsTable extends Migration
             $table->dateTime('modified')->nullable();
             $table->integer('modified_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

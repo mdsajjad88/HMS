@@ -19,11 +19,10 @@ class CreatePrescriptionTherapiesTable extends Migration
             $table->string('therapy_name', 255);
             $table->text('therapy_detail')->nullable();
             $table->text('therapy_instruction')->nullable();
-            $table->datetime('created')->default(now());
-            $table->datetime('modified')->default(now());
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('prescription_id')->references('id')->on('prescriptions')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

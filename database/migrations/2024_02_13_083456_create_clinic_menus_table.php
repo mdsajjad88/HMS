@@ -20,7 +20,8 @@ class CreateClinicMenusTable extends Migration
             $table->string('icon')->nullable();
             $table->integer('sequence')->default(0);
             $table->unsignedBigInteger('parent_id')->nullable();
-
+            $table->timestamps();
+            $table->softDeletes();
             // Foreign key constraint
             $table->foreign('parent_id')->references('id')->on('clinic_menus')->onDelete('set null');
         });

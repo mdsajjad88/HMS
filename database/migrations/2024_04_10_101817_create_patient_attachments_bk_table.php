@@ -24,12 +24,12 @@ class CreatePatientAttachmentsBkTable extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('added_by')->nullable();
             $table->string('added_able', 255)->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('set null');
             $table->foreign('added_by')->references('id')->on('users')->onDelete('set null');
 
-            $table->timestamps(); // This will add 'created_at' and 'updated_at' columns
+           
         });
     }
 

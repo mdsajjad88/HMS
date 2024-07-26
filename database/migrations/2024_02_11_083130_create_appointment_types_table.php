@@ -17,8 +17,8 @@ class CreateAppointmentTypesTable extends Migration
             $table->id();
             $table->string('type_name');
             $table->unsignedBigInteger('organization_profile_id');
-            $table->timestamp('created')->nullable();
-            $table->timestamp('modified')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             // Foreign key constraint
           $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');

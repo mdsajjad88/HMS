@@ -19,11 +19,10 @@ class CreatePrescriptionDiagnosesTable extends Migration
             $table->integer('diagnosis_id')->nullable();
             $table->string('diagnosis_name', 255);
             $table->text('comments')->nullable();
-            $table->dateTime('created')->default(now());
-            $table->dateTime('modified')->default(now());
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('prescription_id')->references('id')->on('prescriptions')
                   ->onDelete('cascade')

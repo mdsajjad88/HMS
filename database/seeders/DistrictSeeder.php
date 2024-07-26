@@ -14,6 +14,7 @@ class DistrictSeeder extends Seeder
     public function run(): void
     {
         $districts = array(
+
             array('id' => '1','division_id' => '1','name' => 'Comilla','bn_name' => 'কুমিল্লা','lat' => '23.4682747','lon' => '91.1788135','url' => 'www.comilla.gov.bd'),
             array('id' => '2','division_id' => '1','name' => 'Feni','bn_name' => 'ফেনী','lat' => '23.023231','lon' => '91.3840844','url' => 'www.feni.gov.bd'),
             array('id' => '3','division_id' => '1','name' => 'Brahmanbaria','bn_name' => 'ব্রাহ্মণবাড়িয়া','lat' => '23.9570904','lon' => '91.1119286','url' => 'www.brahmanbaria.gov.bd'),
@@ -79,10 +80,34 @@ class DistrictSeeder extends Seeder
             array('id' => '63','division_id' => '8','name' => 'Jamalpur','bn_name' => 'জামালপুর','lat' => '24.937533','lon' => '89.937775','url' => 'www.jamalpur.gov.bd'),
             array('id' => '64','division_id' => '8','name' => 'Netrokona','bn_name' => 'নেত্রকোণা','lat' => '24.870955','lon' => '90.727887','url' => 'www.netrokona.gov.bd')
         );
+        $transformedArray = [];
 
-        foreach ($districts as $district) {
-            GeoDistricts::create($district);
+        foreach ($districts as $item) {
+            // Extract relevant fields and modify as needed
+            $transformedItem = [
+                'id' => intval($item['id']), // Convert id to integer if needed
+                'geo_division_id' => $item['division_id'],
+                'district_name_eng' => $item['name'], // Example: Using 'name' as English district name
+                'district_name_bng' => $item['bn_name'], // Example: Using 'bn_name' as Bengali district name
+                'status' => true, // Example: Set a default status
+                'created_by' => null, // Example: Default value for 'created_by'
+                'modified_by' => null, // Example: Default value for 'modified_by'
+            ];
+
+            // Add the transformed item to the new array
+            $transformedArray[] = $transformedItem;
         }
+        try {
+            foreach ($transformedArray as $data) {
+                GeoDistricts::create($data);
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during insertion
+            $this->command->error("Error inserting data: " . $e->getMessage());
+        }
+
+        $this->command->info('Districts seeded successfully!');
+    
 
     }
 }

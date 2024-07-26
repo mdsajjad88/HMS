@@ -19,8 +19,7 @@ class CreateReasonTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('modified_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('modified_by')->references('id')->on('users');

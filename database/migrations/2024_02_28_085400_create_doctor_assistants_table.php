@@ -24,9 +24,10 @@ class CreateDoctorAssistantsTable extends Migration
             $table->boolean('active_status')->default(true);
             $table->date('date_joining')->nullable();
             $table->date('date_leaving')->nullable();
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('doctor_profile_id')->references('id')->on('doctor_profiles')->onDelete('cascade');

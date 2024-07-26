@@ -27,13 +27,12 @@ class CreateServiceAppointmentSlotsTable extends Migration
             $table->integer('slot_booked')->default(0);
             $table->tinyInteger('slot_active')->default(1);
             $table->string('remarks', 500)->nullable();
-            $table->dateTime('created')->nullable();
-            $table->dateTime('modified')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->integer('slot_duration')->default(0);
             $table->unsignedBigInteger('service_appointment_day_id')->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

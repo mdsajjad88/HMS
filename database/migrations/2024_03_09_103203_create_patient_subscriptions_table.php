@@ -29,8 +29,7 @@ class CreatePatientSubscriptionsTable extends Migration
             $table->text('opinions')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created')->useCurrent();
-            $table->timestamp('modified')->nullable()->useCurrentOnUpdate();
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('patient_user_id')->references('id')->on('patient_profiles')->onDelete('cascade');

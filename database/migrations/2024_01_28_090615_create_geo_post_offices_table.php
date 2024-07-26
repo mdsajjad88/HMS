@@ -15,8 +15,8 @@ class CreateGeoPostOfficesTable extends Migration
     {
         Schema::create('geo_post_offices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('geo_division_id');
-            $table->unsignedBigInteger('geo_district_id');
+            $table->unsignedBigInteger('geo_division_id')->nullable();
+            $table->unsignedBigInteger('geo_district_id')->nullable();
             $table->unsignedBigInteger('geo_upazila_id')->nullable();
             $table->unsignedBigInteger('geo_thana_id')->nullable();
             $table->string('division_bbs_code')->nullable();

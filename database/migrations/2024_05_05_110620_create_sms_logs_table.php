@@ -17,8 +17,7 @@ class CreateSmsLogsTable extends Migration
             $table->id();
             $table->string('sms_to', 15);
             $table->text('sms_body');
-            $table->dateTime('created_at')->default(now()); // Use `dateTime` for non-timestamp columns
-            $table->dateTime('updated_at')->nullable(); // Use `nullable` for `modified`
+            $table->timestamps();
 
             // Define foreign key constraints if needed
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

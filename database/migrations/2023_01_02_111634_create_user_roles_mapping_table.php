@@ -20,6 +20,7 @@ class CreateUserRolesMappingTable extends Migration
             $table->integer('role_activated_date');
             $table->tinyInteger('role_activated_status');
             $table->timestamps();
+            $table->softDeletes();
 
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users');

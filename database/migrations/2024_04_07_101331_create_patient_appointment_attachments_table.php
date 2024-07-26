@@ -15,7 +15,7 @@ class CreatePatientAppointmentAttachmentsTable extends Migration
     {
         Schema::create('patient_appointment_attachments', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+           
             $table->unsignedBigInteger('doctor_chamber_id')->nullable();
             $table->unsignedBigInteger('doctor_profile_id')->nullable();
             $table->unsignedBigInteger('doctor_user_id')->nullable();
@@ -31,7 +31,7 @@ class CreatePatientAppointmentAttachmentsTable extends Migration
             $table->dateTime('date_added');
             $table->integer('added_patient_user')->nullable();
             $table->integer('added_other_user')->nullable();
-
+            $table->timestamps();
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers');
             $table->foreign('doctor_profile_id')->references('id')->on('doctor_profiles');
             $table->foreign('doctor_user_id')->references('id')->on('users');

@@ -43,6 +43,7 @@ class CreatePrescriptionsTable extends Migration
             $table->longText('template')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
             $table->foreign('appointment_id')->references('id')->on('patient_appointment_requests');
             $table->foreign('patient_user_id')->references('id')->on('patient_users');
             $table->foreign('created_by')->references('id')->on('users');

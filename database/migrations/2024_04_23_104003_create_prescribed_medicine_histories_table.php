@@ -19,8 +19,7 @@ class CreatePrescribedMedicineHistoriesTable extends Migration
             $table->json('medicines')->nullable();
             $table->text('comments')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->dateTime('created_at')->default(now()); // Use `dateTime` for non-timestamp columns
-            $table->dateTime('updated_at')->nullable(); // Use `nullable` for `modified`
+            $table->timestamps();
 
             // Define foreign key constraints
             // Uncomment and adjust the foreign key constraints if needed

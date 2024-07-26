@@ -28,7 +28,8 @@ class CreateXMedicinesTable extends Migration
             $table->timestamp('modified')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('modified_by')->nullable();
-            $table->timestamps(); // Adds created_at and updated_at columns
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

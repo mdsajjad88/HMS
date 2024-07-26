@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\GeoDistricts;
 use App\Models\GeoUpazillas;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -507,9 +508,35 @@ class UpazilaSeeder extends Seeder
             array('id' => '491','district_id' => '64','name' => 'Netrokona Sadar','bn_name' => 'নেত্রকোণা সদর','url' => 'netrokonasadar.netrokona.gov.bd')
         );
 
-        foreach ($upazilas as $upazila) {
-            GeoUpazillas::create($upazila);
+        $transformedArray = [];
+
+        foreach ($upazilas as $item) {
+            // Extract relevant fields and modify as needed
+            $transformedItem = [
+                'id' => intval($item['id']), // Convert id to integer if needed
+
+                'geo_district_id' => $item['district_id'],
+                'upazila_name_eng' => $item['name'], // Example: Using 'name' as English district name
+                'upazila_name_bng' => $item['bn_name'], // Example: Using 'bn_name' as Bengali district name
+                'status' => true, // Example: Set a default status
+                'created_by' => null, // Example: Default value for 'created_by'
+                'modified_by' => null, // Example: Default value for 'modified_by'
+            ];
+
+            // Add the transformed item to the new array
+            $transformedArray[] = $transformedItem;
         }
+        try {
+            foreach ($transformedArray as $data) {
+                GeoUpazillas::create($data);
+            }
+
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during insertion
+            $this->command->error("Error inserting data: " . $e->getMessage());
+        }
+        $this->command->info('Upozilla seeded successfully!');
+
 
     }
 }

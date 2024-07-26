@@ -23,8 +23,7 @@ class CreatePatientMedicalTestReportsTable extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created')->useCurrent();
-            $table->timestamp('modified')->nullable()->useCurrentOnUpdate();
+            $table->timestamps();
 
 
             $table->foreign('patient_medical_test_id')->references('id')->on('patient_medical_tests');

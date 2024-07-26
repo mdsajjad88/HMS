@@ -21,7 +21,8 @@ class CreateXFirstDivisionCodesTable extends Migration
             $table->datetime('created')->nullable();
             $table->integer('modified_by')->nullable();
             $table->datetime('modified')->nullable();
-            $table->timestamps(); // Adds created_at and updated_at columns
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

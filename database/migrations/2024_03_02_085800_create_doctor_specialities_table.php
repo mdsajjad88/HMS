@@ -20,11 +20,11 @@ class CreateDoctorSpecialitiesTable extends Migration
             $table->string('term_short_name')->nullable();
             $table->integer('year_of_experience')->nullable();
             $table->text('certifications')->nullable();
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->unsignedBigInteger('doctor_user_id')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints
             $table->foreign('doctor_profile_id')->references('id')->on('doctor_profiles')->onDelete('cascade');
             $table->foreign('doctor_user_id')->references('id')->on('users')->onDelete('set null');

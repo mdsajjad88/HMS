@@ -28,8 +28,7 @@ class CreatePatientReportsTable extends Migration
             $table->string('doctor_mobile', 20)->nullable();
             $table->string('doctor_address', 255)->nullable();
             $table->text('remarks')->nullable();
-            $table->dateTime('created');
-            $table->dateTime('modified');
+            $table->timestamps();
 
 
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers')->onDelete('cascade');

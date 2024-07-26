@@ -16,3 +16,60 @@
     padding: 1rem;
     border-bottom: 2px solid #e5e7eb;
 }
+#star
+{
+
+    color: red;
+}
+#reportCreteDesign
+{
+
+    padding: 20px;
+   margin-top: 10px;
+   margin-bottom: 10px;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+
+}
+/* Example CSS for styling DataTables buttons */
+.dt-buttons {
+    margin-bottom: 10px; /* Adjust spacing between buttons */
+}
+
+.buttons-copy, .buttons-pdf {
+    padding: 5px 10px; /* Adjust padding for button size */
+    font-size: 12px; /* Adjust font size */
+    background-color: #007bff; /* Example background color */
+    color: #fff; /* Text color */
+    border: none; /* Remove border if desired */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.buttons-copy:hover, .buttons-pdf:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+.buttons-copy,  .buttons-pdf {
+    padding: 3px 8px; /* Smaller padding */
+    font-size: 10px; /* Smaller font size */
+}
+/* Example CSS */
+.dataTables_wrapper {
+    margin-top: 20px;
+}
+
+.dataTables_filter input {
+    width: 300px;
+    margin-bottom: 10px;
+}
+#improvementSection{
+    display: flex;
+}
+#first_visite{
+    display: none;
+}
+.form-label
+{
+    text-align: left;
+    width: 220px;
+}
+

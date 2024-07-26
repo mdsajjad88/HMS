@@ -24,8 +24,7 @@ class CreateOrganizationGalleriesTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created')->nullable();
-            $table->timestamp('modified')->useCurrent();
+            $table->timestamps();
 
             // Foreign key constraints (if needed)
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');

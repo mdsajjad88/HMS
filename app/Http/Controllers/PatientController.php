@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\DoctorProfile;
+use App\Models\GeoDistricts;
+use App\Models\GeoUpazillas;
 use Illuminate\Http\Request;
 use App\Models\PatientProfile;
 use App\Models\PatientUser;
+use App\Models\Problem;
 use finfo;
 use Illuminate\Support\Facades\Auth;
 use  Illuminate\Support\Facades\Validator;
@@ -29,6 +32,9 @@ class PatientController extends Controller
                     $btn .= ' </i><a  data-id="'.$row->id.'" class="deletePatient btn btn-danger btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
                     return $btn;
                 })
+                ->addColumn('district_name', function($data) {
+                    return $data->district->district_name_eng; // Example: Accessing patient's first name
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -41,7 +47,8 @@ class PatientController extends Controller
      */
     public function create()
     {
-        return view('patient.add');
+        $districts = GeoDistricts::orderBy('district_name_eng', 'ASC')->get();
+        return view('patient.add', compact('districts'));
     }
 
     /**
@@ -51,11 +58,12 @@ class PatientController extends Controller
     {
       $validatedData =  $request->validate([
             'first_name' => 'required|string',
-            'last_name' => 'nullable|string',
-            'email' => 'required|email',
+            'last_name' => 'required|string',
+            'email' => 'nullable|email',
             'mobile' => 'required|digits:11|numeric',
             'gender' => 'required|in:Male,Female,Other',
             'date_of_birth' => 'required|date',
+            'age' => 'required|integer',
             'nid' => 'nullable|string',
             'marital_status' => 'required|in:Married,Unmarried,Other',
             'height_cm' => 'required|string',
@@ -65,8 +73,10 @@ class PatientController extends Controller
             'emergency_relation' => 'nullable|string',
             'discount' => 'nullable|string',
             'address' => 'required|string',
-            'city' => 'required|string',
-            'state' => 'required|string',
+            'geo_district_id' => 'required',
+            'geo_upazila_id' => 'required',
+            'profession' => 'nullable|string',
+            'referral' => 'nullable|string',
         ]);
         $patientUser = new PatientUser();
         $patientUser->username = $request->input('first_name').$request->input('last_name');
@@ -80,12 +90,16 @@ class PatientController extends Controller
         // Now create a new PatientProfile and associate it with the PatientUser
         $patientProfile = new PatientProfile();
         $patientProfile->patient_user_id = $patientUserId; // Assign patient_user_id
+        $patientProfile->created_by = Auth::user()->id; // Assign patient_user_id
         $patientProfile->created = now(); // Assign patient_user_id
         $patientProfile->modified = now(); // Assign patient_user_id
+        $patientProfile->geo_district_id = $validatedData['geo_district_id']; // Assign patient_user_id
+        $patientProfile->geo_upazila_id = $validatedData['geo_upazila_id']; // Assign patient_user_id
+
         $patientProfile->fill($validatedData); // Fill other validated data
 
         if($patientProfile->save()){
-            return response()->json(['success'=>'Patient Added successfully.']);
+            return response()->json(['success'=>$patientProfile]);
         }
         else{
             return response()->json(['error'=>'Something wrong please try again.']);
@@ -106,8 +120,9 @@ class PatientController extends Controller
      */
     public function edit(string $id)
     {
-
-        return view('patient.edit', compact('id'));
+        $districts= GeoDistricts::all();
+        $states= GeoUpazillas::all();
+        return view('patient.edit', compact('id', 'states', 'districts'));
     }
     public function  getOnePatient($id){
         $patient = PatientProfile::find($id);
@@ -120,11 +135,12 @@ class PatientController extends Controller
     {
         $validatedData =  Validator::make($request->all(), [
             'first_name' => 'required|string',
-            'last_name' => 'nullable|string',
-            'email' => 'required|email',
+            'last_name' => 'required|string',
+            'email' => 'nullable|email',
             'mobile' => 'required|digits:11|numeric',
             'gender' => 'required|in:Male,Female,Other',
             'date_of_birth' => 'required|date',
+            'age' => 'required|integer',
             'nid' => 'nullable|string',
             'marital_status' => 'required|in:Married,Unmarried,Other',
             'height_cm' => 'required|string',
@@ -134,8 +150,8 @@ class PatientController extends Controller
             'emergency_relation' => 'nullable|string',
             'discount' => 'nullable|string',
             'address' => 'required|string',
-            'city' => 'required|string',
-            'state' => 'required|string',
+            'profession' => 'nullable|string',
+            'referral' => 'nullable|string',
         ]);
 
 
@@ -145,6 +161,7 @@ class PatientController extends Controller
         $id = $request->input('id');
         // Find the doctor profile to update
         $doctorProfile = PatientProfile::findOrFail($id);
+
         // Update profile fields
         $doctorProfile->fill($request->all());
         try {
@@ -169,4 +186,9 @@ class PatientController extends Controller
          // Optionally, you can redirect back with a success message
          return response()->json(['success', 'Patient deleted successfully!']);
     }
+    public function  upozilla($id){
+        $states = GeoUpazillas::where('geo_district_id', $id)->orderBy('upazila_name_eng', 'ASC')->get();
+        return response()->json($states);
+    }
+
 }

@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\DoctorProfile;
 use App\Models\User;
 use App\Models\PatientProfile;
+use App\Models\ReportAndProblem;
+use App\Models\ReviewReport;
+use App\Models\Problem;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Carbon;
 class DoctorController extends Controller
 {
     public function index(){
@@ -53,6 +57,7 @@ class DoctorController extends Controller
                 // Now create a new PatientProfile and associate it with the PatientUser
                 $doctorProfile = new DoctorProfile();
                 $doctorProfile->user_id  = $doctorID; // Assign patient_user_id
+                $doctorProfile->created_by   = Auth::user()->id; // Assign patient_user_id
                 $doctorProfile->fill($validatedata);
                 $doctorProfile->save();
                 return response()->json(['success' => true]);
@@ -64,6 +69,7 @@ class DoctorController extends Controller
                     ->addColumn('action', function($row){
                         $btn = '<a  data-id="'.$row->id.'" class="editDoctor btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
                         $btn .= ' <a  data-id="'.$row->id.'" class="deleteDoctor btn btn-danger btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                        $btn .= ' <a  data-id="'.$row->id.'" class="viewDoctor btn btn-info btn-sm"><i class="fa-regular fa-eye"></i>View</a>';
                         return $btn;
                     })
                     ->rawColumns(['action'])
@@ -103,14 +109,8 @@ class DoctorController extends Controller
 
         // Find the doctor profile to update
         $doctorProfile = DoctorProfile::findOrFail($id);
-
-        // Update profile fields
         $doctorProfile->fill($request->all());
 
-
-
-
-        // Save the updated doctor profile
         try {
             $doctorProfile->save();
             return response()->json(['success' => 'Doctor profile updated successfully.', 'doctor' => $doctorProfile], 200);
@@ -128,6 +128,146 @@ class DoctorController extends Controller
 
          // Optionally, you can redirect back with a success message
          return response()->json(['success', 'Doctor deleted successfully!']);
+    }
+    public function view($id, $days){
+        if($days == "1"){
+
+            $currentDate = Carbon::now();
+            $startDate = $currentDate->startOfMonth()->format("Y-m-d");
+            $endDate = $currentDate->endOfMonth()->format("Y-m-d");
+
+
+            // $startDate = Carbon::now()->subDays($days);
+            $doctor = DoctorProfile::find($id);
+            $doctorID = $doctor->user_id;
+
+            $no_of_test = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_test');
+            $no_of_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_medicine');
+            $no_of_ozone_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_ozone_therapy');
+            $no_of_hijama_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_hijama_therapy');
+            $on_of_acupuncture = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('on_of_acupuncture');
+            $no_of_sauna = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_sauna');
+            $no_of_physiotherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_physiotherapy');
+            $no_of_coffee_anema = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_coffee_anema');
+            $no_of_phototherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_phototherapy');
+            $bd_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('bd_medicine');
+            $us_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('us_medicine');
+            $total_patient = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->distinct('patient_user_id')->count('patient_user_id');
+            $problemIds = ReviewReport::where('doctor_user_id', $doctorID)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->pluck('id');
+            $totalProblems = ReportAndProblem::whereIn('review_report_id', $problemIds)->count('review_report_id');
+            $problems = ReportAndProblem::whereIn('review_report_id', $problemIds)->get();
+
+
+        }
+        if($days == "previous"){
+            $startDate = Carbon::now()->subMonth()->startOfMonth()->format("Y-m-d");
+            $endDate = Carbon::now()->subMonth()->endOfMonth()->format("Y-m-d");
+
+            // $startDate = Carbon::now()->subDays($days);
+            $doctor = DoctorProfile::find($id);
+            $doctorID = $doctor->user_id;
+
+            $no_of_test = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_test');
+            $no_of_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_medicine');
+            $no_of_ozone_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_ozone_therapy');
+            $no_of_hijama_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_hijama_therapy');
+            $on_of_acupuncture = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('on_of_acupuncture');
+            $no_of_sauna = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_sauna');
+            $no_of_physiotherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_physiotherapy');
+            $no_of_coffee_anema = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_coffee_anema');
+            $no_of_phototherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_phototherapy');
+            $bd_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('bd_medicine');
+            $us_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('us_medicine');
+            $total_patient = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->distinct('patient_user_id')->count('patient_user_id');
+            $problemIds = ReviewReport::where('doctor_user_id', $doctorID)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->pluck('id');
+            $totalProblems = ReportAndProblem::whereIn('review_report_id', $problemIds)->count('problem_id');
+            $problems = ReportAndProblem::whereIn('review_report_id', $problemIds)->get();
+        }
+        elseif($days == "6"){
+            $startDate = Carbon::now()->subMonth(6)->format("Y-m-d");
+            $endDate = Carbon::now()->format("Y-m-d");
+
+            // $startDate = Carbon::now()->subDays($days);
+            $doctor = DoctorProfile::find($id);
+            $doctorID = $doctor->user_id;
+
+            $no_of_test = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_test');
+            $no_of_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_medicine');
+            $no_of_ozone_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_ozone_therapy');
+            $no_of_hijama_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_hijama_therapy');
+            $on_of_acupuncture = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('on_of_acupuncture');
+            $no_of_sauna = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_sauna');
+            $no_of_physiotherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_physiotherapy');
+            $no_of_coffee_anema = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_coffee_anema');
+            $no_of_phototherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_phototherapy');
+            $bd_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('bd_medicine');
+            $us_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('us_medicine');
+            $total_patient = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->distinct('patient_user_id')->count('patient_user_id');
+            $problemIds = ReviewReport::where('doctor_user_id', $doctorID)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->pluck('id');
+            $totalProblems = ReportAndProblem::whereIn('review_report_id', $problemIds)->count('problem_id');
+            $problems = ReportAndProblem::whereIn('review_report_id', $problemIds)->get();
+        }
+        elseif($days == "12"){
+            $startDate = Carbon::now()->subYear()->format("Y-m-d");
+            $endDate = Carbon::now()->format("Y-m-d");
+
+            // $startDate = Carbon::now()->subDays($days);
+            $doctor = DoctorProfile::find($id);
+            $doctorID = $doctor->user_id;
+
+            $no_of_test = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_test');
+            $no_of_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_medicine');
+            $no_of_ozone_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_ozone_therapy');
+            $no_of_hijama_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_hijama_therapy');
+            $on_of_acupuncture = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('on_of_acupuncture');
+            $no_of_sauna = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_sauna');
+            $no_of_physiotherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_physiotherapy');
+            $no_of_coffee_anema = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_coffee_anema');
+            $no_of_phototherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_phototherapy');
+            $bd_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('bd_medicine');
+            $us_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('us_medicine');
+            $total_patient = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->distinct('patient_user_id')->count('patient_user_id');
+            $problemIds = ReviewReport::where('doctor_user_id', $doctorID)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->pluck('id');
+            $totalProblems = ReportAndProblem::whereIn('review_report_id', $problemIds)->count('problem_id');
+            $problems = ReportAndProblem::whereIn('review_report_id', $problemIds)->get();
+
+        }
+        elseif($days == "all"){
+            $startDate = '2024-07-26';
+            $endDate = Carbon::now()->format("Y-m-d");
+            // $startDate = Carbon::now()->subDays($days);
+            $doctor = DoctorProfile::find($id);
+            $doctorID = $doctor->user_id;
+
+            $no_of_test = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_test');
+            $no_of_medicine = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_medicine');
+            $no_of_ozone_therapy = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_ozone_therapy');
+            $no_of_hijama_therapy = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_hijama_therapy');
+            $on_of_acupuncture = ReviewReport::where('doctor_user_id', $doctorID)->sum('on_of_acupuncture');
+            $no_of_sauna = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_sauna');
+            $no_of_physiotherapy = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_physiotherapy');
+            $no_of_coffee_anema = ReviewReport::where('doctor_user_id', $doctorID)->sum('no_of_coffee_anema');
+            $no_of_phototherapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('no_of_phototherapy');
+            $bd_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('bd_medicine');
+            $us_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->sum('us_medicine');
+            $total_patient = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('created_at', [$startDate, $endDate])->distinct('patient_user_id')->count('patient_user_id');
+            $problemIds = ReviewReport::where('doctor_user_id', $doctorID)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->pluck('id');
+            $totalProblems = ReportAndProblem::whereIn('review_report_id', $problemIds)->count('problem_id');
+            $problems = ReportAndProblem::whereIn('review_report_id', $problemIds)->get();
+
+        }
+        $allProblems = Problem::all();
+        return view('doctor.view', compact('no_of_test', 'no_of_medicine', 'no_of_ozone_therapy', 'no_of_hijama_therapy', 'on_of_acupuncture', 'no_of_sauna', 'no_of_physiotherapy', 'no_of_coffee_anema','no_of_phototherapy',  'id', 'days', 'doctor', 'startDate', 'endDate', 'total_patient', 'bd_medicine', 'us_medicine', 'totalProblems', 'problems', 'allProblems'));
     }
 
 }

@@ -24,6 +24,7 @@ class CreatePatientProfilesTable extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('nid', 31)->nullable();
             $table->string('disease_id', 191)->nullable();
+            $table->integer('age')->nullable();
             $table->integer('created_by')->nullable();
             $table->datetime('created');
             $table->integer('modified_by')->nullable();
@@ -70,8 +71,14 @@ class CreatePatientProfilesTable extends Migration
             $table->string('marketing_source_by', 50)->nullable();
             $table->string('marketing_source', 255)->nullable();
             $table->string('agent_code_number', 255)->nullable();
+            $table->unsignedBigInteger('geo_division_id')->nullable();
+            $table->unsignedBigInteger('geo_district_id')->nullable();
+            $table->unsignedBigInteger('geo_upazila_id')->nullable();
             $table->timestamps();
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('cascade');
+            $table->foreign('geo_division_id')->references('id')->on('geo_districts')->onDelete('cascade');
+            $table->foreign('geo_district_id')->references('id')->on('geo_districts')->onDelete('cascade');
+            $table->foreign('geo_upazila_id')->references('id')->on('geo_upazilas')->onDelete('cascade');
         });
     }
 

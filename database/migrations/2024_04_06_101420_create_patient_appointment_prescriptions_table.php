@@ -36,8 +36,7 @@ class CreatePatientAppointmentPrescriptionsTable extends Migration
             $table->json('patient_medications')->nullable();
             $table->text('patient_diagnostics')->nullable();
             $table->text('remarks')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers')->name('fk_prescriptions_doctor_chamber');
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->name('fk_prescriptions_org_profile');

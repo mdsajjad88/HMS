@@ -25,9 +25,10 @@ class CreateDoctorChambersTable extends Migration
             $table->date('chamber_end_date')->nullable();
             $table->boolean('active_status')->default(true);
             $table->json('chamber_configurations')->nullable();
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('doctor_profile_id')->references('id')->on('doctor_profiles')->onDelete('cascade');

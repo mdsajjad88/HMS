@@ -24,10 +24,10 @@ class CreateSelfRegistrationEntitiesTable extends Migration
             $table->tinyInteger('is_verified')->nullable();
             $table->dateTime('verification_date')->nullable();
             $table->text('user_agent')->nullable();
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('modified_by')->references('id')->on('users');
         });

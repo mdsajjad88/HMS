@@ -24,8 +24,7 @@ class CreatePatientMedicalTestMappingsTable extends Migration
             $table->double('price', 8, 2)->default(0.00);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->dateTime('created')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->dateTime('modified')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             // Indexes or Foreign key constraints if needed
             $table->foreign('patient_medical_test_id')->references('id')->on('patient_medical_tests');

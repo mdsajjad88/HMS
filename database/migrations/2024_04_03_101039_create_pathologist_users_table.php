@@ -21,10 +21,10 @@ class CreatePathologistUsersTable extends Migration
             $table->tinyInteger('change_password')->default(0);
             $table->tinyInteger('active')->default(0);
             $table->string('user_body', 255)->nullable();
-            $table->datetime('created')->nullable();
-            $table->datetime('modified')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('modified_by')->references('id')->on('users')->onDelete('cascade');
             // Additional index or unique constraints if needed

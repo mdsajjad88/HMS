@@ -11,6 +11,6 @@ class PatientUser extends Model
     protected $table = 'patient_users';
     protected $fillable = [
         'username', 'password', 'change_password', 'active', 'user_body',
-        'created_by', 'modified_by'
+        'created_by', 'modified_by','id'
     ];
 }

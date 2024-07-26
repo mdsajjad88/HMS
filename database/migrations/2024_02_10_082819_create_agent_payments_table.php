@@ -30,8 +30,8 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created')->nullable();
-            $table->timestamp('modified')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             // Foreign key constraints
              $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');

@@ -70,10 +70,10 @@ class CreateOrganizationProfilesTable extends Migration
             $table->text('sanctioned_vehicles')->nullable();
             $table->text('sanctioned_office_equipments')->nullable();
             $table->json('business_time')->nullable();
-            $table->timestamp('created')->nullable();
-            $table->timestamp('modified')->nullable()->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             // Foreign key constraints (if needed)
              $table->foreign('x_agency_id')->references('id')->on('x_agencies')->onDelete('set null');

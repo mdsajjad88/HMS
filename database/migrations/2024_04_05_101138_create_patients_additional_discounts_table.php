@@ -25,8 +25,7 @@ class CreatePatientsAdditionalDiscountsTable extends Migration
             $table->tinyInteger('is_application')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->timestamps();
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('cascade');
             $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');

@@ -21,7 +21,8 @@ class CreateXAgenciesTable extends Migration
             $table->datetime('modified')->nullable(false); // Set as not nullable
             $table->integer('created_by')->nullable();
             $table->integer('modified_by')->nullable();
-            $table->timestamps(); // Adds created_at and updated_at columns
+            $table->timestamps();
+            $table->softDeletes(); // Adds created_at and updated_at columns
         });
     }
 

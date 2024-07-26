@@ -19,9 +19,7 @@ class CreateMemoNotesTable extends Migration
             $table->text('content');
             $table->unsignedBigInteger('user_id');
             $table->longText('edit_history')->nullable();
-            $table->dateTime('created')->default(now()); // Use Laravel's `now()` helper
-            $table->dateTime('modified')->nullable()->default(null); // Default should be `null` for `modified`
-
+            $table->timestamps();
             // Define foreign key constraints
             // Uncomment and adjust if you have foreign keys defined
             $table->foreign('memo_id')->references('id')->on('memos')->onDelete('cascade');

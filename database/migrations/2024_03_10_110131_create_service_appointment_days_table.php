@@ -21,11 +21,10 @@ class CreateServiceAppointmentDaysTable extends Migration
             $table->json('business_operating_hours')->nullable();
             $table->string('remarks', 255)->nullable();
             $table->tinyInteger('active_status');
-            $table->dateTime('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->dateTime('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('modified_by')->references('id')->on('users')->onDelete('cascade');

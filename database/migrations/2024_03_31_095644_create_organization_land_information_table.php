@@ -25,10 +25,10 @@ class CreateOrganizationLandInformationTable extends Migration
             $table->text('khatian')->nullable();
             $table->text('mutation_info')->nullable();
             $table->text('other')->nullable();
-            $table->timestamp('created')->nullable();
-            $table->timestamp('modified')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
 
             // Foreign key constraints (if needed)
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');

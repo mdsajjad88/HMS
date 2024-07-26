@@ -22,11 +22,10 @@ class CreateOrganizationFileUploadsTable extends Migration
             $table->string('document_title', 255)->nullable();
             $table->text('document_desciption')->nullable();
             $table->tinyInteger('is_public');
-            $table->dateTime('created')->nullable();
-            $table->dateTime('modified')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints (if needed)
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');
             $table->foreign('x_organization_type_id')->references('id')->on('x_organization_types')->onDelete('cascade');

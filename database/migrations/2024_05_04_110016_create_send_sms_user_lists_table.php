@@ -23,8 +23,7 @@ class CreateSendSmsUserListsTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->string('helped_by', 255)->nullable();
-            $table->dateTime('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->dateTime('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles');
             $table->foreign('created_by')->references('id')->on('users');

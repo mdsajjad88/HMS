@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MedicalTest extends Model
 {
     use SoftDeletes, HasFactory;
+    protected $table = 'medical_tests';
 
     protected $fillable = [
         'organization_profile_id', 'name', 'types', 'description', 'price',

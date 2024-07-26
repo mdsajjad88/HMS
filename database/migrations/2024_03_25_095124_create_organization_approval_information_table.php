@@ -21,11 +21,11 @@ class CreateOrganizationApprovalInformationTable extends Migration
             $table->string('permission_authority', 255)->nullable();
             $table->string('license_number', 50)->nullable();
             $table->text('permission_conditions')->nullable();
-            $table->dateTime('created')->nullable();
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->dateTime('modified')->nullable();
-            $table->unsignedBigInteger('modified_by')->nullable();
 
+            $table->unsignedBigInteger('created_by')->nullable();
+
+            $table->unsignedBigInteger('modified_by')->nullable();
+            $table->timestamps();
             // Foreign key constraints
             $table->foreign('organization_profile_id', 'fk_org_approval_org_profile')
                   ->references('id')

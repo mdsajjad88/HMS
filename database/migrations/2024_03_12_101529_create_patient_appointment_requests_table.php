@@ -37,8 +37,7 @@ class CreatePatientAppointmentRequestsTable extends Migration
             $table->string('created_name')->nullable();
             $table->integer('modified_by')->default(0);
             $table->string('helped_by')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+           
             $table->string('appointment_number', 20)->nullable();
             $table->text('change_history')->nullable();
             $table->string('reference_link', 511)->nullable();
@@ -61,7 +60,7 @@ class CreatePatientAppointmentRequestsTable extends Migration
             $table->string('bill_no', 20)->nullable();
             $table->unsignedBigInteger('service_appointment_slot_id')->nullable();
             $table->unsignedBigInteger('service_appointment_day_id')->nullable();
-
+            $table->timestamps();
 
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers');
             $table->foreign('reference_doctor_id')->references('id')->on('doctor_profiles');

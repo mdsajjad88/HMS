@@ -31,11 +31,12 @@ class CreateDoctorAppointmentSlotsTable extends Migration
             $table->integer('slot_booked')->default(0);
             $table->boolean('slot_active')->default(true);
             $table->text('remarks')->nullable();
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->integer('slot_duration')->nullable();
             $table->unsignedBigInteger('doctor_appointment_day_id')->nullable();
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers')->onDelete('cascade');

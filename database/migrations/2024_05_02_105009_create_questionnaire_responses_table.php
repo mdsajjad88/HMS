@@ -21,10 +21,9 @@ class CreateQuestionnaireResponsesTable extends Migration
             $table->unsignedBigInteger('patient_appointment_request_id')->nullable();
             $table->unsignedBigInteger('patient_user_id')->nullable();
             $table->json('response')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
-            $table->longText('html_response')->nullable();
 
+            $table->longText('html_response')->nullable();
+            $table->timestamps();
             // Foreign key constraints
             $table->foreign('questionnaire_template_id')->references('id')->on('questionnaire_templates');
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles');

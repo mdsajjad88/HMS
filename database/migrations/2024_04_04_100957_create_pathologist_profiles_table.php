@@ -33,7 +33,7 @@ class CreatePathologistProfilesTable extends Migration
             $table->integer('nid')->nullable();
             $table->string('blood_group', 255)->nullable();
             $table->string('address', 255)->nullable();
-
+            $table->timestamps();
             // Foreign key constraints (if needed)
             $table->foreign('pathologist_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('geo_division_id')->references('id')->on('geo_divisions')->onDelete('cascade');
@@ -42,7 +42,7 @@ class CreatePathologistProfilesTable extends Migration
             // Adjust the table names ('users') as per your actual table names
 
             // Timestamps for tracking
-            $table->timestamps(); // Uncomment if you want Laravel to manage created_at and updated_at columns
+           
         });
     }
 

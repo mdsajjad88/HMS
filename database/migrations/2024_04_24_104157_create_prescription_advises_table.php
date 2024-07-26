@@ -18,9 +18,10 @@ class CreatePrescriptionAdvisesTable extends Migration
             $table->unsignedBigInteger('prescription_id')->nullable();
             $table->text('advise_name');
             $table->tinyInteger('is_natural')->default(0);
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->default(0);
             $table->unsignedBigInteger('modified_by')->default(0);
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('prescription_id')->references('id')->on('prescriptions')

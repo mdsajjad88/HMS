@@ -15,9 +15,9 @@ class CreateGeoCityCorporationWardsTable extends Migration
     {
         Schema::create('geo_city_corporation_wards', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('geo_division_id');
-            $table->unsignedBigInteger('geo_district_id');
-            $table->unsignedBigInteger('geo_city_corporation_id');
+            $table->unsignedBigInteger('geo_division_id')->nullable();
+            $table->unsignedBigInteger('geo_district_id')->nullable();
+            $table->unsignedBigInteger('geo_city_corporation_id')->nullable();
             $table->string('division_bbs_code')->nullable();
             $table->string('district_bbs_code')->nullable();
             $table->string('city_corporation_bbs_code')->nullable();

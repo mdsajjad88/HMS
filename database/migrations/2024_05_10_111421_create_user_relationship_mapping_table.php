@@ -18,11 +18,10 @@ class CreateUserRelationshipMappingTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('relationship_user_id')->nullable();
             $table->unsignedBigInteger('x_relationship_id')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints if needed
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('relationship_user_id')->references('id')->on('users');

@@ -21,8 +21,7 @@ class CreateMedicineUsageTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->string('helped_by', 191)->nullable();
-            $table->timestamp('created')->nullable()->useCurrent();
-            $table->timestamp('modified')->nullable()->useCurrent();
+            $table->timestamps();
 
             // Foreign key constraints (if needed)
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');

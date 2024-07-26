@@ -2,27 +2,92 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use App\Models\GeoDivisions;
+use App\Models\GeoDivisions; // Import your GeoDivisions model
+
 class DivisionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        $divisions = array(
-            array('id' => '1','name' => 'Chattagram','bn_name' => 'চট্টগ্রাম','url' => 'www.chittagongdiv.gov.bd'),
-            array('id' => '2','name' => 'Rajshahi','bn_name' => 'রাজশাহী','url' => 'www.rajshahidiv.gov.bd'),
-            array('id' => '3','name' => 'Khulna','bn_name' => 'খুলনা','url' => 'www.khulnadiv.gov.bd'),
-            array('id' => '4','name' => 'Barisal','bn_name' => 'বরিশাল','url' => 'www.barisaldiv.gov.bd'),
-            array('id' => '5','name' => 'Sylhet','bn_name' => 'সিলেট','url' => 'www.sylhetdiv.gov.bd'),
-            array('id' => '6','name' => 'Dhaka','bn_name' => 'ঢাকা','url' => 'www.dhakadiv.gov.bd'),
-            array('id' => '7','name' => 'Rangpur','bn_name' => 'রংপুর','url' => 'www.rangpurdiv.gov.bd'),
-            array('id' => '8','name' => 'Mymensingh','bn_name' => 'ময়মনসিংহ','url' => 'www.mymensinghdiv.gov.bd')
-        );
+        $divisions = [
+            [
+                'id' => 1,
+                'division_name_eng' => 'Chattagram',
+                'division_name_bng' => 'চট্টগ্রাম',
+                'bbs_code' => 'CHT',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 2,
+                'division_name_eng' => 'Rajshahi',
+                'division_name_bng' => 'রাজশাহী',
+                'bbs_code' => 'RAJ',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 3,
+                'division_name_eng' => 'Khulna',
+                'division_name_bng' => 'খুলনা',
+                'bbs_code' => 'KHL',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 4,
+                'division_name_eng' => 'Barisal',
+                'division_name_bng' => 'বরিশাল',
+                'bbs_code' => 'BAR',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 5,
+                'division_name_eng' => 'Sylhet',
+                'division_name_bng' => 'সিলেট',
+                'bbs_code' => 'SYL',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 6,
+                'division_name_eng' => 'Dhaka',
+                'division_name_bng' => 'ঢাকা',
+                'bbs_code' => 'DHK',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 7,
+                'division_name_eng' => 'Rangpur',
+                'division_name_bng' => 'রংপুর',
+                'bbs_code' => 'RNG',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+            [
+                'id' => 8,
+                'division_name_eng' => 'Mymensingh',
+                'division_name_bng' => 'ময়মনসিংহ',
+                'bbs_code' => 'MYM',
+                'status' => true,
+                'created_by' => null,
+                'modified_by' => null,
+            ],
+        ];
 
         foreach ($divisions as $division) {
             GeoDivisions::create($division);

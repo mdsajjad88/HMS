@@ -42,6 +42,10 @@
                         <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
                     </div>
                     <div class="form-group col-md-6">
+                        <label for="age">Age</label>
+                        <input type="number" class="form-control" id="age" name="age" required>
+                    </div>
+                    <div class="form-group col-md-6">
                         <label for="nid">National ID</label>
                         <input type="text" class="form-control" id="nid" name="nid">
                     </div>
@@ -87,39 +91,37 @@
                         <input type="text" class="form-control" id="emergency_relation" name="emergency_relation">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="discount">Discoutn</label>
-                        <input type="number" class="form-control" id="discount" name="discount">
+                        <label for="discount">Discount</label>
+                        <input type="number" class="form-control" id="discount" name="discount" placeholder="if Discount have">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="referral">Reference</label>
+                        <input type="text" class="form-control" id="referral" name="referral" placeholder="If anyone Reference">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="profession">Profession</label>
+                        <input type="text" class="form-control" id="profession" name="profession" placeholder="Patient profession">
                     </div>
                     <div class="form-group col-md-6" >
                         <label for="address">Address</label>
                         <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" required></textarea>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="city">City</label>
-                        <select class="form-control" id="city" name="city" required>
-                            <option value="">Select District</option>
-                            <option value="A+">A+</option>
-                            <option value="B+">B+</option>
-                            <option value="AB+">AB+</option>
-                            <option value="O+">O+</option>
-                            <option value="A-">A-</option>
-                            <option value="B-">B-</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O-">O-</option>
+                        <label for="geo_district_id">City<span id="star">*</span></label>
+                        <select class="form-control edit_geo_district" id="geo_district_id" name="geo_district_id" required>
+                          <option value="" selected disabled>Select City</option>
+                          @foreach ($districts as $city)
+                          <option value="{{$city->id}}" >{{$city->district_name_eng}}</option>
+                          @endforeach
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="state">State</label>
-                        <select class="form-control" id="state" name="state" required>
-                            <option value="">Select blood group</option>
-                            <option value="A+">A+</option>
-                            <option value="B+">B+</option>
-                            <option value="AB+">AB+</option>
-                            <option value="O+">O+</option>
-                            <option value="A-">A-</option>
-                            <option value="B-">B-</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O-">O-</option>
+                        <label for="geo_upazila_id ">State<span id="star">*</span></label>
+                        <select class="form-control edit_geo_upozilla" id="geo_upazila_id" name="geo_upazila_id " required>
+                            <option value="" selected disabled>Select Upozilla</option>
+                            @foreach ($states as $state)
+                            <option value="{{$state->id}}" >{{$state->upazila_name_eng}}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -137,26 +139,6 @@
     $(document).ready(function(){
 
         var pId = '<?php echo $id ?>';
-
-        // $('#first_name').empty();
-        //             $('#last_name').empty();
-        //             $('#email').empty();
-        //             $('#mobile').empty();
-        //             $('#gender').empty();
-        //             $('#blood_group').empty();
-        //             $('#date_of_birth').empty();
-        //             $('#nid').empty();
-        //             $('#marital_status').empty();
-        //             $('#height_cm').empty();
-        //             $('#weight_kg').empty();
-        //             $('#address').empty();
-        //             $('#patientId').empty();
-        //             $('#emergency_phone').empty();
-        //             $('#emergency_relation').empty();
-        //             $('#discount').empty();
-        //             $('#city').empty();
-        //             $('#state').empty();
-
 
         $.ajax({
             url:'/getOnePatient/'+pId,
@@ -180,11 +162,11 @@
                     $('#emergency_phone').val(patient.emergency_phone);
                     $('#emergency_relation').val(patient.emergency_relation);
                     $('#discount').val(patient.discount);
-                    $('#city').val(patient.city);
-                    $('#state').val(patient.state);
-
-
-
+                    $('#geo_district_id').val(patient.geo_district_id);
+                    $('#geo_upazila_id').val(patient.geo_upazila_id );
+                    $('#age').val(patient.age);
+                    $('#referral').val(patient.referral);
+                    $('#profession').val(patient.profession);
             }
         })
         $('#updatePatient').off('submit').on('submit', function(e){
@@ -210,38 +192,63 @@
                         $('#closePatientEditModal').click();
                         $('#patientTable').DataTable().ajax.reload();
                     }
-                    if(respons.error){
-                        Swal.fire({
-                        icon: 'error',
-                        title: respons.error,
-                        timer: 3000 // 3 seconds
 
-                    });
-                    }
                 },
-                error: function(xhr, status, error) {
+
                 // Handle error response
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    // If validation errors exist, display them
-                    var errors = xhr.responseJSON.errors;
+                error: function(xhr, status, error) {
                     var errorMessage = '';
-
-                    for (var key in errors) {
-                        errorMessage += '- ' + errors[key].join('\n- ') + '\n'; // Accumulate error messages
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage += xhr.responseJSON.message;
+                    } else {
+                        errorMessage += status;
                     }
+
                     Swal.fire({
-                        icon: 'error',
-                        title: errorMessage,
-                        timer: 3000 // 3 seconds
+                                icon: 'error',
+                                title: 'Opps',
+                                text: errorMessage,
+                                confirmButtonText: 'OK',
 
-                    });
+                            });
+                    }
 
-                } else {
-
-                }
-                return false;
-                }
             });
         })
+        $('.edit_geo_district ').on('change', function(){
+       var id = $(this).val();
+       $.ajax({
+        url: '/getupozilla/'+id,
+        type: 'GET',
+        success: function (response) {
+                    $('.edit_geo_upozilla ').empty();
+                    $('.edit_geo_upozilla ').append(
+                        '<option disabled selected>Select Upozilla</option>');
+                    $.each(response, function (index, area) {
+                        $('.edit_geo_upozilla ').append('<option value="' + area.id + '">' +
+                            area.upazila_name_eng + '</option>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        var errors = xhr.responseJSON.errors;
+                        var errorMessage = '';
+                        for (var key in errors) {
+                            errorMessage += errors[key].join('<br>');
+                            Swal.fire({
+                            icon: "error",
+                            title: 'Opps! Failed',
+                            text: errorMessage,
+                            confirmButtonText: 'OK',
+                            })
+                        return false;
+                        }
+
+                    }
+                }
+       })
+    });
      })
 </script>
+

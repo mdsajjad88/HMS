@@ -31,8 +31,7 @@ class CreatePatientMedicalTestsTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->string('helped_by', 255)->nullable();
-            $table->timestamp('created')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('modified')->nullable()->default(null);
+            $table->timestamps();
 
             // Indexes or Foreign key constraints if needed
             $table->foreign('patient_user_id')->references('id')->on('patient_users');

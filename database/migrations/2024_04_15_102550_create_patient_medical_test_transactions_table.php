@@ -36,8 +36,7 @@ class CreatePatientMedicalTestTransactionsTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->string('helped_by', 191)->nullable()->default(null);
-            $table->timestamp('created')->useCurrent();
-            $table->timestamp('modified')->nullable()->useCurrentOnUpdate();
+            $table->timestamps();
 
             $table->foreign('patient_medical_test_id')->references('id')->on('patient_medical_tests')->name('fk_p_medi_test_in_test_transaction');
             $table->foreign('patient_user_id')->references('id')->on('patient_users');

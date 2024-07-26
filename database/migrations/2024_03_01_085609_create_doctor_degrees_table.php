@@ -20,11 +20,11 @@ class CreateDoctorDegreesTable extends Migration
             $table->string('degree_short_name')->nullable();
             $table->string('certification_place')->nullable();
             $table->date('certification_date')->nullable();
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->unsignedBigInteger('doctor_user_id')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints
             $table->foreign('doctor_profile_id')->references('id')->on('doctor_profiles')->onDelete('cascade');
             $table->foreign('doctor_user_id')->references('id')->on('users')->onDelete('set null');

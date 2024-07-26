@@ -18,8 +18,7 @@ class CreatePatientDiseasesTable extends Migration
             $table->unsignedBigInteger('patient_profile_id')->nullable();
             $table->unsignedBigInteger('disease_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->timestamp('created')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             // Foreign key constraints if needed
             $table->foreign('patient_profile_id')->references('id')->on('patient_profiles');

@@ -25,7 +25,8 @@ class CreatePatientUsersTable extends Migration
             $table->datetime('modified')->nullable();
             $table->bigInteger('created_by')->default(0);
             $table->bigInteger('modified_by')->default(0);
-            $table->timestamps(); // This will create `created_at` and `updated_at` columns
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

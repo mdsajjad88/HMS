@@ -24,8 +24,7 @@ class CreatePrescriptionProductsTable extends Migration
             $table->tinyInteger('is_natural')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created')->default(now());
-            $table->timestamp('modified')->default(now());
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('cascade')->onUpdate('cascade');

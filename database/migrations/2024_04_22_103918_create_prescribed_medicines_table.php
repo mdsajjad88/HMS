@@ -29,9 +29,10 @@ class CreatePrescribedMedicinesTable extends Migration
             $table->integer('medication_duration')->default(0)->comment('3/5/7 days');
             $table->text('other_instruction')->nullable();
             $table->tinyInteger('is_natural')->default(0);
-            $table->timestamps();
+
             $table->unsignedBigInteger('created_by')->default(0);
             $table->unsignedBigInteger('modified_by')->default(0);
+            $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('cascade');

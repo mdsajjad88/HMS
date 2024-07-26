@@ -16,22 +16,27 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('doctor')" :active="request()->routeIs('doctor')">
-                        {{ __('Doctor') }}
+                        {{ __('Doctor**') }}
                     </x-nav-link>
                     <x-nav-link :href="route('patient')" :active="request()->routeIs('patient')">
-                        {{ __('Patient') }}
+                        {{ __('Patient**') }}
                     </x-nav-link>
-                    <x-nav-link >
-                        {{ __('Medical Test') }}
+                    <x-nav-link :href="route('medical-report.index')" :active="request()->routeIs('medical-report.index')">
+                        {{ __('Patient Report**') }}
                     </x-nav-link>
-
-
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('medical-tests.index')" :active="request()->routeIs('medical-tests.index')">
                         {{ __('Medical Tests') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('patient-medical-tests.index')" :active="request()->routeIs('patient-medical-tests.index')">
+                        {{ __('Patient Medical Test') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('report.index')" :active="request()->routeIs('report.index')">
+                        {{ __('Report') }}
+                    </x-nav-link>
+
                 </div>
+
             </div>
 
             <!-- Settings Dropdown -->

@@ -19,7 +19,8 @@ class CreateClinicMenusClinicRolesTable extends Migration
 
             // Primary key
             $table->primary(['clinic_menu_id', 'clinic_role_id']);
-
+            $table->timestamps();
+           
             // Foreign key constraints
             $table->foreign('clinic_menu_id')->references('id')->on('clinic_menus')->onDelete('cascade');
             $table->foreign('clinic_role_id')->references('id')->on('clinic_roles')->onDelete('cascade');

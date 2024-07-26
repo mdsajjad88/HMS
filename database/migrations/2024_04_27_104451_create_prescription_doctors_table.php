@@ -25,11 +25,10 @@ class CreatePrescriptionDoctorsTable extends Migration
             $table->integer('send_to_doctor')->nullable();
             $table->dateTime('prescription_sending_date')->nullable();
             $table->tinyInteger('is_current')->default(0);
-            $table->dateTime('created')->default(now());
-            $table->dateTime('modified')->default(now());
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers')->onDelete('cascade')->onUpdate('cascade');

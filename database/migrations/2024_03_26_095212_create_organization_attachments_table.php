@@ -25,8 +25,7 @@ class CreateOrganizationAttachmentsTable extends Migration
             $table->tinyInteger('active_status')->default(1);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->dateTime('created')->nullable();
-            $table->dateTime('modified')->nullable();
+            $table->timestamps();
 
             // Foreign key constraints (if needed)
             $table->foreign('organization_profile_id')->references('id')->on('organization_profiles')->onDelete('cascade');

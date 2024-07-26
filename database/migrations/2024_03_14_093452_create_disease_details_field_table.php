@@ -27,8 +27,7 @@ class CreateDiseaseDetailsFieldTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-            $table->timestamp('created')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('modified')->nullable()->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             // Foreign key constraints if necessary
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');

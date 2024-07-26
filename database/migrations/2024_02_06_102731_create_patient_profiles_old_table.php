@@ -63,7 +63,8 @@ class CreatePatientProfilesOldTable extends Migration
             $table->string('city_alt', 255)->nullable();
             $table->string('state_alt', 255)->nullable();
             $table->string('post_code_alt', 255)->nullable();
-            // Add foreign key if needed
+            $table->timestamps();
+            $table->softDeletes();
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('cascade');
         });
     }

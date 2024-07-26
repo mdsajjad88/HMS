@@ -40,8 +40,7 @@ class CreatePatientAppointmentTransactionsTable extends Migration
             $table->integer('created_by')->default(0);
             $table->integer('modified_by')->default(0);
             $table->string('helped_by', 191)->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('doctor_chamber_id')->references('id')->on('doctor_chambers');

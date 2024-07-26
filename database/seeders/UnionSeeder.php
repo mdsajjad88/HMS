@@ -4556,9 +4556,34 @@ class UnionSeeder extends Seeder
             array('id' => '4539', 'upazila_id' => '491', 'name' => 'Medni', 'bn_name' => 'মেদনী', 'url' => 'medniup.netrokona.gov.bd'),
             array('id' => '4540', 'upazila_id' => '491', 'name' => 'Kaliara Babragati', 'bn_name' => 'কালিয়ারা গাবরাগাতি', 'url' => 'kaliaragabragatiup.netrokona.gov.bd')
         );
-        foreach ($unions as $union) {
-            GeoUnions::create($union);
+        $transformedArray = [];
+
+        foreach ($unions as $item) {
+            // Extract relevant fields and modify as needed
+            $transformedItem = [
+
+                'id' => intval($item['id']), // Convert id to integer if needed
+                'geo_upazila_id' => $item['upazila_id'],
+                'union_name_eng' => $item['name'], // Example: Using 'name' as English district name
+                'union_name_bng' => $item['bn_name'], // Example: Using 'bn_name' as Bengali district name
+                'status' => true, // Example: Set a default status
+                'created_by' => null, // Example: Default value for 'created_by'
+                'modified_by' => null, // Example: Default value for 'modified_by'
+            ];
+
+            // Add the transformed item to the new array
+            $transformedArray[] = $transformedItem;
         }
+        try {
+            foreach ($transformedArray as $data) {
+                GeoUnions::create($data);
+            }
+
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during insertion
+            $this->command->error("Error inserting data: " . $e->getMessage());
+        }
+        $this->command->info('Union seeded successfully!');
     }
 
 

@@ -18,12 +18,11 @@ class CreateOrganizationUserMappingTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('profile_id')->nullable();
             $table->unsignedBigInteger('organization_profile_id')->nullable();
-            $table->datetime('created')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->datetime('modified')->default(DB::raw('CURRENT_TIMESTAMP'));
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->unsignedBigInteger('user_role_id')->nullable();
-
+            $table->timestamps();
             // Foreign key constraints (if needed)
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
@@ -34,7 +33,7 @@ class CreateOrganizationUserMappingTable extends Migration
             // Adjust the table names ('users', 'profiles', 'organization_profiles', 'user_roles') as per your actual table names
 
             // Timestamps for tracking
-            $table->timestamps(); // Uncomment if you want Laravel to manage created_at and updated_at columns
+
         });
     }
 

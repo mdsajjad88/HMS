@@ -33,8 +33,7 @@ class CreateCallDetailsTable extends Migration
             $table->unsignedBigInteger('received_by')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->json('disease_data')->nullable();
-            $table->timestamp('created')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('modified')->nullable()->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             // Foreign key constraints if necessary
             $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('set null');

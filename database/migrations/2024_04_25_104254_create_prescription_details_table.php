@@ -22,11 +22,10 @@ class CreatePrescriptionDetailsTable extends Migration
             $table->text('doctor_lifestyle_advice')->nullable();
             $table->text('doctor_diet_advice')->nullable();
             $table->text('doctor_food_advice')->nullable();
-            $table->datetime('created')->default(now());
-            $table->datetime('modified')->default(now());
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
-
+            $table->timestamps();
             // Foreign key constraint
             $table->foreign('prescription_id')->references('id')->on('prescriptions')
                   ->onDelete('cascade')

@@ -32,6 +32,8 @@ class CreateProfilesTable extends Migration
             $table->string('blood_group')->nullable();
             $table->string('address')->nullable();
             $table->string('printable_name', 32)->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
