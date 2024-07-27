@@ -8,7 +8,6 @@
         <div class="row">
             <div class="col-md-11"></div>
             <div class="col-md-1">
-                {{-- <a  class="btn btn-success btn-sm m-1" id="createNewReport">Create New Report</a> --}}
                 <a href="{{url('create/medical/report')}}"  class="btn btn-dark btn-sm m-1" id="createNewReport"><i class="fa-solid fa-plus"></i>Add</a>
             </div>
         </div>
@@ -96,8 +95,9 @@
                 ],
                 dom: '<"row"<"col-md-4"l><"col-md-4"B><"col-md-4"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>', // Layout definition
                 buttons: [
-            'copy','csv','print', 'excel','pdf', // Buttons configuration
+            'copy','csv','print', 'excel','pdf' // Buttons configuration
         ],
+        order: [[0, 'desc']]
 
 
 

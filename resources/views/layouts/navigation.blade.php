@@ -16,15 +16,15 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('doctor')" :active="request()->routeIs('doctor')">
-                        {{ __('Doctor**') }}
+                        {{ __('Doctor') }}
                     </x-nav-link>
                     <x-nav-link :href="route('patient')" :active="request()->routeIs('patient')">
-                        {{ __('Patient**') }}
+                        {{ __('Patient') }}
                     </x-nav-link>
                     <x-nav-link :href="route('medical-report.index')" :active="request()->routeIs('medical-report.index')">
-                        {{ __('Patient Report**') }}
+                        {{ __('Patient Report') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('medical-tests.index')" :active="request()->routeIs('medical-tests.index')">
+                    {{-- <x-nav-link :href="route('medical-tests.index')" :active="request()->routeIs('medical-tests.index')">
                         {{ __('Medical Tests') }}
                     </x-nav-link>
 
@@ -33,7 +33,7 @@
                     </x-nav-link>
                     <x-nav-link :href="route('report.index')" :active="request()->routeIs('report.index')">
                         {{ __('Report') }}
-                    </x-nav-link>
+                    </x-nav-link> --}}
 
                 </div>
 

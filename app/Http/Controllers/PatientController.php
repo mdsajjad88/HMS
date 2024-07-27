@@ -29,7 +29,7 @@ class PatientController extends Controller
             return DataTables::of($data)
                 ->addColumn('action', function($row){
                     $btn = '<a  data-id="'.$row->id.'"  class="editPatient btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
-                    $btn .= ' </i><a  data-id="'.$row->id.'" class="deletePatient btn btn-danger btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                    $btn .= '<a  data-id="'.$row->id.'" class="deletePatient btn btn-danger ml-1 btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
                     return $btn;
                 })
                 ->addColumn('district_name', function($data) {
@@ -59,7 +59,7 @@ class PatientController extends Controller
       $validatedData =  $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'nullable|email',
+            'email' => 'nullable',
             'mobile' => 'required|digits:11|numeric',
             'gender' => 'required|in:Male,Female,Other',
             'date_of_birth' => 'required|date',
@@ -77,6 +77,10 @@ class PatientController extends Controller
             'geo_upazila_id' => 'required',
             'profession' => 'nullable|string',
             'referral' => 'nullable|string',
+            'is_regular' => 'nullable',
+            'is_subscriptions_3_months' => 'nullable',
+            'is_subscriptions_6_months' => 'nullable',
+            'patient_type_id' => 'nullable',
         ]);
         $patientUser = new PatientUser();
         $patientUser->username = $request->input('first_name').$request->input('last_name');
@@ -136,7 +140,7 @@ class PatientController extends Controller
         $validatedData =  Validator::make($request->all(), [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'nullable|email',
+            'email' => 'nullable',
             'mobile' => 'required|digits:11|numeric',
             'gender' => 'required|in:Male,Female,Other',
             'date_of_birth' => 'required|date',
@@ -152,6 +156,10 @@ class PatientController extends Controller
             'address' => 'required|string',
             'profession' => 'nullable|string',
             'referral' => 'nullable|string',
+            'is_regular' => 'nullable',
+            'is_subscriptions_3_months' => 'nullable',
+            'is_subscriptions_6_months' => 'nullable',
+            'patient_type_id' => 'nullable',
         ]);
 
 

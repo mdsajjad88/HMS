@@ -12,7 +12,8 @@ class PatientProfile extends Model
     protected $fillable=[
         'patient_user_id ', 'first_name', 'last_name', 'email', 'mobile',
         'gender', 'date_of_birth', 'nid','age','profession', 'referral', 'disease_id', 'created_by',
-        'created', 'modified_by', 'modified', 'photo', 'photo_dir',
+        'created', 'modified_by', 'is_regular', 'is_subscriptions_3_months',
+        'is_subscriptions_6_months', 'modified', 'photo', 'photo_dir',
         'blood_group', 'address', 'marital_status', 'height_cm', 'weight_kg',
         'body_fat_percentage', 'home_phone', 'work_phone', 'city', 'state',
         'post_code', 'country', 'emergency_contact_person', 'emergency_phone', 'emergency_relation',

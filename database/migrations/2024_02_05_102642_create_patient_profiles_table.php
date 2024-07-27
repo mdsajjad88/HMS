@@ -18,7 +18,7 @@ class CreatePatientProfilesTable extends Migration
             $table->bigInteger('patient_user_id')->unsigned();
             $table->string('first_name', 255);
             $table->string('last_name', 255)->nullable();
-            $table->string('email', 255);
+            $table->string('email', 255)->nullable();
             $table->string('mobile', 20);
             $table->string('gender', 10)->nullable();
             $table->date('date_of_birth')->nullable();
@@ -46,6 +46,9 @@ class CreatePatientProfilesTable extends Migration
             $table->string('emergency_contact_person', 255)->nullable();
             $table->string('emergency_phone', 15)->nullable();
             $table->string('emergency_relation', 255)->nullable();
+            $table->string('is_regular', 255)->nullable();
+            $table->string('is_subscriptions_3_months', 255)->nullable();
+            $table->string('is_subscriptions_6_months', 255)->nullable();
             $table->tinyInteger('has_text_consent')->nullable();
             $table->tinyInteger('text_reminder')->nullable();
             $table->tinyInteger('email_reminder')->nullable();
@@ -71,6 +74,7 @@ class CreatePatientProfilesTable extends Migration
             $table->string('marketing_source_by', 50)->nullable();
             $table->string('marketing_source', 255)->nullable();
             $table->string('agent_code_number', 255)->nullable();
+
             $table->unsignedBigInteger('geo_division_id')->nullable();
             $table->unsignedBigInteger('geo_district_id')->nullable();
             $table->unsignedBigInteger('geo_upazila_id')->nullable();

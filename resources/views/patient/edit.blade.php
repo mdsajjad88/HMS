@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="mobile">Mobile</label>
@@ -91,9 +91,14 @@
                         <input type="text" class="form-control" id="emergency_relation" name="emergency_relation">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="discount">Discount</label>
-                        <input type="number" class="form-control" id="discount" name="discount" placeholder="if Discount have">
-                    </div>
+                        <label for="patient_type_id">Subscription</label>
+                             <select name="patient_type_id" id="patient_type_id" class="form-control" required>
+                                <option value="" disabled selected>Select Patient Subscription</option>
+                                <option value="1">Regular</option>
+                                <option value="3">3 Month</option>
+                                <option value="6">6 Month</option>
+                            </select>
+                        </div>
                     <div class="form-group col-md-6">
                         <label for="referral">Reference</label>
                         <input type="text" class="form-control" id="referral" name="referral" placeholder="If anyone Reference">
@@ -145,7 +150,6 @@
             method:'GET',
             success:function(patientInfo){
                 var patient = patientInfo.data;
-
                     $('#first_name').val(patient.first_name);
                     $('#last_name').val(patient.last_name);
                     $('#email').val(patient.email);
@@ -167,6 +171,19 @@
                     $('#age').val(patient.age);
                     $('#referral').val(patient.referral);
                     $('#profession').val(patient.profession);
+                    $('#patient_type_id').val(patient.patient_type_id);
+                    var regular = patient.is_regular;
+                    var threeMonth = patient.is_subscriptions_3_months;
+                    var sixMonth = patient.is_subscriptions_6_months;
+                    if(regular == 'on'){
+                        $('#is_regular').prop('checked', true);
+                    }
+                    if(threeMonth == 'on'){
+                        $('#is_subscriptions_3_months').prop('checked', true);
+                    }
+                    if(sixMonth == 'on'){
+                        $('#is_subscriptions_6_months').prop('checked', true);
+                    }
             }
         })
         $('#updatePatient').off('submit').on('submit', function(e){

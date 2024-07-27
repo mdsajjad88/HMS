@@ -1,7 +1,7 @@
 <div class="modal fade" id="doctorView" tabindex="-1" aria-labelledby="doctorViewLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content ">
-            <div class="modal-body modalHeader" id="printableArea">
+            <div class="modal-body modalHeader p-5" id="printableArea">
                 <div class="row" style="text-align: center">
                     <div class="text-center">
                         <h5 class="modal-title mb-0" id="doctorName"></h5>
@@ -79,7 +79,7 @@
                     <div class="col-8 d-flex align-items-center">
                         <h3 id="total_therapy" class="mb-0 me-2"></h3>
                         <small style="text-align: justify">
-                            Ozone therapy(<span id="no_of_ozone_therapy"></span>), Hijama therapy (<span id="no_of_hijama_therapy"></span>), <br> Acupuncture(<span id="on_of_acupuncture"></span>), Physiotherapy(<span id="no_of_physiotherapy"></span>), <br> Coffee enemas(<span id="no_of_coffee_anema"></span>), Phototherapy(<span id="no_of_phototherapy"></span>), <br> Sauna therapy(<span id="no_of_sauna"></span>),
+                            Ozone therapy(<span id="no_of_ozone_therapy"></span>), Hijama therapy (<span id="no_of_hijama_therapy"></span>),  Acupuncture(<span id="on_of_acupuncture"></span>), Physiotherapy(<span id="no_of_physiotherapy"></span>),  Coffee enemas(<span id="no_of_coffee_anema"></span>), Phototherapy(<span id="no_of_phototherapy"></span>),  Sauna therapy(<span id="no_of_sauna"></span>),
                         </small>
                     </div>
 
@@ -138,16 +138,24 @@
 
             var selectedProblem = @json($problems);
             var allProblems = @json($allProblems);
+            var counting = @json($problemCounts);
 
-            var selectedProblemIds = selectedProblem.map(function(problem) {
-                return problem.id;
+            var problemCounts = {}; // Object to store counts by problem ID
+
+            // Fill problemCounts object
+            $.each(counting, function(problemId, count) {
+                problemCounts[problemId] = count;
             });
-            var filteredProblems = allProblems.filter(function(problem) {
-                return selectedProblemIds.includes(problem.id);
+
+            // Build the HTML to display problem counts
+            var html = '';
+            $.each(allProblems, function(index, problem) {
+                var problemId = problem.id;
+                var problemName = problem.name;
+                html += `<span> ${problemName} (<span id="problem_${problemId}">${problemCounts[problemId] || 0}</span>) </span>, `;
             });
-            $.each(filteredProblems, function(key, problem) {
-                problemsSelect.append(problem.name + ', ');
-            });
+
+            problemsSelect.html(html);
 
 
             $("#total_patient").empty();
@@ -174,12 +182,17 @@
             var no_of_physiotherapy = parseInt("<?php echo $no_of_physiotherapy; ?>");
             var no_of_coffee_anema = parseInt("<?php echo $no_of_coffee_anema; ?>");
             var no_of_phototherapy = parseInt("<?php echo $no_of_phototherapy; ?>");
-            var total_patient = "<?php echo $total_patient; ?>";
-            var bd_medicine = "<?php echo $bd_medicine ?>";
-            var us_medicine = "<?php echo $us_medicine ?>";
+            var total_patient = parseFloat(("<?php echo $total_patient; ?>"), 2);
+            var bd_medicine = parseFloat(("<?php echo $bd_medicine; ?>"));
+            var us_medicine = parseFloat(("<?php echo $us_medicine; ?>"));
+            var medicine = bd_medicine + us_medicine;
+            var bd_avg = ((bd_medicine / medicine) * 100).toFixed(2);
+            var us_avg = ((us_medicine / medicine) * 100).toFixed(2);
 
             $("#bd_medicine").text(bd_medicine);
             $("#us_medicine").text(us_medicine);
+            $('#avg_bd_medicine').text(bd_avg + "%");
+            $('#avg_us_medicine').text(us_avg + "%");
 
             $("#total_patient").text(total_patient);
             $('#total_therapy').text(no_of_ozone_therapy + no_of_hijama_therapy + on_of_acupuncture + no_of_sauna +

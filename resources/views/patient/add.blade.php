@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter patient email" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter patient email">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="mobile">Mobile<span id="star">*</span></label>
@@ -90,9 +90,14 @@
                         <input type="text" class="form-control" id="emergency_relation" placeholder="Ex: Brother/Wife/Husband/doughter's" name="emergency_relation">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="discount">Discount</label>
-                        <input type="number" class="form-control" id="discount" placeholder="If Special Discount" name="discount">
-                    </div>
+                        <label for="patient_type_id">Subscription</label>
+                             <select name="patient_type_id" id="patient_type_id" class="form-control" required>
+                                <option value="" selected disabled>Select Patient Subscription</option>
+                                <option value="1">Regular</option>
+                                <option value="3">3 Month</option>
+                                <option value="6">6 Month</option>
+                            </select>
+                        </div>
                     <div class="form-group col-md-6">
                         <label for="referral">Reference</label>
                         <input type="text" class="form-control" id="referral" placeholder="If Special Discount" name="referral">
@@ -101,6 +106,7 @@
                         <label for="profession">Profession</label>
                         <input type="text" class="form-control" id="profession" placeholder="If Special Discount" name="profession">
                     </div>
+
                     <div class="form-group col-md-6" >
                         <label for="address">Address<span id="star">*</span></label>
                         <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" placeholder="Enter Patient address" required></textarea>
@@ -120,6 +126,37 @@
                             <option value="" selected disabled>Select Upozilla</option>
                         </select>
                     </div>
+                    {{-- <div class="form-group col-md-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">Regular</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" name="subscriptions" id="is_regular" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">Subscription 3 Months</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" name="subscriptions"  id="is_subscriptions_3_months">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">Subscription 6 Months</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" name="subscriptions" id="is_subscriptions_6_months">
+                            </div>
+                        </div>
+
+                    </div> --}}
 
                     </div>
                     <!-- Add more fields based on your schema -->
@@ -135,6 +172,7 @@
 
 <script>
     $(document).ready(function(){
+
         $('#addNewPatient').off('submit').on('submit', function(e){
             e.preventDefault(); // Prevent default form submission
 

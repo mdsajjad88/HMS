@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title', 'create new report')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
 <div class="container">
     <div class="row">
         <div class="col-md-3"></div>
@@ -35,7 +37,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="no_of_visite" class="form-label">No of Visit <span id="star">*</span></label>
+                            <label for="no_of_visite" class="form-label">No of Visit <span id="star">*</span> <span ><small id="patient_type_id"></small></span></label>
                             <input type="number" class="form-control" name="no_of_visite" id="no_of_visite"
                                 placeholder="No of visite" required>
                         </div>
@@ -56,7 +58,7 @@
                     <div class="row">
 
                         <label for="problem_id" class="form-label">Problems <span id="star">*</span></label>
-                        
+
                         <div class="col-md-10">
 
                             <select name="problem_id[]" id="problem_id" class="multipleProblem form-control" multiple required>
@@ -172,11 +174,25 @@
             $('#patient_user_id').off('change').on('change', function() {
                 $('#no_of_visite').empty();
                 $('#last_visited_date').empty();
+                $('#patient_type_id').empty();
                 var patient = $(this).val();
                 $.ajax({
                     url: '/latest/report/' + patient,
                     method: 'GET',
                     success: function(respons) {
+                        var status = respons.patient.patient_type_id;
+                        if(status){
+                            if(status == 1){
+                            $('#patient_type_id').text('(Regular Patient)');
+                            }
+                            if(status == 3){
+                                $('#patient_type_id').text('(3 Months Subscription)');
+                            }
+                            if(status == 6){
+                                $('#patient_type_id').text('(6 Months Subscription)');
+                            }
+                        }
+
                         if(respons.data){
                         var report = respons.data;
 
@@ -186,12 +202,16 @@
                         $('#first_visite').hide();
                         $('#improvementSection').show();
                         $('#primary-outlined').prop('checked', false);
+
+
+
                         }
                         else if(respons.nodata){
                             $('#no_of_visite').val(' ');
                             $('#last_visited_date').val(' ');
                             $('#doctor_user_id').val(' ');
                             $('#improvementSection').hide();
+                            $('#no_of_visite').val(1);
                             $('#first_visite').show();
                         }
 

@@ -46,11 +46,11 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="bd_medicine" class="form-label">BD medicine  <span id="star">*</span></label>
-                                        <input type="text" name="bd_medicine" id="bd_medicine" class="form-control" placeholder="Enter BD medicine no">
+                                        <input type="number" name="bd_medicine" id="bd_medicine" class="form-control" placeholder="Enter BD medicine no">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="us_medicine" class="form-label">US medicine <span id="star">*</span></label>
-                                        <input type="text" name="us_medicine" id="us_medicine" class="form-control" placeholder="Enter US medicine no">
+                                        <input type="number" name="us_medicine" id="us_medicine" class="form-control" placeholder="Enter US medicine no">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="no_of_medicine" class="form-label">Total medicine <span id="star">*</span></label>
@@ -115,12 +115,10 @@
                             </div>
                             <div>
                                 <label for="problem_id" class="form-label">Problems </label>
-                                <select name="problem_id[]" id="problem_id" class="editProblem form-control" multiple required>
-                                    <option value="">Select problem</option>
-                                    @foreach ($problems as $problem)
-                                    <option value="{{$problem->id}}">{{$problem->name}}</option>
+                                <select name="problem_id[]" id="problem_id" class="editProblem form-control showAllProblem" multiple required>
 
-                                    @endforeach
+                                    <option value="">Select problem</option>
+
                                 </select>
                             </div>
                             <div>
@@ -139,16 +137,7 @@
 </div>
 <script>
 $(document).ready(function() {
-    $('#updateReport #problem_id').select2({
-            placeholder: "Select problem",
-            allowClear: true
-        });
-
-
-
-
-
-            $("#patient_user_id").empty();
+           $("#patient_user_id").empty();
             $("#doctor_user_id").empty();
             $('#bd_medicine').empty();
             $('#us_medicine').empty();
@@ -164,25 +153,21 @@ $(document).ready(function() {
             $('#physical_improvement').prop('checked', false);
             $('#comment').empty();
             $('#updateReport #problem_id').empty();
-
-
-
-
             function medicine(){
                 var bd = parseInt($('#bd_medicine').val()) || 0;
                 var us = parseInt($('#us_medicine').val()) || 0;
                 var total = bd + us;
                 $('#no_of_medicine').val(total)
             }
+
             $('#bd_medicine').on('keyup', function(){
                 medicine();
             })
             $('#us_medicine').on('keyup', function(){
                 medicine();
             });
-        var patients = @json($patients);
+            var patients = @json($patients);
             var doctors = @json($doctors);
-
             var problemsSelect = $('.editProblem');
 
             var selectedProblem = @json($selectedProblems);
@@ -192,7 +177,11 @@ $(document).ready(function() {
                     var selected = selectedProblem.includes(problem.id) ? 'selected' : '';
                     problemsSelect.append('<option value="' + problem.id + '" ' + selected + '>' + problem.name + '</option>');
             });
-
+            $.each(problems, function(index, problem1) {
+                $('.showAllProblem').append('<option value="' + problem1.id + '">' + problem1.name + '</option>');
+                console.log(problem1.id);
+                console.log(problem1.name);
+            });
             $.each(patients, function(index, patient) {
                 $('#patient_user_id').append('<option value="' + patient.patient_user_id + '">' +
                     patient.first_name + '</option>');
@@ -201,7 +190,7 @@ $(document).ready(function() {
                 $('#doctor_user_id').append('<option value="' + doctors.user_id + '">' +
                     doctors.first_name + '</option>');
             });
-            $('#updateReport .editProblem').select2();
+
 
         var reportID = "<?php echo $report->id ?>";
         var doctor = "<?php echo $report->doctor->id ?>";
@@ -301,5 +290,11 @@ $(document).ready(function() {
             });
         });
     });
-
+$(document).ready(function(){
+    $('#updateReport #problem_id').select2({
+            placeholder: "Select problem",
+            allowClear: true
+        });
+        $('#updateReport #problem_id').select2();
+})
 </script>

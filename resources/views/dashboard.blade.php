@@ -70,6 +70,7 @@ $(document).ready(function(){
             searchPlaceholder: 'Search...', // Change search placeholder text
 
         },
+        order: [[0, 'desc']]
 
     });
 

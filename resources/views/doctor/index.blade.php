@@ -97,6 +97,7 @@
             searchPlaceholder: 'Search...', // Change search placeholder text
 
         },
+        order: [[0, 'desc']],
         initComplete: function () {
             // Customize search input with Bootstrap styles
             var searchInput = $('.dataTables_filter input');

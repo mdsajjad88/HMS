@@ -114,6 +114,7 @@ class ReviewReportController extends Controller
             $problemToReport = new ReportAndProblem();
             $problemToReport->review_report_id = $report->id;
             $problemToReport->problem_id = $problemId;
+            $problemToReport->doctor_user_id = $report->doctor_user_id;
             $problemToReport->save();
         }
         return response()->json(['success'=>true]);
@@ -136,11 +137,14 @@ class ReviewReportController extends Controller
         $lastVisitedDate = ReviewReport::where('patient_user_id', $id)
         ->latest('created_at')
         ->first();
+        $patientProfile = PatientProfile::where('patient_user_id', $id)
+        ->latest('created_at')
+        ->first();
         if($lastVisitedDate){
-            return response()->json(['data'=>$lastVisitedDate]);
+            return response()->json(['data'=>$lastVisitedDate, 'patient'=>$patientProfile]);
         }
         else{
-            return response()->json(['nodata'=>true]);
+            return response()->json(['nodata'=>true, 'patient'=>$patientProfile]);
         }
 
     }
@@ -239,6 +243,7 @@ class ReviewReportController extends Controller
             if (isset($validatedData['problem_id'])) {
                 Log::info("Syncing problems...");
                 $report->problems()->sync($validatedData['problem_id']);
+
                 Log::info("Problems synced successfully.");
             }
 
