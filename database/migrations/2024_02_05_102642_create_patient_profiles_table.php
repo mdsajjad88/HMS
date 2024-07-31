@@ -16,10 +16,11 @@ class CreatePatientProfilesTable extends Migration
         Schema::create('patient_profiles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('patient_user_id')->unsigned();
+            $table->string('mobile')->nullable();
             $table->string('first_name', 255);
             $table->string('last_name', 255)->nullable();
             $table->string('email', 255)->nullable();
-            $table->string('mobile', 20);
+            
             $table->string('gender', 10)->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('nid', 31)->nullable();

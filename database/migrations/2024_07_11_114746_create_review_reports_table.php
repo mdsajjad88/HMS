@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('review_reports', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('patient_user_id');
+            $table->string('mobile');
             $table->unsignedBigInteger('doctor_user_id')->nullable();
             $table->unsignedBigInteger('patient_medical_test_id')->nullable();//hide hobe
             $table->unsignedBigInteger('prescribed_medicine_id')->nullable();//hide hobe
@@ -33,7 +34,9 @@ return new class extends Migration
             $table->integer('no_of_phototherapy')->nullable();
             $table->integer('no_of_physiotherapy')->nullable();
             $table->integer('no_of_coffee_anema')->nullable();
+            $table->integer('is_session_visite')->nullable();
             $table->integer('no_of_others')->nullable();
+            $table->integer('session_visite_count')->nullable();
             $table->integer('no_of_life_style_food')->nullable();
             $table->unsignedBigInteger('problem_id')->nullable();
             $table->string('physical_improvement')->default(false);

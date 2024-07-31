@@ -18,12 +18,12 @@
                         <div class="col-md-6">
                             <label for="select_patient" class="form-label"> Patient Name<span id="star">*</span></label>
 
-                        <select name="patient_user_id" class="form-control" id="patient_user_id" required>
-                            <option value="">Select Patient  </option>
-                            @foreach ($patients as $patient)
-                            <option value="{{$patient->patient_user_id}}">{{$patient->first_name}}</option>
-                            @endforeach
-                        </select>
+                            <select name="patient_user_id" class="form-control" id="patient_user_id" required>
+                                <option value="">Select Patient  </option>
+                                @foreach ($patients as $patient)
+                                <option value="{{$patient->patient_user_id}}">{{$patient->first_name}}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <!-- Last Name -->
@@ -133,7 +133,7 @@
             e.preventDefault();
             var form = $('#addReport')[0];
             var formData = new FormData(form);
-       
+
             $.ajax({
                 method: 'POST',
                 url: "{{route('medical-report.store')}}",

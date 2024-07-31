@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-md-11"></div>
             <div class="col-md-1">
-                <a href="{{url('create/medical/report')}}"  class="btn btn-dark btn-sm m-1" id="createNewReport"><i class="fa-solid fa-plus"></i>Add</a>
+                <a href="{{url('create/medical/report')}}"  class="btn btn-dark btn-sm m-1"><i class="fa-solid fa-plus"></i>Add</a>
             </div>
         </div>
     </div>
@@ -20,12 +20,16 @@
                     <thead>
                         <tr>
                             <th>SL</th>
+
                             <th>Patient Name</th>
                             <th>Doctor Name</th>
+                            <th>Contact</th>
                             <th>Improvement</th>
                             <th>comment</th>
-                            <th>Visite No </th>
-                            <th>Last Visite</th>
+                            <th>Visit date</th>
+                            <th>Visit No </th>
+                            <th>Session Visite</th>
+                            <th>S.V No</th>
                             <th>Problems</th>
                             <th>Actions</th>
                         </tr>
@@ -44,17 +48,33 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('medical-report.index') }}",
-                columns: [{
-                        data: 'id',
-                        name: 'ID'
+                columns: [
+                    {
+                        data: null,
+
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
                     },
+
                     {
                         data: 'patient_name',
-                        name: 'patient_name'
+                        name: 'patient_name',
                     },
                     {
                         data: 'doctor_name',
-                        name: 'doctor_name'
+                        name: 'doctor_name',
+                        render: function(data) {
+                            if (!data || data.trim() === '') {
+                                return 'no name';
+                            }
+                            return data;
+                        }
+
+                    },
+                    {
+                        data: 'mobile',
+                        name: 'mobile',
                     },
                     {
                         data: 'physical_improvement',
@@ -67,23 +87,44 @@
                             } else {
                                 return 'First visit';
                             }
-                        }
+                        },
+
                     },
+
                     {
                         data: 'comment',
-                        name: 'comment'
-                    },
-                    {
-                        data: 'no_of_visite',
-                        name: 'no_of_visite'
+                        name: 'comment',
                     },
                     {
                         data: 'last_visited_date',
-                        name: 'last_visited_date'
+                        name: 'last_visited_date',
+                    },
+                    {
+                        data: 'no_of_visite',
+                        name: 'no_of_visite',
+                    },
+
+                    {
+                        data: 'is_session_visite',
+                        name: 'is_session_visite',
+
+                        render: function(data) {
+                            if (data == 1) {
+                                return 'Yes';
+                            } else{
+                                return 'No';
+                            }
+                        }
+                    },
+                    {
+                        data:'session_visite_count',
+                        name:'session_visite_count',
+
                     },
                     {
                         data: 'problems',
-                        name: 'problems'
+                        name: 'problems',
+
                     },
 
                     {

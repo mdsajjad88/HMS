@@ -6,132 +6,130 @@
                 <h5 class="modal-title" id="doctorModalLabel">Edit Patient Information</h5>
                 <button type="button" class="btn-close" id="closePatientEditModal" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="updatePatient"  method="POST" enctype="multipart/form-data" >
+            <form  id="updatePatient" method="POST" enctype="multipart/form-data" >
                 @csrf
                 <div class="modal-body">
                     <div class="row g-3">
-                    <div class="form-group col-md-6">
-                        <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
-                        <input type="hidden" id="patientId" name="id" >
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="mobile">Mobile</label>
-                        <input type="number" class="form-control contact_no" id="mobile" name="mobile" required>
-                        <small id="contact_no_res"></small>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="gender">Gender</label>
-                        <select class="form-control" id="gender" name="gender" required>
-                            <option value="">Select your gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="date_of_birth">Date of Birth</label>
-                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="age">Age</label>
-                        <input type="number" class="form-control" id="age" name="age" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="nid">National ID</label>
-                        <input type="text" class="form-control" id="nid" name="nid">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="marital_status">Marital status </label>
-                        <select class="form-control" id="marital_status" name="marital_status" required>
-                            <option value="">Select Marital status</option>
+                        <div class="form-group col-md-6">
+                            <label for="first_name">Patient Name<span id="star">*</span></label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter first name" required>
+                            <input type="hidden" name="id" class="id">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="mobile" class="d-flex">Mobile<span id="star">*</span> &nbsp; &nbsp; <span><small id="contact_no_res"></small></span></label>
+                            <input type="number" class="form-control contact_no" id="mobile" name="mobile" placeholder="Enter contact no" required>
 
-                            <option value="Married">Married</option>
-                            <option value="Unmarried">Unmarried</option>
-                            <option value="Other">Other</option>
+                        </div>
 
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="height_cm">Height (cm)</label>
-                        <input type="text" class="form-control" id="height_cm" name="height_cm">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="weight_kg">Weight (kg)</label>
-                        <input type="text" class="form-control" id="weight_kg" name="weight_kg">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="blood_group">Blood Group</label>
-                        <select class="form-control" id="blood_group" name="blood_group" required>
-                            <option value="">Select blood group</option>
-                            <option value="A+">A+</option>
-                            <option value="B+">B+</option>
-                            <option value="AB+">AB+</option>
-                            <option value="O+">O+</option>
-                            <option value="A-">A-</option>
-                            <option value="B-">B-</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O-">O-</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="emergency_phone">Emergency phone</label>
-                        <input type="number" class="form-control" id="emergency_phone" name="emergency_phone">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="emergency_relation">Emergency relation</label>
-                        <input type="text" class="form-control" id="emergency_relation" name="emergency_relation">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="patient_type_id">Subscription</label>
-                             <select name="patient_type_id" id="patient_type_id" class="form-control" required>
-                                <option value="" disabled selected>Select Patient Subscription</option>
-                                <option value="1">Regular</option>
-                                <option value="3">3 Month</option>
-                                <option value="6">6 Month</option>
+                        <div class="form-group col-md-6">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter patient email">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="gender">Gender<span id="star">*</span></label>
+                            <select class="form-control" id="gender" name="gender" required>
+                                <option value="" selected disabled>Select patient gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
-                    <div class="form-group col-md-6">
-                        <label for="referral">Reference</label>
-                        <input type="text" class="form-control" id="referral" name="referral" placeholder="If anyone Reference">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="profession">Profession</label>
-                        <input type="text" class="form-control" id="profession" name="profession" placeholder="Patient profession">
-                    </div>
-                    <div class="form-group col-md-6" >
-                        <label for="address">Address</label>
-                        <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" required></textarea>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="geo_district_id">City<span id="star">*</span></label>
-                        <select class="form-control edit_geo_district" id="geo_district_id" name="geo_district_id" required>
-                          <option value="" selected disabled>Select City</option>
-                          @foreach ($districts as $city)
-                          <option value="{{$city->id}}" >{{$city->district_name_eng}}</option>
-                          @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="geo_upazila_id ">State<span id="star">*</span></label>
-                        <select class="form-control edit_geo_upozilla" id="geo_upazila_id" name="geo_upazila_id " required>
-                            <option value="" selected disabled>Select Upozilla</option>
-                            @foreach ($states as $state)
-                            <option value="{{$state->id}}" >{{$state->upazila_name_eng}}</option>
+
+                        <div class="form-group col-md-6">
+                            <label for="age">Age <span id="star">*</span></label>
+                            <input type="number" class="form-control" id="age" name="age" placeholder="Patient Age" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="patient_type_id">Subscription<span id="star">*</span></label>
+                                <select name="patient_type_id" id="patient_type_id" class="form-control" required>
+                                    <option value="" selected disabled>Select Patient Subscription</option>
+                                    <option value="33">3 Month(Regular)</option>
+                                    <option value="66">6 Month(Regular)</option>
+                                    <option value="3">3 Month(Session)</option>
+                                </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="subscript_date">Subscription Start Date</label>
+                                <input type="date" class="form-control" name="subscript_date" id="subscript_date">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="session_visite_count">Subscription Visit complete</label>
+                                <input type="number" class="form-control session_visite_count" name="session_visite_count" placeholder="If already Subscription visited ">
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <label for="address">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" placeholder="Enter Patient address"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="geo_district_id">City<span id="star">*</span></label>
+                            <select class="form-control geo_district" id="geo_district_id" name="geo_district_id" required>
+                            <option value="" selected disabled>Select City</option>
+                            @foreach ($districts as $city)
+                            <option value="{{$city->id}}" >{{$city->district_name_eng}}</option>
                             @endforeach
-                        </select>
-                    </div>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="geo_upazila_id">State</label>
+                            <select class="form-control geo_upozilla" id="geo_upazila_id" name="geo_upazila_id">
+                                <option value="" selected disabled>Select Upozilla</option>
+                                @foreach ($states as $state)
+                                <option value="{{$state->id}}">{{$state->upazila_name_eng}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="nid">National ID</label>
+                            <input type="text" class="form-control" id="nid" placeholder="Patient NID no" name="nid">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="marital_status">Marital status</label>
+                            <select class="form-control" id="marital_status" name="marital_status">
+                                <option value="">Select Marital status</option>
+
+                                <option value="Married">Married</option>
+                                <option value="Unmarried">Unmarried</option>
+                                <option value="Other">Other</option>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="blood_group">Blood Group</label>
+                            <select class="form-control" id="blood_group"  name="blood_group">
+                                <option value="">Select blood group</option>
+                                <option value="A+">A+</option>
+                                <option value="B+">B+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="O+">O+</option>
+                                <option value="A-">A-</option>
+                                <option value="B-">B-</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="emergency_phone">Emergency phone</label>
+                            <input type="number" class="form-control" id="emergency_phone" placeholder="Enter emergency contact no" name="emergency_phone">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="emergency_relation">Emergency relation</label>
+                            <input type="text" class="form-control" id="emergency_relation" placeholder="Ex: Brother/Wife/Husband/doughter's" name="emergency_relation">
+                        </div>
+
+
+                        <div class="form-group col-md-6">
+                            <label for="referral">Reference</label>
+                            <input type="text" class="form-control" id="referral" placeholder="If anyone reference" name="referral">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="profession">Profession</label>
+                            <input type="text" class="form-control" id="profession" placeholder="If know patient profession" name="profession">
+                        </div>
+
 
                     </div>
-                    <!-- Add more fields based on your schema -->
                 </div>
                 <div class="modal-footer modalFooter">
                     <button type="submit" class="btn btn-primary">Update Patient </button>
@@ -142,7 +140,25 @@
 </div>
 <script>
     $(document).ready(function(){
+        $("#session_visite_count").empty();
+        $('.contact_no').keyup(function() {
 
+var contact = $(this).val();
+var isNumeric = /^\d+$/.test(contact); // Regular expression to test if the input is numeric
+var sub = contact.substring(0, 2);
+var length = contact.length
+if(!isNumeric) {
+    $('#contact_no_res').html('<p style="color:red">Contact no must contain only numeric digits</p>');
+}
+else if (sub != '01') {
+    $('#contact_no_res').html('<p style="color:red">Contact no  must be start at 01</p>')
+} else if (length == 11) {
+    $('#contact_no_res').html('<p style="color:green">Contact no is valid</p>')
+} else if (length != 11) {
+    $('#contact_no_res').html(
+        '<p style="color:red">Contact no length must be 11 character</p>')
+}
+});
         var pId = '<?php echo $id ?>';
 
         $.ajax({
@@ -151,27 +167,26 @@
             success:function(patientInfo){
                 var patient = patientInfo.data;
                     $('#first_name').val(patient.first_name);
-                    $('#last_name').val(patient.last_name);
+                    $('.id').val(patient.id);
+                    console.log(patient.id);
                     $('#email').val(patient.email);
                     $('#mobile').val(patient.mobile);
                     $('#gender').val(patient.gender);
                     $('#blood_group').val(patient.blood_group);
-                    $('#date_of_birth').val(patient.date_of_birth);
                     $('#nid').val(patient.nid);
                     $('#marital_status').val(patient.marital_status);
-                    $('#height_cm').val(patient.height_cm);
-                    $('#weight_kg').val(patient.weight_kg);
                     $('#address').val(patient.address);
                     $('#patientId').val(patient.id);
                     $('#emergency_phone').val(patient.emergency_phone);
                     $('#emergency_relation').val(patient.emergency_relation);
-                    $('#discount').val(patient.discount);
                     $('#geo_district_id').val(patient.geo_district_id);
-                    $('#geo_upazila_id').val(patient.geo_upazila_id );
+                    $('#geo_upazila_id').val(patient.geo_upazila_id);
                     $('#age').val(patient.age);
                     $('#referral').val(patient.referral);
                     $('#profession').val(patient.profession);
                     $('#patient_type_id').val(patient.patient_type_id);
+                    $('.session_visite_count').val(patientInfo.report.session_visite_count);
+                    $('#subscript_date').val(patientInfo.subscription.subscript_date);
                     var regular = patient.is_regular;
                     var threeMonth = patient.is_subscriptions_3_months;
                     var sixMonth = patient.is_subscriptions_6_months;

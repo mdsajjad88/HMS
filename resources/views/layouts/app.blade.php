@@ -36,7 +36,7 @@
 
     <!-- Toastr.js CDN or Laravel Mix integration -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css">
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

@@ -17,8 +17,8 @@ class CreatePatientSubscriptionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('patient_user_id')->nullable();
             $table->unsignedBigInteger('subscription_id')->nullable();
-            $table->dateTime('subscript_date')->nullable();
-            $table->dateTime('expiry_date')->nullable();
+            $table->date('subscript_date')->nullable();
+            $table->date('expiry_date')->nullable();
             $table->integer('used_consultancy')->default(0);
             $table->double('final_total', 8, 2)->default(0.00);
             $table->tinyInteger('payment_status')->default(0);
@@ -32,7 +32,7 @@ class CreatePatientSubscriptionsTable extends Migration
             $table->timestamps();
 
             // Foreign key constraints
-            $table->foreign('patient_user_id')->references('id')->on('patient_profiles')->onDelete('cascade');
+            $table->foreign('patient_user_id')->references('id')->on('patient_users')->onDelete('cascade');
             $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('modified_by')->references('id')->on('users')->onDelete('cascade');

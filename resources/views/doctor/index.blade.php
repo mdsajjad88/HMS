@@ -26,7 +26,7 @@
                             <th>Blood</th>
                             <th>Designation</th>
                             <th>Speciality</th>
-                            <th class="text-center" >Action</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,8 +47,11 @@
                 serverSide: true,
                 ajax: "{{ route('doctor_profiles.index') }}",
                 columns: [{
-                        data: 'id',
-                        name: 'id'
+                        data: null,
+
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
                     },
                     {
                         data: 'first_name',

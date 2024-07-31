@@ -14,6 +14,6 @@ class Problem extends Model
     ];
     public function reports()
     {
-        return $this->belongsToMany(ReviewReport::class, 'report_and_problems');
+        return $this->belongsToMany(ReviewReport::class, 'report_and_problems')->withTimestamps();;
     }
 }

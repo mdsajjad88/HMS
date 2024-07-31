@@ -16,6 +16,14 @@
     padding: 1rem;
     border-bottom: 2px solid #e5e7eb;
 }
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody td:nth-child(1) {
+    width: 100px;
+  }
+
+  .dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody td:nth-child(2) {
+    width: 200px;
+  }
+
 #star
 {
 
@@ -70,8 +78,10 @@
 .form-label
 {
     text-align: left;
-    width: 320px;
-  
-}
+    min-width: 320px;
 
+}
+.d-none {
+    display: none !important;
+}
 

@@ -18,15 +18,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th>Name</th>
+                        <th>Type</th>
                         <th>Email</th>
                         <th>Mobile</th>
                         <th>Age</th>
-                        <th>Blood</th>
-                        <th>Address</th>
+                        <th>Gender</th>
                         <th>City</th>
-
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -50,14 +48,32 @@ $(document).ready(function(){
         serverSide: true,
         ajax: "{{ route('patient_profiles.index') }}",
         columns: [
-            { data: 'id', name: 'id' },
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
             { data: 'first_name', name: 'first_name' },
-            { data: 'last_name', name: 'last_name' },
+            {
+                data: 'patient_type_id',
+                name: 'patient_type_id',
+                render: function(data) {
+                            if (data == 3) {
+                                return '3 Month Session';
+                            } else if (data == 33) {
+                                return '3 Month Regular';
+                            } else if (data == 66) {
+                                return '6 Month Regular';
+                            }
+                        },
+            },
             { data: 'email', name: 'email' },
             { data: 'mobile', name: 'mobile' },
             { data: 'age', name: 'age' },
-            { data: 'blood_group', name: 'blood_group' },
-            { data: 'address', name: 'address' },
+            { data: 'gender', name: 'gender' },
+
+
             { data: 'district_name', name: 'district_name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],

@@ -32,9 +32,15 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-4"><label for="total_therapy">Total patient</label></div>
+                    <div class="col-4"><label for="total_patient">Total patient</label></div>
                     <div class="col-8">
                         <h3 name="total_patient" id="total_patient"> </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4"><label for="total_therapy">Total Visite's</label></div>
+                    <div class="col-8">
+                        <h3 name="total_visite" id="total_visite"> </h3>
                     </div>
                 </div>
 
@@ -42,23 +48,24 @@
                     <div class="col-4">
                         <label for="bd_medicine" class="form-label">Total BD Medicine</label>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <h3 id="bd_medicine" class="d-flex"></h3>
-
                     </div>
-                    <div class="col-3">
-                        <p class="d-flex"> Avg. <span id="avg_bd_medicine">00</span></p>
+                    
+                    <div class="col-4">
+                        <p class="d-flex">BD Avg. proportion : <span id="avg_bd_pro"></span></p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4">
                         <label for="us_medicine" class="form-label">Total US Medicine</label>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
                         <h3 id="us_medicine" class="d-flex"></h3>
                     </div>
-                    <div class="col-3">
-                        <p class="d-flex"> Avg. <span id="avg_us_medicine">00</span></p>
+
+                    <div class="col-4">
+                        <p class="d-flex">US Avg. proportion : <span id="avg_us_pro"></span></p>
                     </div>
                 </div>
                 <div class="row">
@@ -152,6 +159,7 @@
             $.each(allProblems, function(index, problem) {
                 var problemId = problem.id;
                 var problemName = problem.name;
+                $(`#problem_${problemId}`).empty();
                 html += `<span> ${problemName} (<span id="problem_${problemId}">${problemCounts[problemId] || 0}</span>) </span>, `;
             });
 
@@ -170,7 +178,7 @@
             $('#no_of_phototherapy').text("<?php echo $no_of_phototherapy; ?>");
             $('#total_problem').text("<?php echo $totalProblems; ?>");
             $('#days').val("<?php echo $days; ?>");
-
+            $('#total_visite').text('<?php echo $total_visite ?>');
             $('#startDate').val('')
             $('#startDate').text("<?php echo $startDate; ?>");
             $('#endDate').text('<?php echo $endDate; ?>');
@@ -186,13 +194,20 @@
             var bd_medicine = parseFloat(("<?php echo $bd_medicine; ?>"));
             var us_medicine = parseFloat(("<?php echo $us_medicine; ?>"));
             var medicine = bd_medicine + us_medicine;
-            var bd_avg = ((bd_medicine / medicine) * 100).toFixed(2);
-            var us_avg = ((us_medicine / medicine) * 100).toFixed(2);
+            if (medicine === 0) {
+                bd_avg = " 0.00";
+                us_avg = " 0.00";
+                bd_avg_pro = " 0.00";
+                us_avg_pro = " 0.00";
+            } else {
 
+                bd_avg_pro = (bd_medicine/total_patient).toFixed(2);
+                us_avg_pro = (us_medicine/total_patient).toFixed(2);
+            }
             $("#bd_medicine").text(bd_medicine);
             $("#us_medicine").text(us_medicine);
-            $('#avg_bd_medicine').text(bd_avg + "%");
-            $('#avg_us_medicine').text(us_avg + "%");
+            $('#avg_bd_pro').text(bd_avg_pro);
+            $('#avg_us_pro').text(us_avg_pro);
 
             $("#total_patient").text(total_patient);
             $('#total_therapy').text(no_of_ozone_therapy + no_of_hijama_therapy + on_of_acupuncture + no_of_sauna +

@@ -5,13 +5,14 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ url('/') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -24,6 +25,7 @@
                     <x-nav-link :href="route('medical-report.index')" :active="request()->routeIs('medical-report.index')">
                         {{ __('Patient Report') }}
                     </x-nav-link>
+                   
                     {{-- <x-nav-link :href="route('medical-tests.index')" :active="request()->routeIs('medical-tests.index')">
                         {{ __('Medical Tests') }}
                     </x-nav-link>
