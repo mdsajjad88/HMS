@@ -20,7 +20,6 @@
                     <thead>
                         <tr>
                             <th>SL</th>
-
                             <th>Patient Name</th>
                             <th>Doctor Name</th>
                             <th>Contact</th>
@@ -139,22 +138,8 @@
             'copy','csv','print', 'excel','pdf' // Buttons configuration
         ],
         order: [[0, 'desc']]
-
-
-
             });
 
-            $('#createNewReport').click(function(){
-                var id = $(this).data('id');
-                $.ajax({
-                    url:'{{route("medical-report.create")}}',
-                    method:'GET',
-                    success:function(respons){
-                        $('body').append(respons);
-                        $('#reportCreateModal').modal('show');
-                    },
-                });
-            });
         });
 
 
@@ -170,9 +155,8 @@
                     },
                 });
             });
-
-
         });
+        
         $(document).ready(function(){
             $(document).on('click', '.deleteReport', function(){
                 var id = $(this).data('id');

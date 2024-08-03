@@ -23,9 +23,9 @@
                         {{ __('Patient') }}
                     </x-nav-link>
                     <x-nav-link :href="route('medical-report.index')" :active="request()->routeIs('medical-report.index')">
-                        {{ __('Patient Report') }}
+                        {{ __('Patient Visit') }}
                     </x-nav-link>
-                   
+
                     {{-- <x-nav-link :href="route('medical-tests.index')" :active="request()->routeIs('medical-tests.index')">
                         {{ __('Medical Tests') }}
                     </x-nav-link>

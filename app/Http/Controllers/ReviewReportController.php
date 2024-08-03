@@ -160,6 +160,7 @@ class ReviewReportController extends Controller
             $problemToReport->problem_id = $problemId;
             $problemToReport->doctor_user_id = $report->doctor_user_id;
             $problemToReport->last_visited_date = $report->last_visited_date;
+            $problemToReport->patient_user_id = $report->patient_user_id;
             $problemToReport->save();
         }
 
@@ -186,6 +187,7 @@ class ReviewReportController extends Controller
         $lastVisitedDate = ReviewReport::where('patient_user_id', $id)
         ->latest('created_at')
         ->first();
+        $ltsSession = ReviewReport::where('patient_user_id', $id)->where('is_session_visite', 1)->latest('created_at')->first();
         $patientProfile = PatientProfile::where('patient_user_id', $id)
         ->latest('created_at')
         ->first();
@@ -200,10 +202,10 @@ class ReviewReportController extends Controller
 
 
         if($lastVisitedDate){
-            return response()->json(['data'=>$lastVisitedDate, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session]);
+            return response()->json(['data'=>$lastVisitedDate, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session, 'ltsSession'=>$ltsSession]);
         }
         else{
-            return response()->json(['nodata'=>true, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session]);
+            return response()->json(['nodata'=>true, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session, 'ltsSession'=>$ltsSession]);
         }
 
     }
@@ -314,6 +316,7 @@ class ReviewReportController extends Controller
                     // Update the record with new information
                     $problemToReport->doctor_user_id = $report->doctor_user_id;
                     $problemToReport->last_visited_date = $report->last_visited_date;
+                    $problemToReport->patient_user_id = $report->patient_user_id;
                     $problemToReport->save();
                 }
 

@@ -49,6 +49,8 @@ class PatientController extends Controller
                 ->addColumn('action', function($row){
                     $btn = '<a  data-id="'.$row->id.'"  class="editPatient btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
                     $btn .= '<a  data-id="'.$row->id.'" class="deletePatient btn btn-danger ml-1 btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                    $btn .= ' <a  data-id="'.$row->id.'" class="viewPatientProfile btn btn-info btn-sm"><i class="fa-regular fa-eye"></i>Profile</a>';
+
                     return $btn;
                 })
                 ->addColumn('district_name', function($data) {
@@ -198,15 +200,17 @@ class PatientController extends Controller
     {
         $districts= GeoDistricts::all();
         $states= GeoUpazillas::all();
-        return view('patient.edit', compact('id', 'states', 'districts'));
-    }
-    public function  getOnePatient($id){
         $patient = PatientProfile::find($id);
         $id = $patient->patient_user_id;
         $report = ReviewReport::where('patient_user_id', $id)->latest('created_at')->first();
         $subscription = PatientSubscription::where('patient_user_id', $id)->first();
-        return response()->json(['data'=>$patient, 'report'=>$report, 'subscription'=>$subscription]);
-    }
+
+        return view('patient.edit', compact('id', 'states', 'districts', 'patient', 'report', 'subscription'));
+   }
+    // public function  getOnePatient($id){
+
+    //     return response()->json(['data'=>$patient, 'report'=>$report, 'subscription'=>$subscription]);
+    // }
 
     public function update(Request $request)
     {

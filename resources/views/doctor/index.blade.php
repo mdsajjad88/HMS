@@ -18,8 +18,9 @@
                     <thead>
                         <tr >
                             <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th> Name</th>
+                            <th> Gender</th>
+
                             <th>Email</th>
                             <th>Mobile</th>
                             <th>Fee</th>
@@ -58,9 +59,10 @@
                         name: 'first_name'
                     },
                     {
-                        data: 'last_name',
-                        name: 'last_name'
+                        data: 'gender',
+                        name: 'gender'
                     },
+
                     {
                         data: 'email',
                         name: 'email'
@@ -116,6 +118,7 @@
                     url: '/addDoctorView',
                     success: function(response) {
                         $('body').append(response);
+                        $('#doctorModal').modal({backdrop: 'static', keyboard: false});
                         $('#doctorModal').modal('show'); // Show modal
 
                     },

@@ -59,7 +59,7 @@
                                         <label for="bd_medicine" class="form-label">BD medicine <span
                                                 id="star">*</span></label>
                                         <input type="number" name="bd_medicine" id="bd_medicine" class="form-control"
-                                            placeholder="Enter BD medicine no">
+                                            placeholder="Enter BD medicine no" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="us_medicine" class="form-label">US medicine <span
@@ -139,7 +139,7 @@
                             <div style="z-index: 2000" class="row">
                                 <label class="form-label">Problems<span id="star">*</span></label>
                                 <div class="col-12" >
-                                    <select  name="problem_id[]" id="problem" class="form-control d-none" multiple></select>
+                                    <select  name="problem_id[]" id="problem" class="form-control d-none" multiple required></select>
                                 </div>
 
                             </div>
@@ -324,7 +324,7 @@ $(document).ready(function(){
 
         placeholder: 'Search',  // default Search...
         tagColor: {
-            
+
         },
     })
 });

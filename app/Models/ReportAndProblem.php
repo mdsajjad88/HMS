@@ -16,4 +16,9 @@ class ReportAndProblem extends Model
         return $this->belongsTo(Problem::class, 'problem_id')->withTimestamps();;
     }
 
+    public function reviewReport()
+    {
+        return $this->belongsTo(ReviewReport::class, 'review_report_id');
+    }
+
 }

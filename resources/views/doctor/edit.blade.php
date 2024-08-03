@@ -18,33 +18,28 @@
                     <div class="row g-3">
                         <!-- First Name -->
                         <div class="col-md-6">
-                            <label for="first_name" class="form-label">First Name</label>
+                            <label for="first_name" class="form-label">Doctor Name <span id="star">*</span></label>
                             <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" required>
                             <input type="hidden" id="doctorId" name="doctorId" >
                         </div>
 
-                        <!-- Last Name -->
-                        <div class="col-md-6">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" required>
-                        </div>
 
                         <!-- Email -->
                         <div class="col-md-6">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter valid email address" required>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter valid email address" readonly>
                         </div>
 
                         <!-- Mobile -->
                         <div class="col-md-6">
-                            <label for="mobile" class="form-label">Mobile</label>
-                            <input type="number" class="form-control contact_no" id="mobile" name="mobile" placeholder="Enter contact no" required>
+                            <label for="mobile" class="form-label">Mobile </label>
+                            <input type="number" class="form-control contact_no" id="mobile" name="mobile" placeholder="Enter contact no">
                             <small id="contact_no_res"></small>
                         </div>
 
                         <!-- Gender -->
                         <div class="col-md-6">
-                            <label for="gender" class="form-label">Gender</label>
+                            <label for="gender" class="form-label">Gender<span id="star">*</span></label>
                             <select class="form-select" id="gender" name="gender" required>
                                 <option value="">Select Gender</option>
                                 <option value="Male">Male</option>
@@ -62,7 +57,7 @@
                         <!-- Blood Group -->
                         <div class="col-md-6">
                             <label for="blood_group" class="form-label">Blood Group</label>
-                            <select class="form-select" id="blood_group" name="blood_group" required>
+                            <select class="form-select" id="blood_group" name="blood_group">
                                 <option value="">Select Blood Group</option>
                                 <option value="A+">A+</option>
                                 <option value="B+">B+</option>
@@ -78,31 +73,31 @@
                         <!-- Date of Birth -->
                         <div class="col-md-6">
                             <label for="date_of_birth" class="form-label">Date of Birth</label>
-                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" >
                         </div>
 
                         <!-- NID -->
                         <div class="col-md-6">
                             <label for="nid" class="form-label">NID</label>
-                            <input type="text" class="form-control" id="nid" name="nid" placeholder="Enter NID no"  required>
+                            <input type="text" class="form-control" id="nid" name="nid" placeholder="Enter NID no" >
                         </div>
 
                         <!-- Specialist -->
                         <div class="col-md-6">
                             <label for="specialist" class="form-label">Specialist</label>
-                            <input type="text" class="form-control" id="specialist" name="specialist" placeholder="Enter doctor specialist" required>
+                            <input type="text" class="form-control" id="specialist" name="specialist" placeholder="Enter doctor specialist">
                         </div>
 
                         <!-- Fee -->
                         <div class="col-md-6">
                             <label for="fee" class="form-label">Fee</label>
-                            <input type="number" class="form-control" id="fee" name="fee" placeholder="Enter doctor fee" required>
+                            <input type="number" class="form-control" id="fee" name="fee" placeholder="Enter doctor fee">
                         </div>
 
                         <!-- Designation -->
                         <div class="col-md-6">
                             <label for="designation" class="form-label">Designation</label>
-                            <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter doctor designation" required>
+                            <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter doctor designation" >
                         </div>
 
                         <!-- Consultant Type -->
@@ -139,7 +134,6 @@
 <script>
     $(document).ready(function(){
         var firstName = '<?php echo $doctor->first_name ?>';
-        var lastName = '<?php echo $doctor->last_name ?>';
         var email = '<?php echo $doctor->email ?>';
         var mobile = '<?php echo $doctor->mobile ?>';
         var gender = '<?php echo $doctor->gender ?>';
@@ -156,8 +150,7 @@
         var img = '<?php echo $doctor->photo ?>';
         var id = '<?php echo $doctor->id ?>';
         function dataInsert(){
-            $('#first_name').val(firstName);
-        $('#last_name').val(lastName);
+        $('#first_name').val(firstName);
         $('#email').val(email);
         $('#mobile').val(mobile);
         $('#gender').val(gender);
@@ -174,7 +167,6 @@
         $('#doctorId').val(id);
         }
         dataInsert();
-
 
         $('#updateDoctor').off('submit').on( 'submit', function(e){
             e.preventDefault(); // Prevent default form submission
@@ -231,7 +223,6 @@
                 return false;
                 },
                 complete: function() {
-                // Re-enable the submit button after request completes
                 submitBtn.prop('disabled', false);
             }
             });

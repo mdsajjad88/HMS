@@ -6,6 +6,7 @@ use App\Http\Controllers\MedicalTestController;
 use App\Http\Controllers\ReviewReportController;
 use App\Http\Controllers\PatientMedicalTestController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PatientProfileController;
 use App\Http\Controllers\ProblemController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor');
     Route::get('/doctor_profiles', [DoctorController::class, 'show'])->name('doctor_profiles.index');
+    Route::get('roporting', function(){
+        return view('medical_report.add');
+    });
 
     Route::resource('medical-tests', MedicalTestController::class);
     Route::resource('patient-medical-tests', PatientMedicalTestController::class);
@@ -52,6 +56,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/medical-tests-list', [MedicalTestController::class, 'getMedicalTests'])->name('medical-tests.list');
     Route::resource('report', ReportController::class);
+    Route::resource('patient-profile', PatientProfileController::class);
+    Route::get('patient-profile-show/{id}', [PatientProfileController::class, 'show'])->name('patient.profile.show');
 });
 
 require __DIR__.'/auth.php';

@@ -57,7 +57,7 @@ $(document).ready(function(){
                     timer:2000,
                     });
                     var newProblem = '<option value="' + response.problem.id + '">' + response.problem.name + '</option>';
-                    $('#problem_id').append(newProblem); // Assuming doctorDropdown is the ID of your <select> element
+                    $('.multipleProblem').append(newProblem); // Assuming doctorDropdown is the ID of your <select> element
             },
             error: function(xhr, status, error) {
                     var errorMessage = '';
