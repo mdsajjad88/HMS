@@ -37,9 +37,11 @@ class PatientController extends Controller
                 if ($user->role == 'admin') {
                     $data = PatientProfile::latest()->get(); // Admin sees all records
                 } elseif ($user->role == 'user') {
-                    $now = Carbon::now();
+
+                $startOfDay = Carbon::today();
+                $endOfDay = Carbon::tomorrow();
                     $data = PatientProfile::latest()
-                        ->where('created_at', '>=', $now->subHours(24)) // Records older than 24 hours
+                    ->whereBetween('created_at', [$startOfDay, $endOfDay])
                         ->get();
                 } else {
                     $data = collect(); // Return an empty collection if the role is not recognized

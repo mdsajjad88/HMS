@@ -9,6 +9,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientProfileController;
 use App\Http\Controllers\ProblemController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('medical-tests', MedicalTestController::class);
+    Route::resource('role', RoleController::class);
     Route::resource('patient-medical-tests', PatientMedicalTestController::class);
     Route::get('/tests/edit/{id}', [MedicalTestController::class, 'editview']);
     Route::resource('medical-report', ReviewReportController::class);

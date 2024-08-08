@@ -17,6 +17,7 @@ class DoctorSeeder extends Seeder
             'name' => 'Jane Smith',
             'email' => 'smith@example.com',
             'password' => '01234567892',
+            'role' => 'admin',
         ]);
 
 

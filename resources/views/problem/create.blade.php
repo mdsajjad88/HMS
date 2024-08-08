@@ -56,8 +56,12 @@ $(document).ready(function(){
                     confirmButtonText: 'OK',
                     timer:2000,
                     });
-                    var newProblem = '<option value="' + response.problem.id + '">' + response.problem.name + '</option>';
-                    $('.multipleProblem').append(newProblem); // Assuming doctorDropdown is the ID of your <select> element
+                    var newProblem = $('<option>', {
+        value: response.problem.id,
+        text: response.problem.name
+    });
+
+    $('.multipleProblem').append(newProblem);
             },
             error: function(xhr, status, error) {
                     var errorMessage = '';

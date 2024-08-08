@@ -33,9 +33,12 @@ class ReviewReportController extends Controller
             if ($user->role === 'admin') {
                 $data = ReviewReport::with('problems')->select('review_reports.*')->latest()->get(); // Fetch all doctor profiles
             } elseif ($user->role === 'user') {
-                $now = Carbon::now();
+
+                $startOfDay = Carbon::today();
+                $endOfDay = Carbon::tomorrow();
                 $data = ReviewReport::with('problems')->select('review_reports.*') // Fetch all doctor profiles
-                    ->where('created_at', '>=', $now->subHours(24)) // Records older than 24 hours
+                ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                    ->orderBy('id', 'DESC') // Records older than 24 hours
                     ->get();
             } else {
                 $data = collect(); // Return an empty collection if the role is not recognized
@@ -56,6 +59,9 @@ class ReviewReportController extends Controller
                 })
                 ->addColumn('problems', function($data) {
                     return $data->problems->pluck('name')->implode(', ');
+                })
+                ->addColumn('user_name', function($data) {
+                    return $data->user->name;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -169,7 +175,7 @@ class ReviewReportController extends Controller
     public function creating(Request $request){
         $patients = PatientProfile::all();
         $doctors = DoctorProfile::all();
-        $problems = Problem::all();
+        $problems = Problem::orderBy('id', 'DESC')->get();
         return view('medical_report.create', compact('patients','doctors', 'problems'));
     }
     /**

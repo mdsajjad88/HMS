@@ -62,13 +62,16 @@
                         </div>
                         <div class="col-2 d-flex flex-column align-items-center justify-content-center">
                             <label for="">Is Session?</label>
+
                             <input type="checkbox" name="is_session_visite" id="is_session_visite">
+                            <div class="popup" id="popup-message">Patient does not have a subscription</div>
+
                         </div>
 
                         <div class="col-5">
                             <label for="session_visite_count" class="form-label">Session Visit no </label>
                             <input type="number" class="form-control" name="session_visite_count" id="session_visite_count"
-                                placeholder="No of session visite" readonly>
+                                placeholder="No of session visit" readonly>
                         </div>
 
                     </div>
@@ -182,10 +185,12 @@
                 $('#today_date').val(formattedDate);
             }
             setTodayDate();
+
             $.each(patients, function(index, patient) {
                 $('#patient_user_id').append('<option value="' + patient.patient_user_id + '">' +
-                    patient.first_name + '</option>');
+                    patient.first_name + ' - ' + patient.mobile + '</option>');
             });
+
             $.each(doctors, function(index, doctors) {
                 $('#doctor_user_id').append('<option value="' + doctors.user_id + '">' +
                     doctors.first_name + '</option>');
@@ -260,10 +265,10 @@
                             }
                             var session = respons.session;
 
-                                if(!session){
+                                if(status != '3'){
                                     $('.showSession').text('( Out of session )');
 
-                                }else{
+                                }else if(status == '3'){
                                     $('.showSession').text('( Session visite )');
                                 }
                             if(status == '3'){
@@ -394,17 +399,30 @@
                 allowClear: false,
 
             });
+            $('#patient_user_id').select2({
+                placeholder: "Select problem",
+                allowClear: false,
+            });
 
         });
-        $('#is_session_visite').on('mouseover', function() {
+        $(document).ready(function() {
+            $('#is_session_visite').on('mouseover', function() {
                 if ($(this).is(':disabled')) {
-                    alert('Patient does not have subscription');
+                    $('#popup-message').css({
+                        'display': 'block',
+                        'opacity': 1
+                    });
                 }
             });
-        // $(document).ready(function() {
-        //     new MultiSelectTag('problem_id')
-        // })
-       // id
+
+            $('#is_session_visite').on('mouseout', function() {
+                $('#popup-message').css({
+                    'display': 'none',
+                    'opacity': 0
+                });
+            });
+        });
+
 
     </script>
 @endsection

@@ -92,15 +92,8 @@ class DoctorController extends Controller
                 // Check user role and set up query
                 if ($user->role == 'admin') {
                     $data = DoctorProfile::latest()->get();
-                } elseif ($user->role == 'user') {
-                    $now = Carbon::now();
-                    $data = DoctorProfile::latest()
-                        ->where('created_at', '>=', $now->subHours(24)) // Records older than 24 hours
-                        ->get();
-                } else {
-                    $data = collect(); // Return an empty collection if the role is not recognized
                 }
-
+                
                 return DataTables::of($data)
                     ->addColumn('action', function($row){
                         $btn = '<a  data-id="'.$row->id.'" class="editDoctor btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
@@ -114,6 +107,7 @@ class DoctorController extends Controller
 
 
         }
+
     public function edit($id){
         $doctor = DoctorProfile::find($id);
         return view('doctor.edit', compact('doctor'));

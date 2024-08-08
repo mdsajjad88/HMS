@@ -16,15 +16,22 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                   @if(Auth::user()->role == 'admin')
                     <x-nav-link :href="route('doctor')" :active="request()->routeIs('doctor')">
                         {{ __('Doctor') }}
                     </x-nav-link>
+                    @endif
                     <x-nav-link :href="route('patient')" :active="request()->routeIs('patient')">
                         {{ __('Patient') }}
                     </x-nav-link>
                     <x-nav-link :href="route('medical-report.index')" :active="request()->routeIs('medical-report.index')">
                         {{ __('Patient Visit') }}
                     </x-nav-link>
+                    @if(Auth::user()->role == 'admin')
+                    <x-nav-link :href="route('role.index')" :active="request()->routeIs('role.index')">
+                        {{ __('Role') }}
+                    </x-nav-link>
+                    @endif
 
                     {{-- <x-nav-link :href="route('medical-tests.index')" :active="request()->routeIs('medical-tests.index')">
                         {{ __('Medical Tests') }}

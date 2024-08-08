@@ -11,7 +11,7 @@ class ReviewReport extends Model
     protected $table = 'review_reports';
     protected $fillable = [
         'patient_user_id', 'doctor_user_id', 'patient_medical_test_id ', 'prescribed_medicine_id ', 'prescription_therapie_id ',
-        'created_by ', 'physical_improvement','comment', 'problem_id', 'is_session_visite', 'session_visite_count'
+        'created_by ', 'physical_improvement','comment', 'problem_id', 'is_session_visite', 'session_visite_count', 'created_by'
     ];
     protected $dates = ['deleted_at'];
     public function doctor()
@@ -26,6 +26,10 @@ class ReviewReport extends Model
     {
         return $this->belongsToMany(Problem::class, 'report_and_problems', 'review_report_id', 'problem_id')
                     ->withTimestamps();
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
 }
