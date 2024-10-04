@@ -17,6 +17,7 @@ use  Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log;
 use App\Models\ReviewReport;
+
 class PatientController extends Controller
 {
     /**
@@ -37,22 +38,28 @@ class PatientController extends Controller
                 if ($user->role == 'admin') {
                     $data = PatientProfile::latest()->get(); // Admin sees all records
                 } elseif ($user->role == 'user') {
-                    $now = Carbon::now();
-                    $data = PatientProfile::latest()
-                        ->where('created_at', '>=', $now->subHours(24)) // Records older than 24 hours
-                        ->get();
-                } else {
-                    $data = collect(); // Return an empty collection if the role is not recognized
-                }
 
+                    $startOfDay = Carbon::today();
+                    $endOfDay = Carbon::tomorrow();
+                        $data = PatientProfile::latest()
+                        ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                            ->get();
+                    } else {
+                        $data = collect(); // Return an empty collection if the role is not recognized
+                    }
             return DataTables::of($data)
                 ->addColumn('action', function($row){
                     $btn = '<a  data-id="'.$row->id.'"  class="editPatient btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
                     $btn .= '<a  data-id="'.$row->id.'" class="deletePatient btn btn-danger ml-1 btn-sm"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                    $btn .= ' <a  data-id="'.$row->id.'" class="viewPatientProfile btn btn-info btn-sm"><i class="fa-regular fa-eye"></i>Profile</a>';
+
                     return $btn;
                 })
                 ->addColumn('district_name', function($data) {
                     return $data->district->district_name_eng; // Example: Accessing patient's first name
+                })
+                ->addColumn('user_name', function($data) {
+                    return $data->user->name; // Example: Accessing patient's first name
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -69,7 +76,7 @@ class PatientController extends Controller
     {
         $districts = GeoDistricts::orderBy('district_name_eng', 'ASC')->get();
 
-        return view('patient.add', compact('districts'));
+        return view('patient.create', compact('districts'));
     }
 
     /**
@@ -105,6 +112,17 @@ class PatientController extends Controller
 
             // Log validated data
             Log::info('Validated data:', $validatedData);
+
+           // Log validated data
+           Log::info('Validated data:', $validatedData);
+           $existsContact = PatientProfile::where('mobile', $validatedData['mobile'])->exists();
+           $existsName = PatientProfile::where('first_name', $validatedData['first_name'])->exists();
+
+           if ($existsContact && $existsName) {
+               // Log the duplicate phone number error
+               Log::error('Duplicate name and phone number detected.', ['mobile' => $validatedData['mobile']]);
+               return response()->json(['error' => 'The name and phone number is already in use.'], 422);
+           }
 
             $visitCount = $request->input('session_visite_count');
 
@@ -151,22 +169,63 @@ class PatientController extends Controller
                         'subscript_date' => $startDate,
                         'expiry_date' => $endDate
                     ]);
+                    if($visitCount > 0){
+                        $reportAdd = new ReviewReport();
+                        $reportAdd->patient_user_id = $validatedData['patient_user_id'] ?? $patientUserId; // Use a default value
+                        $reportAdd->doctor_user_id = 2; // Use a default value
+                        $reportAdd->mobile = $validatedData['mobile'];
+                        $reportAdd->created_by = Auth::user()->id;
+                        $reportAdd->no_of_visite = $visitCount;
+                        $reportAdd->last_visited_date = $validatedData['subscript_date'];
+                        $patientTypeId = (int)($validatedData['patient_type_id'] ?? 0);
 
-                    $reportAdd = new ReviewReport();
-                    $reportAdd->patient_user_id = $validatedData['patient_user_id'] ?? $patientUserId; // Use a default value
-                    $reportAdd->doctor_user_id = 2; // Use a default value
-                    $reportAdd->mobile = $validatedData['mobile'];
-                    $reportAdd->created_by = Auth::user()->id;
-                    $reportAdd->no_of_visite = $visitCount;
-                    $reportAdd->last_visited_date = $validatedData['subscript_date'];
-                    $reportAdd->is_session_visite = 1;
-                    $reportAdd->session_visite_count = $visitCount;
-                    $reportAdd->save();
+                        $reportAdd->is_session_visite = $patientTypeId == 3?1:0;
+                        $reportAdd->session_visite_count = $visitCount;
+                        $reportAdd->save();
 
-                    Log::info('ReviewReport created.', [
-                        'patient_user_id' => $reportAdd->patient_user_id,
-                        'no_of_visite' => $reportAdd->no_of_visite
+                        Log::info('ReviewReport created.', [
+                            'patient_user_id' => $reportAdd->patient_user_id,
+                            'no_of_visite' => $reportAdd->no_of_visite
+                        ]);
+                        Log::info('is_session_visite value set to:', ['value' => $reportAdd->is_session_visite]);
+                    }
+
+
+                }
+                else if ($validatedData['patient_type_id'] == 33) {
+                    $startDate = Carbon::parse($validatedData['subscript_date']);
+                    $endDate = $startDate->copy()->addMonths($validatedData['patient_type_id'] == 33 ? 3 : 6)->endOfDay()->format('Y-m-d');
+
+                    $subscription = new PatientSubscription();
+                    $subscription->patient_user_id = $patientUserId;
+                    $subscription->subscript_date = $startDate;
+                    $subscription->expiry_date = $endDate;
+                    $subscription->created_by = Auth::user()->id;
+                    $subscription->save();
+
+                    Log::info('PatientSubscription created.', [
+                        'patient_user_id' => $patientUserId,
+                        'subscript_date' => $startDate,
+                        'expiry_date' => $endDate
                     ]);
+                    if($visitCount > 0){
+                        $reportAdd = new ReviewReport();
+                        $reportAdd->patient_user_id = $validatedData['patient_user_id'] ?? $patientUserId; // Use a default value
+                        $reportAdd->doctor_user_id = 2; // Use a default value
+                        $reportAdd->mobile = $validatedData['mobile'];
+                        $reportAdd->created_by = Auth::user()->id;
+                        $reportAdd->no_of_visite = $visitCount;
+                        $reportAdd->last_visited_date = $validatedData['subscript_date'];
+                        $reportAdd->is_session_visite = 1;
+                        $reportAdd->session_visite_count = $visitCount;
+                        $reportAdd->save();
+
+                        Log::info('ReviewReport created.', [
+                            'patient_user_id' => $reportAdd->patient_user_id,
+                            'no_of_visite' => $reportAdd->no_of_visite
+                        ]);
+                    };
+
                 }
 
                 return response()->json(['success' => $patientProfile]);
@@ -198,15 +257,17 @@ class PatientController extends Controller
     {
         $districts= GeoDistricts::all();
         $states= GeoUpazillas::all();
-        return view('patient.edit', compact('id', 'states', 'districts'));
-    }
-    public function  getOnePatient($id){
         $patient = PatientProfile::find($id);
         $id = $patient->patient_user_id;
         $report = ReviewReport::where('patient_user_id', $id)->latest('created_at')->first();
         $subscription = PatientSubscription::where('patient_user_id', $id)->first();
-        return response()->json(['data'=>$patient, 'report'=>$report, 'subscription'=>$subscription]);
-    }
+
+        return view('patient.edit', compact('id', 'states', 'districts', 'patient', 'report', 'subscription'));
+   }
+    // public function  getOnePatient($id){
+
+    //     return response()->json(['data'=>$patient, 'report'=>$report, 'subscription'=>$subscription]);
+    // }
 
     public function update(Request $request)
     {

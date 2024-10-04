@@ -6,7 +6,10 @@ use App\Http\Controllers\MedicalTestController;
 use App\Http\Controllers\ReviewReportController;
 use App\Http\Controllers\PatientMedicalTestController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PatientProfileController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProblemController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,9 +27,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/addDoctorView', [DoctorController::class, 'create'])->name('doctor.add');
     Route::post('/addDoctor', [DoctorController::class, 'store']);
+    Route::get('user/register', function(){
+            return view('auth.userRegister');
+    })->name('user.register');
+    Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('/editDoctor/{id}', [DoctorController::class, 'edit']);
-    Route::post('/updateDoctor', [DoctorController::class, 'update']);
+    Route::post('/updateDoctor', [DoctorController::class, 'update'])->name('doctor.update');
     Route::get('/patient', [PatientController::class, 'index'])->name('patient');
     Route::get('/getPatient', [PatientController::class, 'getPatient'])->name('patient_profiles.index');
     Route::get('/addPatient', [PatientController::class, 'create'])->name('add.patient');
@@ -40,18 +47,25 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor');
     Route::get('/doctor_profiles', [DoctorController::class, 'show'])->name('doctor_profiles.index');
+    Route::get('roporting', function(){
+        return view('medical_report.add');
+    });
 
     Route::resource('medical-tests', MedicalTestController::class);
     Route::resource('patient-medical-tests', PatientMedicalTestController::class);
     Route::get('/tests/edit/{id}', [MedicalTestController::class, 'editview']);
     Route::resource('medical-report', ReviewReportController::class);
     Route::get('create/medical/report', [ReviewReportController::class, 'creating']);
-    Route::get('latest/report/{id}', [ReviewReportController::class, 'latestReport']);
+    Route::get('latest/report/{id}', [ReviewReportController::class, 'latestReport'])->name('report.latest');
     Route::get('getupozilla/{id}', [PatientController::class, 'upozilla' ]);
     Route::resource('problems', ProblemController::class);
 
     Route::get('/medical-tests-list', [MedicalTestController::class, 'getMedicalTests'])->name('medical-tests.list');
     Route::resource('report', ReportController::class);
+    Route::resource('role', RoleController::class);
+
+    Route::resource('patient-profile', PatientProfileController::class);
+    Route::get('patient-profile-show/{id}', [PatientProfileController::class, 'show'])->name('patient.profile.show');
 });
 
 require __DIR__.'/auth.php';

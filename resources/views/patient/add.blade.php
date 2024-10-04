@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header modalHeader">
                 <h5 class="modal-title" id="doctorModalLabel">Add New Patient</h5>
-                <button type="button" class="btn-close" id="closePatientModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close patientModalClose" id="closePatientModal" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-xmark"></i> </button>
             </div>
             <form id='addNewPatient' method="POST" enctype="multipart/form-data" >
                 @csrf
@@ -43,26 +43,24 @@
                             <label for="patient_type_id">Subscription<span id="star">*</span></label>
                                 <select name="patient_type_id" id="patient_type_id" class="form-control" required>
                                     <option value="" selected disabled>Select Patient Subscription</option>
+                                    <option value="1">Not Subscribed</option>
                                     <option value="33">3 Month(Regular)</option>
-                                    <option value="66">6 Month(Regular)</option>
+                                    <option value="6">6 Month(Regular)</option>
                                     <option value="3">3 Month(Session)</option>
                                 </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="subscript_date">Subscription Start Date</label>
-                                <input type="date" class="form-control" name="subscript_date" id="subscript_date" readonly>
+                                <input type="date" class="form-control" name="subscript_date" id="subscript_date" readonly max="today">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="session_visite_count">Subscription Visit complete</label>
                                 <input type="number" class="form-control session_visite_count" name="session_visite_count" placeholder="If already Subscription visited " readonly>
                         </div>
 
-                        <div class="form-group col-md-6" >
-                            <label for="address">Address</label>
-                            <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" placeholder="Enter Patient address"></textarea>
-                        </div>
+
                         <div class="form-group col-md-6">
-                            <label for="geo_district_id">City<span id="star">*</span></label>
+                            <label for="geo_district_id">District<span id="star">*</span></label>
                             <select class="form-control geo_district" id="geo_district_id" name="geo_district_id" required>
                             <option value="" selected disabled>Select City</option>
                             @foreach ($districts as $city)
@@ -71,10 +69,14 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="geo_upazila_id">State</label>
+                            <label for="geo_upazila_id">Upozilla</label>
                             <select class="form-control geo_upozilla" id="geo_upazila_id" name="geo_upazila_id">
                                 <option value="" selected disabled>Select Upozilla</option>
                             </select>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <label for="address">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="1" placeholder="Enter Address" placeholder="Enter Patient address"></textarea>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="nid">National ID</label>
@@ -143,19 +145,21 @@
         function subsCription(){
             var today = new Date().toISOString().split('T')[0];
 
-            var sessionCount = $('#patient_type_id').val();
-        if(sessionCount == 3){
-            $('#subscript_date').removeAttr('readonly');
-            $('.session_visite_count').removeAttr('readonly');
-            $('#subscript_date').val(today);
-        }else{
-            $('#subscript_date').attr('readonly', 'readonly');
-        $('.session_visite_count').attr('readonly', 'readonly');
-        $('#subscript_date').val('');
-        }
+                var sessionCount = $('#patient_type_id').val();
+            if(sessionCount == 3 || sessionCount == 33 || sessionCount == 6){
+                $('#subscript_date').removeAttr('readonly');
+                $('.session_visite_count').removeAttr('readonly');
+                $('#subscript_date').val(today);
+                $('#subscript_date').attr('max', today);
+            }
+            else{
+                $('#subscript_date').attr('readonly', 'readonly');
+                $('.session_visite_count').attr('readonly', 'readonly');
+                $('#subscript_date').val('');
+                }
         }
 
-        $('#patient_type_id').change(function(){
+        $('#patient_type_id').on('change', function(){
             subsCription();
         })
 
@@ -194,20 +198,22 @@
                 success: function(respons) {
                     $('#addNewPatient')[0].reset();
                     if(respons.success){
-
                         $('#closePatientModal').click();
                         $('#patientTable').DataTable().ajax.reload();
                         Swal.fire({
-                        title: 'success!',
-                        text: 'Patient Added Successfully',
-                        icon: 'success', // 'success', 'error', 'warning', 'info', 'question'
-                        confirmButtonText: 'OK',
-                        timer: 2000
-                    });
-
+                            icon: 'success',
+                            title: 'Success!!',
+                            text: 'Report Added Successfully',
+                            confirmButtonText: 'OK',
+                            timer: 2000, // Optional: show alert for 2 seconds before auto-closing
+                            timerProgressBar: true // Optional: show a progress bar indicating the timer
+                        }).then((result) => {
+                            if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+                                window.location.reload();
+                            }
+                        });  // Redirect to new route
                         var newPatient = '<option value="' + respons.success.patient_user_id + '">' + respons.success.first_name + '</option>';
                         $('#patient_user_id').append(newPatient);
-
 
                     }
                     if(respons.error){
@@ -219,28 +225,19 @@
                     });
                     }
                 },
-                error: function(xhr, status, error) {
-                // Handle error response
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    // If validation errors exist, display them
-                    var errors = xhr.responseJSON.errors;
-                    var errorMessage = '';
+                error: function(xhr) {
+                // Handle error
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error
+                        ? xhr.responseJSON.error
+                        : 'An unknown error occurred.';
 
-                    for (var key in errors) {
-                        errorMessage += '- ' + errors[key].join('\n- ') + '\n'; // Accumulate error messages
-                    }
                     Swal.fire({
-                        title: 'error!',
+                        title: 'Error!',
                         text: errorMessage,
-                        icon: 'error', // 'success', 'error', 'warning', 'info', 'question'
-                        confirmButtonText: 'OK'
+                        icon: 'error'
                     });
-
-                } else {
-
                 }
-                return false;
-                }
+
             });
         });
 
@@ -248,12 +245,12 @@
        var id = $(this).val();
 
        $.ajax({
-        url: '/getupozilla/'+id,
+        url: 'getupozilla/'+id,
         type: 'GET',
         success: function (response) {
                     $('.geo_upozilla').empty();
-                    $('.geo_upozilla').append(
-                        '<option disabled selected>Select Upozilla</option>');
+
+
                     $.each(response, function (index, area) {
                         $('.geo_upozilla').append('<option value="' + area.id + '">' +
                             area.upazila_name_eng + '</option>');
@@ -275,7 +272,15 @@
 
                             });
                     }
-       })
+            });
+        });
+
+
+
+
+        $('.patientModalClose').click(function(){
+            window.location.reload();
+        })
     });
-    })
+
 </script>

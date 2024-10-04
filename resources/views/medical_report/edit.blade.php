@@ -10,7 +10,7 @@
             <div class="modal-header modalHeader">
                 <h5 class="modal-title" id="reportEditModalLabel">Edit patient report</h5>
                 <button type="button" class="btn-close" id="reportUpdateClose" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                    aria-label="Close"> <i class="fas fa-xmark"></i> </button>
             </div>
 
             <!-- Modal Body -->
@@ -59,7 +59,7 @@
                                         <label for="bd_medicine" class="form-label">BD medicine <span
                                                 id="star">*</span></label>
                                         <input type="number" name="bd_medicine" id="bd_medicine" class="form-control"
-                                            placeholder="Enter BD medicine no">
+                                            placeholder="Enter BD medicine no" required>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="us_medicine" class="form-label">US medicine <span
@@ -117,31 +117,28 @@
                                 <label for="no_of_sauna" class="form-label">Sauna therapy </label> &nbsp;&nbsp;
                                 <input type="checkbox" name="no_of_sauna" id="no_of_sauna">
                             </div>
-
-
-                            <div>
-                                <label for="physical_improvement" class="form-label">Physical Improvement <span
-                                        id="star">*</span></label>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <input type="radio" class="btn-check " name="physical_improvement"
-                                            id="success-outlined" value="1" required>
-                                        <label class="btn btn-outline-success" for="success-outlined">Yes</label>
-
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="radio" class="btn-check " name="physical_improvement"
-                                            id="dark-outlined" value="0" required>
-                                        <label class="btn btn-outline-success" for="dark-outlined">No</label>
-                                    </div>
-                                </div>
-                            </div>
                             <div style="z-index: 2000" class="row">
                                 <label class="form-label">Problems<span id="star">*</span></label>
                                 <div class="col-12" >
-                                    <select  name="problem_id[]" id="problem" class="form-control d-none" multiple></select>
+                                    <select  name="problem_id[]" id="problem" class="form-control d-none" multiple required></select>
                                 </div>
 
+                            </div>
+
+                            <div>
+                                <label for="physical_improvement" class="form-label">
+                                    Physical Improvement <span id="star">*</span>
+                                </label>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <input type="radio" class="btn-check" name="physical_improvement" id="success-outlined" value="1" required>
+                                        <label class="btn btn-outline-success" for="success-outlined">Yes</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="radio" class="btn-check" name="physical_improvement" id="dark-outlined" value="0" required>
+                                        <label class="btn btn-outline-success" for="dark-outlined">No</label>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label for="comment" class="form-label">Comment</label>
@@ -280,7 +277,7 @@
 
             $.ajax({
                 method: 'POST',
-                url: '/medical-report/' + reportID,
+                url: 'medical-report/' + reportID,
                 data: formData,
 
                 contentType: false, // Ensure to set these options for FormData
@@ -324,7 +321,7 @@ $(document).ready(function(){
 
         placeholder: 'Search',  // default Search...
         tagColor: {
-            
+
         },
     })
 });

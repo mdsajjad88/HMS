@@ -1,19 +1,22 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', 'create new report')
 @section('content')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
-    <div class="container">
+
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6" id="reportCreteDesign">
                 <form id="addReport" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col">
+                        <div class="col-2">
+                            <a href="{{route('medical-report.index')}}" class="btn btn-success"><-Back</a>
+                         </div>
+                        <div class="col-10">
                             <div class="h2 text-center"><u>Create new report</u></div>
                         </div>
+
                     </div>
                     <div class="row">
                         <label for="select_patient" class="form-label"> Patient Name<span id="star">*</span></label>
@@ -24,14 +27,14 @@
                             </select>
                         </div>
                         <div class="col-md-2 text-right">
-                            <button type="button" class="addPatient btn btn-primary"><i
+                            <button type="button" id="patientCreate" class="btn btn-primary"><i
                                     class="fa-solid fa-plus"></i>Add</button>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <label for="select_doctor" class="form-label"> Doctor Name </label>
-                            <select name="doctor_user_id" class="form-control" id="doctor_user_id">
+                            <select name="doctor_user_id" class="form-control" id="doctor_user_id" required>
                                 <option value="" selected disabled>Select Doctor</option>
 
                             </select>
@@ -43,7 +46,7 @@
                                 <span><small id="patient_type_id"></small><small id="startDate"></small> <small class="d-none to"> to </small> <small
                                         id="endDate"></small></span></label>
                             <input type="number" class="form-control" name="no_of_visite" id="no_of_visite"
-                                placeholder="No of visite" required readonly>
+                                placeholder="No of visit" required readonly>
                         </div>
                         <div class="col-3">
                             <label for="last_visited_date" class="form-label">Last visited date </label>
@@ -52,17 +55,18 @@
                     </div>
                     <div class="row">
                         <div class="col-5">
-                            <label for="today_date" class="form-label">Today visite date  <span
+                            <label for="today_date" class="form-label">Today visit date  <span
                                     id="star">*</span> <small class="showSession"></small></label>
                             <input type="date" class="form-control" name="last_visited_date" id="today_date" required>
                         </div>
                         <div class="col-2 d-flex flex-column align-items-center justify-content-center">
                             <label for="">Is Session?</label>
                             <input type="checkbox" name="is_session_visite" id="is_session_visite">
+                            <div class="popup" id="popup-message">Patient does not have a subscription</div>
                         </div>
 
                         <div class="col-5">
-                            <label for="session_visite_count" class="form-label">Session Visite no </label>
+                            <label for="session_visite_count" class="form-label">Session Visit no </label>
                             <input type="number" class="form-control" name="session_visite_count" id="session_visite_count"
                                 placeholder="No of session visite" readonly>
                         </div>
@@ -70,13 +74,13 @@
                     </div>
                     <div class="row">
 
-                        <label for="problem_id" class="form-label">Problems <span id="star">*</span></label>
+                        <label for="problem_id" class="form-label">Problems <span id="star" class="probelmError">*</span></label>
 
                         <div class="col-md-10">
 
                             <select name="problem_id[]" id="problem_id" class="multipleProblem form-control" multiple
                                 required>
-                                <option value="">Select problem</option>
+
                             </select>
                         </div>
                         <div class="col-md-2 text-right">
@@ -114,26 +118,14 @@
                                     <div class="col-md-3">
                                         <input type="radio" class="btn-check" name="physical_improvement"
                                             id="primary-outlined" value="first_visite" checked required>
-                                        <label class="btn btn-outline-success" for="primary-outlined">First Visite</label>
+                                        <label class="btn btn-outline-success" for="primary-outlined">First Visit</label>
                                     </div>
                                 </section>
 
                             </div>
                         </div>
                     </div>
-                    <div class="hidden">
-                        <input type="hidden" name="no_of_medicine">
-                        <input type="hidden" name="no_of_test">
-                        <input type="hidden" name="no_of_ozone_therapy">
-                        <input type="hidden" name="no_of_hijama_therapy">
-                        <input type="hidden" name="on_of_acupuncture">
-                        <input type="hidden" name="no_of_sauna">
-                        <input type="hidden" name="no_of_physiotherapy">
-                        <input type="hidden" name="no_of_coffee_anema">
-                        <input type="hidden" name="no_of_others">
-                        <input type="hidden" name="no_of_life_style_food">
 
-                    </div>
                     <div class="row mt-1">
                         <div class="col-md-8">
                         </div>
@@ -158,6 +150,8 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+
+
             $('#session_visite_count').empty();
             $('#is_session_visite').prop('disabled', true);
             var patients = @json($patients);
@@ -178,7 +172,7 @@
             setTodayDate();
             $.each(patients, function(index, patient) {
                 $('#patient_user_id').append('<option value="' + patient.patient_user_id + '">' +
-                    patient.first_name + '</option>');
+                    patient.first_name + ' - ' + patient.mobile + '</option>');
             });
             $.each(doctors, function(index, doctors) {
                 $('#doctor_user_id').append('<option value="' + doctors.user_id + '">' +
@@ -190,99 +184,124 @@
             });
 
 
-            $('#patient_user_id').off('change').on('change', function() {
+           $('#patient_user_id').on('change', function() {
+                // Clear fields
                 $('#no_of_visite').empty();
                 $('#last_visited_date').empty();
                 $('#patient_type_id').empty();
                 $('#is_session_visite').prop('checked', false);
-                var patient = $(this).val();
+                $('#session_visite_count').val('');
+
+                // Get selected patient ID
+                var reportId = $(this).val();
+                var url = "{{ route('report.latest', ['id' => 'REPORT_ID']) }}".replace('REPORT_ID', reportId);
+
+                // Make AJAX request
                 $.ajax({
-                    url: '/latest/report/' + patient,
+                    url: url,
                     method: 'GET',
-                    success: function(respons) {
-                        function dataAssign(){
-
-                            var status = respons.patient.patient_type_id;
+                    dataType: 'json',
+                    success: function(response) {
+                        // Function to assign data to elements
+                        function dataAssign() {
+                            // Patient type handling
+                            var patient = response.patient || {};
+                            var status = patient.patient_type_id;
                             if (status) {
-                                if (status == 1) {
-                                    $('#patient_type_id').text('(Regular Patient)');
-                                    $('.to').addClass('d-none');
-                                    $('.showSession').addClass('d-none');
-                                }
-                                if (status == 3) {
-                                    $('#patient_type_id').text('( 3 Months Subscription )');
-                                }
-                                if (status == 6) {
-                                    $('#patient_type_id').text('( 6 Months Subscription )');
+                                switch (status) {
+                                    case 1:
+                                        $('#patient_type_id').text('(Regular Patient)');
+                                        $('.to').addClass('d-none');
+                                        $('.showSession').addClass('d-none');
+                                        break;
+                                    case 2:
+                                        $('#patient_type_id').text('(No Subscription)');
+                                        $('#is_session_visite').prop('disabled', true);
+                                        break;
+                                    case 3:
+                                        $('#patient_type_id').text('(3 Months Subscription)');
+                                        break;
+                                    case 33:
+                                        $('#patient_type_id').text('(3 Months Regular)');
+                                        $('#is_session_visite').prop('disabled', true);
+                                        break;
+                                    case 6:
+                                        $('#patient_type_id').text('(6 Months Regular)');
+                                        $('#is_session_visite').prop('disabled', true);
+                                        break;
                                 }
                             }
 
-
-                            $('#startDate').empty();
-                            $('#endDate').empty();
-                            var subscription = respons.subscription;
-                            if(subscription){
-                                var startDate = subscription.subscript_date;
-                                var expiry_date = subscription.expiry_date;
-                            }
-
-
-                            if(!subscription) {
+                            // Handle subscription dates
+                            var subscription = response.subscription;
+                            if (subscription) {
+                                $('#startDate').text(subscription.subscript_date || '');
+                                $('#endDate').text(subscription.expiry_date || '');
+                                $('.to').removeClass('d-none');
+                                $('.showSession').removeClass('d-none');
+                            } else {
                                 $('#startDate').empty();
                                 $('#endDate').empty();
                             }
-                            if(subscription) {
-                                $('.to').removeClass('d-none');
-                                $('.showSession').removeClass('d-none');
-                                if(subscription.subscript_date && subscription.expiry_date){
-                                    $('#startDate').text(subscription.subscript_date);
-                                    $('#endDate').text(subscription.expiry_date);
-                                }
+
+                            // Handle session visit
+                            var session = response.session;
+                            if (status != 3) {
+                                $('.showSession').text('(Out of session)');
+                            } else {
+                                $('.showSession').text('(Session visit)');
+                                $('#is_session_visite').prop('disabled', false);
                             }
-                            var session = respons.session;
 
-                                if(!session){
-                                    $('.showSession').text('( Out of session )');
-
-                                }else{
-                                    $('.showSession').text('( Session visite )');
-                                    $('#is_session_visite').prop('disabled', false);
-
-                                }
-                            if (respons.data) {
-                                var report = respons.data;
+                            // Handle report data
+                            if (response.data) {
+                                var report = response.data;
+                                var ltsSession = response.ltsSession;
                                 $('#no_of_visite').val(report.no_of_visite + 1);
                                 $('#last_visited_date').val(report.last_visited_date);
                                 $('#doctor_user_id').val(report.doctor_user_id);
                                 $('#first_visite').hide();
                                 $('#improvementSection').show();
                                 $('#primary-outlined').prop('checked', false);
-                                var sessionVisite = report.session_visite_count + 1;
-                                $('#session_visite_count').val(sessionVisite);
-                                console.log(sessionVisite)
 
-                            } else if (respons.nodata) {
-                                $('#no_of_visite').val(' ');
-                                $('#last_visited_date').val(' ');
-                                $('#doctor_user_id').val(' ');
-                                $('#improvementSection').hide();
+                                // Update session visit count
+                                var sessionVisitCount = (ltsSession.session_visite_count || 0) + 1;
+                                $('#is_session_visite').change(function() {
+                                    if ($(this).is(':checked')) {
+                                        $('#session_visite_count').val(sessionVisitCount);
+                                    } else {
+                                        $('#session_visite_count').val('');
+                                    }
+                                });
+
+                                // Populate problem IDs
+                                if (response.data.problems) {
+                                    var selectedProblemIds = response.data.problems.map(p => p.id);
+                                    $('#problem_id').val(selectedProblemIds).trigger('change');
+                                }
+                            } else if (response.nodata) {
+                                // Handle no data case
                                 $('#no_of_visite').val(1);
+                                $('#last_visited_date').val('');
+                                $('#doctor_user_id').val('');
+                                $('#improvementSection').hide();
                                 $('#first_visite').show();
                             }
                         }
 
+                        // Call the function to assign data
                         dataAssign();
-
                     }
                 });
             });
-           
+
+
 
 
             $('#problem_add').click(function() {
                 $.ajax({
                     type: 'GET',
-                    url: '{{ route('problems.create') }}',
+                    url: '{{ route("problems.create") }}',
                     success: function(respons) {
                         $('body').append(respons);
                         $('#problemCreating').modal('show');
@@ -290,25 +309,23 @@
                 })
             });
 
-            function addNewPatient() {
-                $.ajax({
-                    method: 'GET',
-                    url: '/addPatient',
-                    success: function(response) {
-                        $('body').append(response)
-                        $('#patientModal').modal('show'); // Show modal
 
-                    }
-                })
-            }
-            $('.addPatient').on('click', function() {
-                addNewPatient();
+        $('#patientCreate').on('click', function(){
+            $.ajax({
+                method: 'GET',
+                url: '{{route("add.patient")}}',
+                cache: false,
+                success: function(response) {
+                    $('body').append(response);
+                    $('#patientModal').modal({backdrop: 'static', keyboard: false});
+                    $('#patientModal').modal('show'); // Show modal
+                }
             })
+        })
             $('#addReport').off('submit').on('submit', function(e) {
                 e.preventDefault();
                 var form = $('#addReport')[0];
                 var formData = new FormData(form);
-
                 $.ajax({
                     method: 'POST',
                     url: "{{ route('medical-report.store') }}",
@@ -317,15 +334,25 @@
                     processData: false,
                     success: function(response) {
                         $('#addReport')[0].reset();
-                        $('#closeReportModal').click();
                         $('#reportTable').DataTable().ajax.reload();
                         Swal.fire({
                             icon: 'success',
-                            title: 'success!!',
+                            title: 'Success!!',
                             text: 'Report Added Successfully',
-                            confirmButtonText: 'OK'
+                            confirmButtonText: 'OK',
+                            timer: 2000, // Optional: show alert for 2 seconds before auto-closing
+                            timerProgressBar: true // Optional: show a progress bar indicating the timer
+                        }).then((result) => {
+
+                            if (result.isConfirmed || result.dismiss === Swal.DismissReason.timer) {
+
+                                window.location.href = '{{ route("medical-report.index") }}';
+                            }
                         });
+
                     },
+
+
                     error: function(xhr, status, error) {
                         var errorMessage = '';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -349,11 +376,35 @@
         $(document).ready(function() {
             $('#problem_id').select2({
                 placeholder: "Select problem",
-                allowClear: true,
-                tags: true,
+                allowClear: false,
+
+            });
+            $('#patient_user_id').select2({
+                placeholder: "Select Patient",
+                allowClear: false,
+
             });
 
+
         });
+        $(document).ready(function() {
+    $('#is_session_visite').on('mouseover', function() {
+        if ($(this).is(':disabled')) {
+            $('#popup-message').css({
+                'display': 'block',
+                'opacity': 1
+            });
+        }
+    });
+
+    $('#is_session_visite').on('mouseout', function() {
+        $('#popup-message').css({
+            'display': 'none',
+            'opacity': 0
+        });
+    });
+});
+
 
     </script>
 @endsection

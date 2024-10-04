@@ -33,5 +33,9 @@ class PatientProfile extends Model
         return $this->belongsTo(GeoUpazillas::class, 'geo_upazila_id');
 
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
 }

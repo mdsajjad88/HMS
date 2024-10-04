@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header modalHeader">
                 <h5 class="modal-title" id="doctorModalLabel">Edit Patient Information</h5>
-                <button type="button" class="btn-close" id="closePatientEditModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" id="closePatientEditModal" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-xmark"></i> </button>
             </div>
             <form  id="updatePatient" method="POST" enctype="multipart/form-data" >
                 @csrf
@@ -44,6 +44,7 @@
                             <label for="patient_type_id">Subscription<span id="star">*</span></label>
                                 <select name="patient_type_id" id="patient_type_id" class="form-control" required>
                                     <option value="" selected disabled>Select Patient Subscription</option>
+                                    <option value="1">Not Subscribed</option>
                                     <option value="33">3 Month(Regular)</option>
                                     <option value="66">6 Month(Regular)</option>
                                     <option value="3">3 Month(Session)</option>
@@ -140,6 +141,36 @@
 </div>
 <script>
     $(document).ready(function(){
+
+        var patient = @json($patient);
+                var report = @json($report);
+                var subscription = @json($subscription);
+                console.log(patient); console.log(report); console.log(subscription);
+                    $('#first_name').val(patient.first_name);
+                    $('.id').val(patient.id);
+
+                    $('#email').val(patient.email);
+                    $('#mobile').val(patient.mobile);
+                    $('#gender').val(patient.gender);
+                    $('#blood_group').val(patient.blood_group);
+                    $('#nid').val(patient.nid);
+                    $('#marital_status').val(patient.marital_status);
+                    $('#address').val(patient.address);
+                    $('#patientId').val(patient.id);
+                    $('#emergency_phone').val(patient.emergency_phone);
+                    $('#emergency_relation').val(patient.emergency_relation);
+                    $('#geo_district_id').val(patient.geo_district_id);
+                    $('#geo_upazila_id').val(patient.geo_upazila_id);
+                    $('#age').val(patient.age);
+                    $('#referral').val(patient.referral);
+                    $('#profession').val(patient.profession);
+                    $('#patient_type_id').val(patient.patient_type_id);
+
+                    $('.session_visite_count').val(report.session_visite_count);
+                    $('#subscript_date').val(subscription.subscript_date);
+
+
+
         $("#session_visite_count").empty();
         $('.contact_no').keyup(function() {
 
@@ -159,48 +190,14 @@ else if (sub != '01') {
         '<p style="color:red">Contact no length must be 11 character</p>')
 }
 });
-        var pId = '<?php echo $id ?>';
+//         var pId = '<?php echo $id ?>';
 
-        $.ajax({
-            url:'/getOnePatient/'+pId,
-            method:'GET',
-            success:function(patientInfo){
-                var patient = patientInfo.data;
-                    $('#first_name').val(patient.first_name);
-                    $('.id').val(patient.id);
-                    console.log(patient.id);
-                    $('#email').val(patient.email);
-                    $('#mobile').val(patient.mobile);
-                    $('#gender').val(patient.gender);
-                    $('#blood_group').val(patient.blood_group);
-                    $('#nid').val(patient.nid);
-                    $('#marital_status').val(patient.marital_status);
-                    $('#address').val(patient.address);
-                    $('#patientId').val(patient.id);
-                    $('#emergency_phone').val(patient.emergency_phone);
-                    $('#emergency_relation').val(patient.emergency_relation);
-                    $('#geo_district_id').val(patient.geo_district_id);
-                    $('#geo_upazila_id').val(patient.geo_upazila_id);
-                    $('#age').val(patient.age);
-                    $('#referral').val(patient.referral);
-                    $('#profession').val(patient.profession);
-                    $('#patient_type_id').val(patient.patient_type_id);
-                    $('.session_visite_count').val(patientInfo.report.session_visite_count);
-                    $('#subscript_date').val(patientInfo.subscription.subscript_date);
-                    var regular = patient.is_regular;
-                    var threeMonth = patient.is_subscriptions_3_months;
-                    var sixMonth = patient.is_subscriptions_6_months;
-                    if(regular == 'on'){
-                        $('#is_regular').prop('checked', true);
-                    }
-                    if(threeMonth == 'on'){
-                        $('#is_subscriptions_3_months').prop('checked', true);
-                    }
-                    if(sixMonth == 'on'){
-                        $('#is_subscriptions_6_months').prop('checked', true);
-                    }
-            }
-        })
+//         $.ajax({
+//             url = "{{ url('getOnePatient/') }}/" + pId,
+//             method:'GET',
+//             success:function(patientInfo){
+
+        //})
         $('#updatePatient').off('submit').on('submit', function(e){
             e.preventDefault(); // Prevent default form submission
 

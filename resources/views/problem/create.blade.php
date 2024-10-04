@@ -5,7 +5,7 @@ aria-labelledby="problemCreatingModal" aria-hidden="true">
         <div class="modal-header">
             <h1 class="modal-title fs-5" id="problemCreatingLabel">Add new problem</h1>
             <button type="button" class="btn-close" id="problemClose" data-bs-dismiss="modal"
-                aria-label="Close"></button>
+                aria-label="Close"><i class="fas fa-close"></i></button>
         </div>
         <form id="problemCreate" method="POST">
             @csrf
@@ -56,8 +56,15 @@ $(document).ready(function(){
                     confirmButtonText: 'OK',
                     timer:2000,
                     });
-                    var newProblem = '<option value="' + response.problem.id + '">' + response.problem.name + '</option>';
-                    $('#problem_id').append(newProblem); // Assuming doctorDropdown is the ID of your <select> element
+                    var newProblem = $('<option>', {
+                        value: response.problem.id,
+                        text: response.problem.name,
+                        selected: true
+                    });
+
+    $('.multipleProblem').append(newProblem);
+
+
             },
             error: function(xhr, status, error) {
                     var errorMessage = '';

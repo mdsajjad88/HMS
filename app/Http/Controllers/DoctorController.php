@@ -14,31 +14,37 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash; // Import Hash facade for password hashing
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 class DoctorController extends Controller
 {
     public function index(){
+        if(Auth::user()->role != 'admin'){
+            return route('dashboard');
+        }
         return view('doctor.index');
     }
     public function  create(){
         return view('doctor.add');
     }
     public function store(Request $request){
-      // dd($request->all());
-           // try {
+
                 $validatedata = $request->validate([
                     'first_name' => 'required|string',
-                    'last_name' => 'required|string',
-                    'email' => 'required|email|unique:doctor_profiles,email',
-                    'mobile' => 'required|digits:11|numeric',
+
+                    'email' => 'nullable|email|unique:doctor_profiles,email',
+                    'mobile' => 'nullable|digits:11|numeric',
                     'gender' => 'required|in:Male,Female,Other',
                     'bmdc_number' => 'nullable|string',
-                    'blood_group' => 'required|string',
-                    'date_of_birth' => 'required|date',
-                    'nid' => 'required|string',
-                    'specialist' => 'required|string',
-                    'fee' => 'required|numeric',
-                    'designation' => 'required|string',
+                    'blood_group' => 'nullable|string',
+                    'date_of_birth' => 'nullable|date',
+                    'nid' => 'nullable|string',
+                    'specialist' => 'nullable|string',
+                    'fee' => 'nullable|numeric',
+                    'designation' => 'nullable|string',
                     'consultant_type' => 'nullable|string',
                     'address' => 'nullable|string',
                     'description' => 'nullable|string', // 2MB max
@@ -46,39 +52,49 @@ class DoctorController extends Controller
                     'email.unique'=>'Sorry!  This email already have taken !!!'
                 ]);
 
+                 // Get email from the request or set a temporary email
+                $email = $request->input('email');
+                if (!$email) {
+                    $email = $request->input('first_name').'_'.Str::random(4) . '@example.com'; // Generate a unique temporary email
+                }
+
+                // Create the user
                 $doctor = new User();
-                $doctor->name = $request->input('first_name').' '.$request->input('last_name');
-                $doctor->email  = $request->input('email');
+                $doctor->name = $request->input('first_name');
+                $doctor->email = $email; // Use the provided or temporary email
                 $doctor->email_verified_at = now();
-                $doctor->password = $request->mobile;
+                $doctor->password = Hash::make($request->input('password')); // Hash the password
                 $doctor->save();
 
-                $doctorID = $doctor->id;
+                // Log the newly created doctor user details
+                Log::info('Doctor created:', ['id' => $doctor->id, 'email' => $doctor->email]);
 
-                // Now create a new PatientProfile and associate it with the PatientUser
+                $doctorID = $doctor->id;
+                $mail = $doctor->email;
+
+                // Create a new DoctorProfile and associate it with the User
                 $doctorProfile = new DoctorProfile();
-                $doctorProfile->user_id  = $doctorID; // Assign patient_user_id
-                $doctorProfile->created_by   = Auth::user()->id; // Assign patient_user_id
-                $doctorProfile->fill($validatedata);
+                $doctorProfile->user_id = $doctorID; // Assign user_id
+                $doctorProfile->email = $mail; // Assign email
+                $doctorProfile->created_by = Auth::user()->id; // Assign created_by
+                $doctorProfile->last_name = $request->input('last_name', ''); // Assuming you want to store a last name
+                // Explicitly fill remaining fields except 'email'
+                $doctorProfile->fill($request->except(['email'])); // Avoid overwriting the email field
                 $doctorProfile->save();
+
+                // Log the doctor profile creation
+                Log::info('DoctorProfile created:', $doctorProfile->toArray());
+
                 return response()->json(['success' => true]);
+
         }
         public function show(Request $request){
             if ($request->ajax()) {
                 $user = Auth::user(); // Get the currently authenticated user
-
                 // Check user role and set up query
                 if ($user->role == 'admin') {
-                    $data = DoctorProfile::latest()->get();
-                } elseif ($user->role == 'user') {
-                    $now = Carbon::now();
-                    $data = DoctorProfile::latest()
-                        ->where('created_at', '>=', $now->subHours(24)) // Records older than 24 hours
-                        ->get();
-                } else {
-                    $data = collect(); // Return an empty collection if the role is not recognized
+                    $data = DoctorProfile::latest()->orderBy('id', 'DESC')->get();
                 }
-
                 return DataTables::of($data)
                     ->addColumn('action', function($row){
                         $btn = '<a  data-id="'.$row->id.'" class="editDoctor btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
@@ -101,17 +117,16 @@ class DoctorController extends Controller
         $id = $request->input('doctorId');
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:doctor_profiles,email,'.$id,
-            'mobile' => 'required|digits:11|numeric',
+            'email' => 'nullable|email|unique:doctor_profiles,email,'.$id,
+            'mobile' => 'nullable|digits:11|numeric',
             'gender' => 'required|in:Male,Female,Other',
             'bmdc_number' => 'nullable|string',
-            'blood_group' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'nid' => 'required|string',
-            'specialist' => 'required|string',
-            'fee' => 'required|numeric',
-            'designation' => 'required|string',
+            'blood_group' => 'nullable|string',
+            'date_of_birth' => 'nullable|date',
+            'nid' => 'nullable|string',
+            'specialist' => 'nullable|string',
+            'fee' => 'nullable|numeric',
+            'designation' => 'nullable|string',
             'consultant_type' => 'nullable|string',
             'address' => 'nullable|string',
             'description' => 'nullable|string',
@@ -149,13 +164,14 @@ class DoctorController extends Controller
         if($days == 1){
 
             $currentDate = Carbon::now();
-            $startDate = $currentDate->startOfMonth()->format("Y-m-d");
-            $endDate = $currentDate->endOfMonth()->format("Y-m-d");
+            // $startDate = $currentDate->startOfMonth()->format("Y-m-d");
+            // $endDate = $currentDate->endOfMonth()->format("Y-m-d");
+            $startDate = $currentDate->copy()->subDays(30)->startOfDay()->format('Y-m-d');
+            $endDate = $currentDate->copy()->endOfDay()->format('Y-m-d');
 
 
             $doctor = DoctorProfile::find($id);
             $doctorID = $doctor->user_id;
-
             $no_of_test = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('last_visited_date', [$startDate, $endDate])->sum('no_of_test');
             $no_of_medicine = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('last_visited_date', [$startDate, $endDate])->sum('no_of_medicine');
             $no_of_ozone_therapy = ReviewReport::where('doctor_user_id', $doctorID)->whereBetween('last_visited_date', [$startDate, $endDate])->sum('no_of_ozone_therapy');
@@ -174,21 +190,16 @@ class DoctorController extends Controller
             ->pluck('id');
             $totalProblems = ReportAndProblem::whereIn('review_report_id', $problemIds)->count('review_report_id');
 
-            $problems = ReportAndProblem::where('doctor_user_id', $doctorID)
-                ->whereBetween('last_visited_date', [$startDate, $endDate])
-                ->get();
+            $problems = ReportAndProblem::where('doctor_user_id', $doctorID)->whereBetween('last_visited_date', [$startDate, $endDate])->get();
             // Group by problem_id and count occurrences
             $problemCounts = $problems->groupBy('problem_id')->map(function ($group) {
                 return $group->count();
             });
         }
-        if($days == "previous"){
-            $startDate = Carbon::now()->subMonth()->startOfMonth()->format("Y-m-d");
-
-        // Calculate the end date as the last day of the previous month
-        $endDate = Carbon::now()->subMonth()->endOfMonth()->format("Y-m-d");
-
-            // $startDate = Carbon::now()->subDays($days);
+        if($days == "2"){
+            $now = Carbon::now();
+            $startDate = $now->copy()->subDays(60)->startOfDay()->format("Y-m-d");
+            $endDate = $now->copy()->endOfDay()->format('Y-m-d');
             $doctor = DoctorProfile::find($id);
             $doctorID = $doctor->user_id;
 
@@ -221,11 +232,10 @@ class DoctorController extends Controller
 
 
         }
-        if($days == "6"){
-            $startDate = Carbon::now()->subMonths(6)->startOfDay()->format('Y-m-d');
-
-            // Calculate the end date as today
-            $endDate = Carbon::now()->endOfDay()->format('Y-m-d');
+        if($days == "9"){
+            $now = Carbon::now();
+            $startDate = $now->copy()->subDays(90)->startOfDay()->format('Y-m-d');
+            $endDate = $now->copy()->endOfDay()->format('Y-m-d');
 
             // $startDate = Carbon::now()->subDays($days);
             $doctor = DoctorProfile::find($id);
@@ -320,9 +330,7 @@ class DoctorController extends Controller
             $problemCounts = $problems->groupBy('problem_id')->map(function ($group) {
                 return $group->count();
             });
-
         }
-
         return view('doctor.view', compact('no_of_test', 'no_of_medicine', 'no_of_ozone_therapy', 'no_of_hijama_therapy', 'on_of_acupuncture', 'no_of_sauna', 'no_of_physiotherapy', 'no_of_coffee_anema','no_of_phototherapy',  'id', 'days', 'doctor', 'startDate', 'endDate', 'total_patient', 'bd_medicine', 'us_medicine', 'totalProblems', 'problems', 'allProblems', 'problemCounts', 'total_visite'));
     }
 

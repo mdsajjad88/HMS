@@ -1,7 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', 'Doctors')
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
 <div class="container-fluid">
 
@@ -18,8 +17,9 @@
                     <thead>
                         <tr >
                             <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th> Name</th>
+                            <th> Gender</th>
+
                             <th>Email</th>
                             <th>Mobile</th>
                             <th>Fee</th>
@@ -58,9 +58,10 @@
                         name: 'first_name'
                     },
                     {
-                        data: 'last_name',
-                        name: 'last_name'
+                        data: 'gender',
+                        name: 'gender'
                     },
+
                     {
                         data: 'email',
                         name: 'email'
@@ -113,9 +114,10 @@
             function addNewDoctor() {
                 $.ajax({
                     type: 'GET',
-                    url: '/addDoctorView',
+                    url: 'addDoctorView',
                     success: function(response) {
                         $('body').append(response);
+                        $('#doctorModal').modal({backdrop: 'static', keyboard: false});
                         $('#doctorModal').modal('show'); // Show modal
 
                     },
@@ -163,7 +165,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '/deleteDoctor/' +
+                            url: 'deleteDoctor/' +
                             id, // Replace with your actual delete route
                             type: 'DELETE',
                             headers: {
@@ -230,7 +232,7 @@
             function doctorProfileEdit(doctorID) {
                 $.ajax({
                     method: 'GET',
-                    url: '/editDoctor/' + doctorID,
+                    url: 'editDoctor/' + doctorID,
                     success: function(response) {
                         $('body').append(response)
                         $('#doctorEditModal').modal('show'); // Show modal

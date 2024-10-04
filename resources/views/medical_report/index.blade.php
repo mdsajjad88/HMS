@@ -1,14 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
-@section('title', 'Medical report')
+@section('title', 'Patient visit')
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-11"></div>
             <div class="col-md-1">
-                <a href="{{url('create/medical/report')}}"  class="btn btn-dark btn-sm m-1"><i class="fa-solid fa-plus"></i>Add</a>
+                <a href="{{url('create/medical/report/')}}"  class="btn btn-dark btn-sm m-1"><i class="fa-solid fa-plus"></i>Add</a>
             </div>
         </div>
     </div>
@@ -16,21 +14,22 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <table class="table  data-table " id="reportTable">
+                <table class="table table-striped data-table fs-9" id="reportTable">
                     <thead>
                         <tr>
                             <th>SL</th>
-
                             <th>Patient Name</th>
                             <th>Doctor Name</th>
                             <th>Contact</th>
-                            <th>Improvement</th>
+                            <th>Better?</th>
                             <th>comment</th>
                             <th>Visit date</th>
                             <th>Visit No </th>
                             <th>Session Visite</th>
                             <th>S.V No</th>
                             <th>Problems</th>
+                            <th class="added_by">Added by</th>
+                            <th>Updated by</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -126,7 +125,22 @@
                         name: 'problems',
 
                     },
+                    {
+                        data: 'user_name',
+                        name: 'user_name',
 
+                    },
+                    {
+                        data: 'editor_name',
+                        name: 'editor_name',
+                        render: function(data) {
+                            if (!data || data.trim() === '') {
+                                return ' ';
+                            }
+                            return data;
+                        }
+
+                    },
                     {
                         data: 'action',
                         name: 'action',
@@ -139,22 +153,8 @@
             'copy','csv','print', 'excel','pdf' // Buttons configuration
         ],
         order: [[0, 'desc']]
-
-
-
             });
 
-            $('#createNewReport').click(function(){
-                var id = $(this).data('id');
-                $.ajax({
-                    url:'{{route("medical-report.create")}}',
-                    method:'GET',
-                    success:function(respons){
-                        $('body').append(respons);
-                        $('#reportCreateModal').modal('show');
-                    },
-                });
-            });
         });
 
 
@@ -170,9 +170,8 @@
                     },
                 });
             });
-
-
         });
+
         $(document).ready(function(){
             $(document).on('click', '.deleteReport', function(){
                 var id = $(this).data('id');
@@ -188,7 +187,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: 'DELETE',
-                            url: '/medical-report/'+id,
+                            url: 'medical-report/'+id,
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },

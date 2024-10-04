@@ -5,7 +5,7 @@
             <!-- Modal Header -->
             <div class="modal-header modalHeader">
                 <h5 class="modal-title" id="reportCreateModalLabel">Add New Report</h5>
-                <button type="button" class="btn-close" id="closeReportModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" id="closeReportModal" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-xmark"></i> </button>
             </div>
 
             <!-- Modal Body -->

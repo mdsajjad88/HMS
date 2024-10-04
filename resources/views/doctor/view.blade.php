@@ -14,9 +14,9 @@
                         </div>
                         <div class="col-6 d-print-none">
                             <select name="days" id="days" class="form-control">
-                                <option value="1">This Month </option>
-                                <option value="previous">Previous Months </option>
-                                <option value="6">6 Months</option>
+                                <option value="1">Last 30 Days </option>
+                                <option value="2">Last 60 Days</option>
+                                <option value="9">Last 90 Days</option>
                                 <option value="12">1 Year</option>
                                 <option value="all">All Time</option>
                             </select>
@@ -51,9 +51,12 @@
                     <div class="col-2">
                         <h3 id="bd_medicine" class="d-flex"></h3>
                     </div>
-                    
-                    <div class="col-4">
-                        <p class="d-flex">BD Avg. proportion : <span id="avg_bd_pro"></span></p>
+
+                    <div class="col-3">
+                        <p class="d-flex">BD per patient Avg. : <span id="avg_bd_pro"></span></p>
+                    </div>
+                    <div class="col-3">
+                        <p class="d-flex">Overall proportion. : <span id="bd_overall"></span></p>
                     </div>
                 </div>
                 <div class="row">
@@ -64,8 +67,11 @@
                         <h3 id="us_medicine" class="d-flex"></h3>
                     </div>
 
-                    <div class="col-4">
-                        <p class="d-flex">US Avg. proportion : <span id="avg_us_pro"></span></p>
+                    <div class="col-3">
+                        <p class="d-flex">US per patient Avg. : <span id="avg_us_pro"></span></p>
+                    </div>
+                    <div class="col-3">
+                        <p class="d-flex">Overall proportion. : <span id="us_overall"></span></p>
                     </div>
                 </div>
                 <div class="row">
@@ -199,8 +205,11 @@
                 us_avg = " 0.00";
                 bd_avg_pro = " 0.00";
                 us_avg_pro = " 0.00";
+                bd_overall = " 0.00%";
+                us_overall = " 0.00%";
             } else {
-
+                bd_overall = ((bd_medicine/medicine)*100).toFixed(2)+"%";
+                us_overall = ((us_medicine/medicine)*100).toFixed(2)+"%";
                 bd_avg_pro = (bd_medicine/total_patient).toFixed(2);
                 us_avg_pro = (us_medicine/total_patient).toFixed(2);
             }
@@ -208,6 +217,8 @@
             $("#us_medicine").text(us_medicine);
             $('#avg_bd_pro').text(bd_avg_pro);
             $('#avg_us_pro').text(us_avg_pro);
+            $('#bd_overall').text(bd_overall);
+            $('#us_overall').text(us_overall);
 
             $("#total_patient").text(total_patient);
             $('#total_therapy').text(no_of_ozone_therapy + no_of_hijama_therapy + on_of_acupuncture + no_of_sauna +

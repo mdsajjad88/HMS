@@ -1,13 +1,13 @@
-@extends('layouts.app')
-@section('title', 'Patients')
+@extends('layouts.main')
+@section('title', 'AWC Dashboard')
 @section('content')
 <style>
     body, html {
             margin: 0;
             padding: 0;
             height: 100%;
+
             background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
-            display: flex;
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
@@ -35,8 +35,17 @@
 
 <div class="container mt-5">
     <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            @if(Session::has('success'))
+                <p class="alert alert-success">{{ Session::get('success') }}</p>
+                @endif
+        </div>
+        <div class="col-4"></div>
+    </div>
+    <div class="row">
         <div class="col">
-            <h1 id="userName">Welcome <br> Dear,  {{Auth::user()->name}}</h1>
+            <h1 id="userName">Welcome <br> Dear, <br>  {{Auth::user()->name}}</h1>
         </div>
     </div>
 </div>

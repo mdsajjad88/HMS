@@ -33,9 +33,12 @@ class ReviewReportController extends Controller
             if ($user->role === 'admin') {
                 $data = ReviewReport::with('problems')->select('review_reports.*')->latest()->get(); // Fetch all doctor profiles
             } elseif ($user->role === 'user') {
-                $now = Carbon::now();
+
+                $startOfDay = Carbon::today();
+                $endOfDay = Carbon::tomorrow();
                 $data = ReviewReport::with('problems')->select('review_reports.*') // Fetch all doctor profiles
-                    ->where('created_at', '>=', $now->subHours(24)) // Records older than 24 hours
+                ->whereBetween('created_at', [$startOfDay, $endOfDay])
+                    ->orderBy('id', 'DESC') // Records older than 24 hours
                     ->get();
             } else {
                 $data = collect(); // Return an empty collection if the role is not recognized
@@ -45,7 +48,7 @@ class ReviewReportController extends Controller
             return DataTables::of($data)
                 ->addColumn('action', function($row){
                     $btn = '<a  data-id="'.$row->id.'"  class="editReport btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i>Edit</a>';
-                    $btn .= '<a  data-id="'.$row->id.'" class="deleteReport btn btn-danger btn-sm ml-1"><i class="fa-solid fa-trash-arrow-up"></i>Delete</a>';
+                    $btn .= '<a  data-id="'.$row->id.'" class="deleteReport btn btn-danger btn-sm mt-1"><i class="fa-solid fa-trash"></i>Delete</a>';
                     return $btn;
                 })
                 ->addColumn('patient_name', function($data) {
@@ -57,7 +60,20 @@ class ReviewReportController extends Controller
                 ->addColumn('problems', function($data) {
                     return $data->problems->pluck('name')->implode(', ');
                 })
-                ->rawColumns(['action'])
+                ->addColumn('user_name', function($data) {
+                    return '<small>'.$data->user->name.'<br>'.
+                    $data->created_at->format('Y-m-d') . '<br>' .
+                        $data->created_at->format('H:i:s').'</small>';
+                })
+                ->addColumn('editor_name', function ($data) {
+                    if ($data->editor) {
+                        return '<small>'.$data->editor->name.'<br>'.
+                       $data->updated_at->format('Y-m-d') .'<br>' .
+                      $data->updated_at->format('H:i:s')."</small>";
+                    }
+                    return ' ';
+                })
+                ->rawColumns(['action','editor_name', 'user_name'])
                 ->make(true);
 
         }
@@ -160,6 +176,7 @@ class ReviewReportController extends Controller
             $problemToReport->problem_id = $problemId;
             $problemToReport->doctor_user_id = $report->doctor_user_id;
             $problemToReport->last_visited_date = $report->last_visited_date;
+            $problemToReport->patient_user_id = $report->patient_user_id;
             $problemToReport->save();
         }
 
@@ -168,7 +185,7 @@ class ReviewReportController extends Controller
     public function creating(Request $request){
         $patients = PatientProfile::all();
         $doctors = DoctorProfile::all();
-        $problems = Problem::all();
+        $problems = Problem::orderBy('id', 'DESC')->get();
         return view('medical_report.create', compact('patients','doctors', 'problems'));
     }
     /**
@@ -183,9 +200,10 @@ class ReviewReportController extends Controller
 
         $today = Carbon::now()->format('Y-m-d');
 
-        $lastVisitedDate = ReviewReport::where('patient_user_id', $id)
+        $lastVisitedDate = ReviewReport::with('problems')->where('patient_user_id', $id)
         ->latest('created_at')
         ->first();
+        $ltsSession = ReviewReport::where('patient_user_id', $id)->where('is_session_visite', 1)->latest('created_at')->first();
         $patientProfile = PatientProfile::where('patient_user_id', $id)
         ->latest('created_at')
         ->first();
@@ -200,10 +218,10 @@ class ReviewReportController extends Controller
 
 
         if($lastVisitedDate){
-            return response()->json(['data'=>$lastVisitedDate, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session]);
+            return response()->json(['data'=>$lastVisitedDate, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session, 'ltsSession'=>$ltsSession]);
         }
         else{
-            return response()->json(['nodata'=>true, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session]);
+            return response()->json(['nodata'=>true, 'patient'=>$patientProfile, 'subscription'=>$subscription, 'session'=>$session, 'ltsSession'=>$ltsSession]);
         }
 
     }
@@ -273,7 +291,7 @@ class ReviewReportController extends Controller
             // Update the report fields
             $report->patient_user_id = $validatedData['patient_user_id'];
             $report->doctor_user_id = $validatedData['doctor_user_id'];
-            $report->created_by = Auth::user()->id;
+            
             $report->no_of_visite = $validatedData['no_of_visite'];
             $report->last_visited_date = $validatedData['last_visited_date'];
             $report->bd_medicine = $validatedData['bd_medicine'];
@@ -289,6 +307,7 @@ class ReviewReportController extends Controller
             $report->no_of_sauna = $validatedData['no_of_sauna'];
             $report->physical_improvement = $validatedData['physical_improvement'];
             $report->comment = $validatedData['comment'];
+            $report->modified_by = Auth::user()->id;
             $doctor = $request->input('doctor_user_id');
             // Log before saving the report
             Log::info("Attempting to save ReviewReport changes...");
@@ -314,6 +333,7 @@ class ReviewReportController extends Controller
                     // Update the record with new information
                     $problemToReport->doctor_user_id = $report->doctor_user_id;
                     $problemToReport->last_visited_date = $report->last_visited_date;
+                    $problemToReport->patient_user_id = $report->patient_user_id;
                     $problemToReport->save();
                 }
 

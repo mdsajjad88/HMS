@@ -85,3 +85,34 @@
     display: none !important;
 }
 
+.checkbox-container {
+    position: relative;
+    display: inline-block;
+}
+
+.popup {
+    display: none; /* Initially hide the popup */
+    position: absolute;
+    bottom: 35%; /* Position above the checkbox */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #d3d613;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    white-space: nowrap;
+    z-index: 1000; /* Ensure it is above other content */
+    font-size: 14px;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.checkbox-container:hover .popup {
+    display: block; /* Show the popup */
+    opacity: 1;
+}
+.added_by{
+    min-width: 90px;
+}
