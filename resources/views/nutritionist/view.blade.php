@@ -67,7 +67,7 @@
                             <thead>
                                 <tr>
                                     <th>Consulting Name</th>
-                                    <th>Count  </th>
+                                    <th>Count </th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

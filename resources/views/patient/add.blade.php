@@ -191,7 +191,7 @@
 
             $.ajax({
                 method: 'POST',
-                url: '/addNewPatient',
+                url: 'addNewPatient',
                 data: formData,
                 contentType: false, // Ensure to set these options for FormData
                 processData: false,
@@ -226,10 +226,11 @@
                     }
                 },
                 error: function(xhr) {
-                // Handle error
+                    console.log(xhr); // Log the entire response for debugging
+
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error
                         ? xhr.responseJSON.error
-                        : 'An unknown error occurred.';
+                        : xhr.responseText || 'An unknown error occurred.';
 
                     Swal.fire({
                         title: 'Error!',

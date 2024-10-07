@@ -20,9 +20,14 @@
                 @csrf
             <div class="row g-3">
                 <div class="col-12">
-                    @if (session('status'))
+                    @if (session('success'))
                             <div class="alert alert-success">
-                                {{ session('status') }}
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
                             </div>
                         @endif
                 </div>

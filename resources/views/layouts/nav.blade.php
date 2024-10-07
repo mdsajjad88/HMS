@@ -24,6 +24,18 @@
                         {{ __('Doctor') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('nutritionist') ? 'active' : '' }}" href="{{ route('nutritionist.index') }}">
+                        {{ __('Nutritionist') }}
+                    </a>
+                </li>
+                @endif
+                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'nutritionist')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('nutritionist-visit') ? 'active' : '' }}" href="{{ route('nutritionist-visit.index') }}">
+                        {{ __('Nutritionist-visit') }}
+                    </a>
+                </li>
                 @endif
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('patient') ? 'active' : '' }}" href="{{ route('patient') }}">
@@ -41,6 +53,11 @@
                         {{ __('Role') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('user.register') ? 'active' : '' }}" href="{{ route('user.register') }}">
+                        {{ __('Register') }}
+                    </a>
+                </li>
                 @endif
                 {{-- Additional navigation links can be added here --}}
             </ul>
@@ -52,7 +69,7 @@
                         {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('Profile') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ route('profile.useredit') }}">{{ __('Profile') }}</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

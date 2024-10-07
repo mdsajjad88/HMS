@@ -123,13 +123,22 @@ class NutritionistVisitController extends Controller
      */
     public function edit(string $id)
     {
-        $report = NutritionistVisit::with(['problems', 'challenges'])->find($id);
-        $problems = Problem::all();
-        $selectedProblems =  $report->problems->pluck('id')->toArray();
-        $selectChallenge =  $report->challenges->pluck('id')->toArray();
-        $challenges = Challenges::all();
-        return view('nutritionist_visit.edit', compact('report', 'problems', 'selectedProblems', 'challenges', 'selectChallenge'));
+        Log::info('Entering edit method for report ID: ' . $id);
 
+        try {
+            $report = NutritionistVisit::with(['problems', 'challenges'])->findOrFail($id);
+            Log::info('Report found:', ['report' => $report]);
+
+            $problems = Problem::all();
+            $selectedProblems = $report->problems->pluck('id')->toArray();
+            $selectChallenge = $report->challenges->pluck('id')->toArray();
+            $challenges = Challenges::all();
+
+            return view('nutritionist_visit.edit', compact('report', 'problems', 'selectedProblems', 'challenges', 'selectChallenge'));
+        } catch (\Exception $e) {
+            Log::error('Error retrieving report ID ' . $id . ': ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Report not found or an error occurred.');
+        }
     }
 
     /**

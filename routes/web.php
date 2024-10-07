@@ -8,8 +8,11 @@ use App\Http\Controllers\PatientMedicalTestController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientProfileController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\NutritionistController;
+use App\Http\Controllers\NutritionistVisitController;
 use App\Http\Controllers\ProblemController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ChallengesController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +26,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/edit', [ProfileController::class, 'useredit'])->name('profile.useredit');
+    Route::post('/profile/update', [ProfileController::class, 'updateUserProfile'])->name('profile.profileUpdate');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/addDoctorView', [DoctorController::class, 'create'])->name('doctor.add');
@@ -65,6 +70,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('role', RoleController::class);
 
     Route::resource('patient-profile', PatientProfileController::class);
+    Route::resource('nutritionist-visit', NutritionistVisitController::class);
+    Route::resource('challenges', ChallengesController::class);
+    Route::resource('nutritionist', NutritionistController::class);
+    Route::get('nutritionist-profile/{id}/{days}', [NutritionistController::class, 'profile']);
     Route::get('patient-profile-show/{id}', [PatientProfileController::class, 'show'])->name('patient.profile.show');
 });
 

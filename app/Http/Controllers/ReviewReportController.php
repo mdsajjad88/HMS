@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Log;
 
 use App\Models\DoctorProfile;
 use App\Models\MedicalTest;
+use App\Models\NutritionistVisit;
 use App\Models\PatientProfile;
 use App\Models\PatientSubscription;
 use App\Models\PatientUser;
@@ -107,25 +108,18 @@ class ReviewReportController extends Controller
             'doctor_user_id' => 'required|exists:doctor_profiles,user_id',
             'no_of_visite' => 'required',
             'last_visited_date' => 'required|date',
-            'no_of_medicine' => 'nullable|integer',
-            'no_of_test' => 'nullable|integer',
-            'no_of_ozone_therapy' => 'nullable|integer',
-            'no_of_hijama_therapy' => 'nullable|integer',
-            'on_of_acupuncture' => 'nullable|integer',
-            'no_of_physiotherapy' => 'nullable|integer',
-            'no_of_coffee_anema' => 'nullable|integer',
-            'no_of_others' => 'nullable|integer',
-            'no_of_life_style_food' => 'nullable|integer',
             'problem_id' => 'nullable|array',
             'problem_id.*' => 'integer',
             'physical_improvement' => 'required',
             'comment' => 'nullable|string',
             'is_session_visite'=>'nullable',
             'session_visite_count'=>'nullable',
+            'is_board'=>'nullable',
 
         ]);
         $validatedData['is_session_visite'] = $request->has('is_session_visite') ? 1 : null;
         $isSessionVisite = $validatedData['is_session_visite'];
+        $is_board = isset($validatedData['is_board']) ? $validatedData['is_board'] : null;
         // Update session_visite_count based on the value of 'is_session_visite'
         $number = PatientProfile::where('patient_user_id', $validatedData['patient_user_id'])->first();
 
@@ -136,16 +130,6 @@ class ReviewReportController extends Controller
         $report->created_by  = Auth::user()->id;
         $report->no_of_visite = $validatedData['no_of_visite'];
         $report->last_visited_date = $validatedData['last_visited_date'];
-        $report->no_of_medicine = $validatedData['no_of_medicine'];
-        $report->no_of_test = $validatedData['no_of_test'];
-        $report->no_of_ozone_therapy = $validatedData['no_of_ozone_therapy'];
-        $report->no_of_hijama_therapy = $validatedData['no_of_hijama_therapy'];
-        $report->on_of_acupuncture = $validatedData['on_of_acupuncture'];
-
-        $report->no_of_physiotherapy = $validatedData['no_of_physiotherapy'];
-        $report->no_of_coffee_anema = $validatedData['no_of_coffee_anema'];
-        $report->no_of_others = $validatedData['no_of_others'];
-        $report->no_of_life_style_food = $validatedData['no_of_life_style_food'];
 
         $report->physical_improvement = $validatedData['physical_improvement'];
         $report->comment = $validatedData['comment'];
@@ -168,6 +152,9 @@ class ReviewReportController extends Controller
             }
 
         }
+        if (isset($is_board) && $is_board == 1) {
+            $report->is_board = 1;
+        }
 
         $report->save();
         foreach ($validatedData['problem_id'] as $problemId) {
@@ -179,7 +166,10 @@ class ReviewReportController extends Controller
             $problemToReport->patient_user_id = $report->patient_user_id;
             $problemToReport->save();
         }
-
+        $nuVisit = new NutritionistVisit();
+        $nuVisit->patient_user_id = $validatedData['patient_user_id'];
+        $nuVisit->review_report_id = $report->id;
+        $nuVisit->save();
         return response()->json(['success'=>true]);
     }
     public function creating(Request $request){
@@ -291,7 +281,7 @@ class ReviewReportController extends Controller
             // Update the report fields
             $report->patient_user_id = $validatedData['patient_user_id'];
             $report->doctor_user_id = $validatedData['doctor_user_id'];
-            
+
             $report->no_of_visite = $validatedData['no_of_visite'];
             $report->last_visited_date = $validatedData['last_visited_date'];
             $report->bd_medicine = $validatedData['bd_medicine'];

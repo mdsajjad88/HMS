@@ -53,7 +53,7 @@ class PatientProfileController extends Controller
         $lastReport = ReviewReport::where('patient_user_id', $userId)->latest('created_at')->first();
 
         $subscript = PatientSubscription::where('patient_user_id', $userId)->first();
-      
+
         $bd_medicine = $reports->sum('bd_medicine');
         $us_medicine = $reports->sum('us_medicine');
         $no_of_test = $reports->sum('no_of_test');

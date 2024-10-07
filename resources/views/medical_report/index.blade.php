@@ -25,7 +25,7 @@
                             <th>comment</th>
                             <th>Visit date</th>
                             <th>Visit No </th>
-                            <th>Session Visite</th>
+                            <th>Board?</th>
                             <th>S.V No</th>
                             <th>Problems</th>
                             <th class="added_by">Added by</th>
@@ -104,8 +104,8 @@
                     },
 
                     {
-                        data: 'is_session_visite',
-                        name: 'is_session_visite',
+                        data: 'is_board',
+                        name: 'is_board',
 
                         render: function(data) {
                             if (data == 1) {

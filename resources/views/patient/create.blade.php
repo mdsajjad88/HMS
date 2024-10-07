@@ -194,7 +194,7 @@
 
             $.ajax({
                 method: 'POST',
-                url: '/addNewPatient',
+                url: 'addNewPatient',
                 data: formData,
                 contentType: false, // Ensure to set these options for FormData
                 processData: false,
@@ -228,18 +228,19 @@
                     });
                     }
                 },
-                    error: function(xhr) {
-                    // Handle error
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error
-                        ? xhr.responseJSON.error
-                        : 'An unknown error occurred.';
+                error: function(xhr) {
+                console.log(xhr); // Log the entire response for debugging
 
-                    Swal.fire({
-                        title: 'Error!',
-                        text: errorMessage,
-                        icon: 'error'
-                    });
-                }
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.error
+                    ? xhr.responseJSON.error
+                    : xhr.responseText || 'An unknown error occurred.';
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error'
+                });
+            }
             });
         });
 
@@ -247,7 +248,7 @@
        var id = $(this).val();
 
        $.ajax({
-        url: '/getupozilla/'+id,
+        url: 'getupozilla/'+id,
         type: 'GET',
         success: function (response) {
                     $('.geo_upozilla').empty();
