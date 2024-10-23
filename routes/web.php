@@ -42,11 +42,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/patient', [PatientController::class, 'index'])->name('patient');
     Route::get('/getPatient', [PatientController::class, 'getPatient'])->name('patient_profiles.index');
     Route::get('/addPatient', [PatientController::class, 'create'])->name('add.patient');
-    Route::post('/addNewPatient', [PatientController::class, 'store']);
+    Route::post('/addNewPatient', [PatientController::class, 'store'])->name('add.new.patient');
     Route::get('/editPatient/{id}', [PatientController::class, 'edit']);
     Route::delete('/deletePatient/{id}', [PatientController::class, 'destroy']);
     Route::get('/getOnePatient/{id}', [PatientController::class, 'getOnePatient']);
-    Route::post('/updatePatient', [PatientController::class, 'update']);
+    Route::post('/updatePatient', [PatientController::class, 'update'])->name('update.patient.info');
     Route::delete('/deleteDoctor/{id}', [DoctorController::class, 'destroy']);
     Route::get('/viewDoctor/{id}/{days}', [DoctorController::class, 'view']);
 
@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('medical-report', ReviewReportController::class);
     Route::get('create/medical/report', [ReviewReportController::class, 'creating']);
     Route::get('latest/report/{id}', [ReviewReportController::class, 'latestReport'])->name('report.latest');
-    Route::get('getupozilla/{id}', [PatientController::class, 'upozilla' ]);
+    Route::get('getupozilla/{id}', [PatientController::class, 'upozilla' ])->name('get.upozilla');
     Route::resource('problems', ProblemController::class);
 
     Route::get('/medical-tests-list', [MedicalTestController::class, 'getMedicalTests'])->name('medical-tests.list');

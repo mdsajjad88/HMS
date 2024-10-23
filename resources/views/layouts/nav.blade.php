@@ -59,7 +59,6 @@
                     </a>
                 </li>
                 @endif
-                {{-- Additional navigation links can be added here --}}
             </ul>
 
             <!-- Settings Dropdown -->

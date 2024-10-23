@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header modalHeader">
                 <h5 class="modal-title" id="doctorModalLabel">Add New Patient</h5>
-                <button type="button" class="btn-close patientModalClose" id="closePatientModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close patientModalClose" id="closePatientModal" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close"></i></button>
             </div>
             <form id="addNewPatient" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -194,7 +194,7 @@
 
             $.ajax({
                 method: 'POST',
-                url: 'addNewPatient',
+                url: '{{route("add.new.patient")}}',
                 data: formData,
                 contentType: false, // Ensure to set these options for FormData
                 processData: false,
@@ -244,39 +244,41 @@
             });
         });
 
-        $('.geo_district').on('change', function(){
-       var id = $(this).val();
+        $('.geo_district').on('change', function() {
+    var id = $(this).val();
 
-       $.ajax({
-        url: 'getupozilla/'+id,
+    // Generate the URL using the route helper
+    var url = '{{ route("get.upozilla", ":id") }}'.replace(':id', id);
+
+    $.ajax({
+        url: url,
         type: 'GET',
-        success: function (response) {
-                    $('.geo_upozilla').empty();
+        success: function(response) {
+            $('.geo_upozilla').empty();
 
-
-                    $.each(response, function (index, area) {
-                        $('.geo_upozilla').append('<option value="' + area.id + '">' +
-                            area.upazila_name_eng + '</option>');
-                    });
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = '';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMessage += xhr.responseJSON.message;
-                    } else {
-                        errorMessage += status;
-                    }
-
-                    Swal.fire({
-                                icon: 'error',
-                                title: 'Opps',
-                                text: errorMessage,
-                                confirmButtonText: 'OK',
-
-                            });
-                    }
+            $.each(response, function(index, area) {
+                $('.geo_upozilla').append('<option value="' + area.id + '">' +
+                    area.upazila_name_eng + '</option>');
             });
-        });
+        },
+        error: function(xhr, status, error) {
+            var errorMessage = '';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage += xhr.responseJSON.message;
+            } else {
+                errorMessage += status;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops',
+                text: errorMessage,
+                confirmButtonText: 'OK',
+            });
+        }
+    });
+});
+
 
 
 
