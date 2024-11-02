@@ -63,6 +63,11 @@
                         {{ __('Problem wise Patient') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('comment.wise.patient') ? 'active' : '' }}" href="{{ route('comment.wise.patient') }}">
+                        {{ __('Comment wise Patient') }}
+                    </a>
+                </li>
 
                 @endif
             </ul>

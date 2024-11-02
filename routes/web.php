@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::get('getupozilla/{id}', [PatientController::class, 'upozilla' ])->name('get.upozilla');
     Route::resource('problems', ProblemController::class);
     Route::get('problem/wise/patient', [ProblemController::class, 'problemWisePatient'])->name('problem.wise.patient');
+    Route::get('comment/wise/patient', [CommentController::class, 'commentmWisePatient'])->name('comment.wise.patient');
 
     Route::get('/medical-tests-list', [MedicalTestController::class, 'getMedicalTests'])->name('medical-tests.list');
     Route::resource('report', ReportController::class);

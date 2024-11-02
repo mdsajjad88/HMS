@@ -90,4 +90,34 @@ class CommentController extends Controller
     {
         //
     }
+    public function commentmWisePatient(Request $request){
+            if ($request->ajax()) {
+                $comments = Comment::with(['reports.patient.profile'])->get(); // Eager load reports, patients, and their profiles
+
+                return datatables($comments)
+                    ->addColumn('patient_info', function ($comment) {
+                        // Use a collection to store unique patients
+                        $uniquePatients = collect();
+
+                        // Collect patient info from reports
+                        foreach ($comment->reports as $report) {
+                            $patient = $report->patient;
+                            if ($patient) {
+                                $profile = $patient->profile;
+                                $key = $patient->id;
+                                if (!$uniquePatients->has($key)) {
+                                    $uniquePatients->put($key, $profile ? "{$patient->username} ({$profile->mobile})" : 'No Profile');
+                                }
+                            }
+                        }
+
+                        return $uniquePatients->values()->implode(', ') ?? 'No Patients'; // Return unique patients
+                    })
+                    ->rawColumns(['patient_info'])
+                    ->make(true); // Ensure to call make(true) to return JSON response
+            }
+
+            return view('comment.comment_wise_patient');
+
+    }
 }
