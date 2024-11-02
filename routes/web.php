@@ -13,6 +13,7 @@ use App\Http\Controllers\NutritionistVisitController;
 use App\Http\Controllers\ProblemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ChallengesController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,12 +65,14 @@ Route::middleware('auth')->group(function () {
     Route::get('latest/report/{id}', [ReviewReportController::class, 'latestReport'])->name('report.latest');
     Route::get('getupozilla/{id}', [PatientController::class, 'upozilla' ])->name('get.upozilla');
     Route::resource('problems', ProblemController::class);
+    Route::get('problem/wise/patient', [ProblemController::class, 'problemWisePatient'])->name('problem.wise.patient');
 
     Route::get('/medical-tests-list', [MedicalTestController::class, 'getMedicalTests'])->name('medical-tests.list');
     Route::resource('report', ReportController::class);
     Route::resource('role', RoleController::class);
 
     Route::resource('patient-profile', PatientProfileController::class);
+    Route::resource('patient-comment', CommentController::class);
     Route::resource('nutritionist-visit', NutritionistVisitController::class);
     Route::resource('challenges', ChallengesController::class);
     Route::resource('nutritionist', NutritionistController::class);

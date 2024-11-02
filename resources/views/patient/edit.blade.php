@@ -130,6 +130,8 @@
 
 <script>
 $(document).ready(function() {
+    $('#subscript_date').empty();
+
     var patient = @json($patient);
     var report = @json($report);
     var subscription = @json($subscription);
@@ -233,3 +235,5 @@ $(document).ready(function() {
     });
 });
 </script>
+
+

@@ -8,7 +8,6 @@
                     </div>
                 </div>
                 <div class="modal-body p-5">
-                    <!-- Other fields remain the same -->
                     <div class="row">
 
                         <div class="col-6">Patient name</div>
@@ -241,13 +240,11 @@
                     '</tr>';
                 $('#doctorTable tbody').append(addRow);
             });
-
-            // Populate problems
             $.each(problems, function(index, problem) {
                 var row = $('<tr>');
-                row.append($('<td>').text(problem.name));
-                row.append($('<td>').text(problem.problem_count));
-                $('#problemTable tbody').append(row);
+                row.append($('<td>').text(problem.name)); // Problem Name
+                row.append($('<td>').text(problem.problem_count)); // Problem Count
+                $('#problemTable tbody').append(row); // Append row to the table
             });
         });
     </script>

@@ -1,6 +1,40 @@
 @extends('layouts.main')
 @section('title', 'Create New Report')
 @section('content')
+<style>
+   .btn-check {
+    display: none; /* Hide the actual radio button and checkbox */
+}
+
+.btn {
+    cursor: pointer; /* Change cursor to pointer */
+    padding: 5px 10px; /* Add padding for better appearance */
+    border-radius: 5px; /* Optional: make edges rounded */
+}
+
+.btn.active {
+    color: white; /* Change text color when active */
+}
+
+.btn-outline-success {
+    border: 1px solid #28a745; /* Border color */
+    background-color: transparent; /* Background color when inactive */
+}
+
+.btn-outline-success.active {
+    background-color: #28a745; /* Background color when active */
+}
+
+.btn-outline-info {
+    border: 1px solid #17a2b8; /* Border color */
+    background-color: transparent; /* Background color when inactive */
+}
+
+.btn-outline-info.active {
+    background-color: #17a2b8; /* Background color when active */
+}
+
+    </style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3"></div>
@@ -86,6 +120,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label for="comments" class="form-label">Comments <span id="star" class="commentError">*</span></label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <select name="comment_id[]" id="comments" class="form-control new-comment" multiple required>
+                            </select>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <a href="{{ action([\App\Http\Controllers\CommentController::class, 'create']) }}" class="btn btn-primary create_comment"><i class="fas fa-plus"></i>Add</a>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mb-3">
                     <label for="comment" class="form-label">Comment/Patient Feedback or Suggestion</label>
@@ -95,8 +141,6 @@
                 <div class="mb-3">
                     <label for="physical_improvement" class="form-label">Physical Improvement <span id="star">*</span></label>
                     <div class="row" id="improvementSection">
-
-
                         <div class="col-md-2">
                             <input type="radio" class="btn-check" name="physical_improvement" id="success-outlined" value="1" required>
                             <label class="btn btn-outline-success" for="success-outlined">Yes</label>
@@ -106,7 +150,7 @@
                             <label class="btn btn-outline-success" for="dark-outlined">No</label>
                         </div>
                         <div class="col-md-3" id="is_board">
-                            <input type="radio" class="btn-check" name="is_board" id="info-outlined" value="1">
+                            <input type="checkbox" class="btn-check" name="is_board" id="info-outlined" value="1">
                             <label class="btn btn-outline-info" for="info-outlined">Is Board</label>
                         </div>
                     </div>
@@ -118,6 +162,8 @@
                     </div>
                 </div>
 
+
+
                 <div class="row mt-1">
                     <div class="col-md-8"></div>
                     <div class="col-md-4 text-end">
@@ -128,6 +174,9 @@
             </form>
         </div>
         <div class="col-md-3"></div>
+        <div class="modal fade create_comment_view" tabindex="-1" role="dialog"
+            aria-labelledby="gridSystemModalLabel">
+        </div>
     </div>
 </div>
 
@@ -142,6 +191,7 @@
         var patients = @json($patients);
         var doctors = @json($doctors);
         var problems = @json($problems);
+        var comments = @json($comments);
 
         function setTodayDate() {
             var today = new Date();
@@ -155,6 +205,9 @@
 
         $.each(patients, function (index, patient) {
             $('#patient_user_id').append('<option value="' + patient.patient_user_id + '">' + patient.first_name + ' - ' + patient.mobile + '</option>');
+        });
+        $.each(comments, function (index, comment) {
+            $('#comments').append('<option value="' + comment.id + '">' + comment.name + '</option>');
         });
         $.each(doctors, function (index, doctor) {
             $('#doctor_user_id').append('<option value="' + doctor.user_id + '">' + doctor.first_name + '</option>');
@@ -209,7 +262,22 @@
                                     break;
                             }
                         }
+                       if (response.data && response.data.problems) {
+                            var selectedProblemIds = response.data.problems.map(p => p.id);
+                            $('#problem_id').val(selectedProblemIds).trigger('change');
+                        } else {
+                            // Handle the case where no problems are available
+                            $('#problem_id').val([]).trigger('change'); // Clear or set a default value
+                        }
 
+                        // Handle comments
+                        if (response.data && response.data.comments) {
+                            var selectedCommentIds = response.data.comments.map(c => c.id);
+                            $('#comments').val(selectedCommentIds).trigger('change');
+                        } else {
+                            // Handle the case where no comments are available
+                            $('#comments').val([]).trigger('change'); // Clear or set a default value
+                        }
                         // Handle subscription dates
                         var subscription = response.subscription;
                         if (subscription) {
@@ -249,8 +317,14 @@
                             $('#primary-outlined').prop('checked', false);
 
                             // Update session visit count
-                            var sessionVisitCount = (ltsSession.session_visite_count || 0) + 1;
-                            $('#is_session_visite').change(function () {
+                            var sessionVisitCount = 0;
+
+                                // Check if ltsSession is defined and has the session_visite_count property
+                                if (ltsSession && ltsSession.session_visite_count !== undefined) {
+                                    sessionVisitCount = ltsSession.session_visite_count + 1;
+                                } else {
+                                    sessionVisitCount = 1; // or handle it as needed (e.g., starting count at 1)
+                                }                            $('#is_session_visite').change(function () {
                                 if ($(this).is(':checked')) {
                                     $('#session_visite_count').val(sessionVisitCount);
                                 } else {
@@ -258,13 +332,7 @@
                                 }
                             });
 
-                            // Populate problem IDs
-                            if (response.data.problems) {
-                                var selectedProblemIds = response.data.problems.map(p => p.id);
-                                $('#problem_id').val(selectedProblemIds).trigger('change');
-                            }
                         } else if (response.nodata) {
-                            // Handle no data case
                             $('#no_of_visite').val(1);
                             $('#last_visited_date').val('');
                             $('#doctor_user_id').val('');
@@ -276,10 +344,9 @@
                                     $('#session_visite_count').val(1);
                                 }
                             });
+
                         }
                     }
-
-                    // Call the function to assign data
                     dataAssign();
                 }
             });
@@ -357,6 +424,10 @@
             placeholder: "Select problem",
             allowClear: false,
         });
+        $('#comments').select2({
+            placeholder: "Select comments",
+            allowClear: false,
+        });
         $('#patient_user_id').select2({
             placeholder: "Select Patient",
             allowClear: false,
@@ -376,6 +447,32 @@
                 'display': 'none',
                 'opacity': 0
             });
+        });
+        $(document).on('click', '.create_comment', function(e) {
+            e.preventDefault();
+            $('div.create_comment_view').load($(this).attr('href'), function() {
+                $(this).modal('show');
+            });
+        });
+        $('input[type="radio"].btn-check').change(function() {
+            // Remove 'active' class from all labels in the radio group
+            $('input[name="physical_improvement"]').each(function() {
+                $('label[for="' + $(this).attr('id') + '"]').removeClass('active');
+            });
+
+            // Add 'active' class to the selected label
+            if ($(this).is(':checked')) {
+                $('label[for="' + $(this).attr('id') + '"]').addClass('active');
+            }
+        });
+
+        $('input[type="checkbox"].btn-check').change(function() {
+            // Toggle the 'active' class for the checkbox label
+            if ($(this).is(':checked')) {
+                $('label[for="' + $(this).attr('id') + '"]').addClass('active');
+            } else {
+                $('label[for="' + $(this).attr('id') + '"]').removeClass('active');
+            }
         });
     });
 </script>

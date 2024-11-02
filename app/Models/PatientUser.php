@@ -13,4 +13,11 @@ class PatientUser extends Model
         'username', 'password', 'change_password', 'active', 'user_body',
         'created_by', 'modified_by','id'
     ];
+    public function profile()
+    {
+        return $this->hasOne(PatientProfile::class, 'patient_user_id');
+    }
+    public function reports() {
+        return $this->hasMany(ReportAndProblem::class);
+    }
 }

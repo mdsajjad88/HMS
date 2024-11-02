@@ -58,6 +58,12 @@
                         {{ __('Register') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('problem.wise.patient') ? 'active' : '' }}" href="{{ route('problem.wise.patient') }}">
+                        {{ __('Problem wise Patient') }}
+                    </a>
+                </li>
+
                 @endif
             </ul>
 

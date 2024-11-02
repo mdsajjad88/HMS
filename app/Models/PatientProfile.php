@@ -37,5 +37,9 @@ class PatientProfile extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+    public function patientUser()
+    {
+        return $this->belongsTo(PatientUser::class, 'patient_user_id');
+    }
 
 }

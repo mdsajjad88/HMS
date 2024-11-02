@@ -13,13 +13,17 @@ use App\Models\PrescribedMedicine;
 use App\Models\PrescriptionTherapie;
 use App\Models\Problem;
 use App\Models\ReviewReport;
+use App\Models\Comment;
 use App\Models\ReportAndProblem;
+use App\Models\ReportAndComment;
 use App\Models\User;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 class ReviewReportController extends Controller
 {
     /**
@@ -93,90 +97,119 @@ class ReviewReportController extends Controller
         $patient_medical_tests  = MedicalTest::all();
         $prescribed_medicines = PrescribedMedicine::all();
         $prescription_therapies =PrescriptionTherapie::all();
-
-        return view('medical_report.add', compact('patients', 'doctors', 'patient_medical_tests', ));
+        return view('medical_report.add', compact('patients', 'doctors', 'patient_medical_tests'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
+        // Begin the transaction
+        DB::beginTransaction();
 
-        $validatedData = $request->validate([
-            'patient_user_id' => 'required',
-            'doctor_user_id' => 'required|exists:doctor_profiles,user_id',
-            'no_of_visite' => 'required',
-            'last_visited_date' => 'required|date',
-            'problem_id' => 'nullable|array',
-            'problem_id.*' => 'integer',
-            'physical_improvement' => 'required',
-            'comment' => 'nullable|string',
-            'is_session_visite'=>'nullable',
-            'session_visite_count'=>'nullable',
-            'is_board'=>'nullable',
+        try {
+            $validatedData = $request->validate([
+                'patient_user_id' => 'required',
+                'doctor_user_id' => 'required|exists:doctor_profiles,user_id',
+                'no_of_visite' => 'required',
+                'last_visited_date' => 'required|date',
+                'problem_id' => 'nullable|array',
+                'problem_id.*' => 'integer',
+                'physical_improvement' => 'required',
+                'comment' => 'nullable|string',
+                'is_session_visite' => 'nullable',
+                'session_visite_count' => 'nullable',
+                'is_board' => 'nullable',
+                'comment_id' => 'required|array',
+            ]);
 
-        ]);
-        $validatedData['is_session_visite'] = $request->has('is_session_visite') ? 1 : null;
-        $isSessionVisite = $validatedData['is_session_visite'];
-        $is_board = isset($validatedData['is_board']) ? $validatedData['is_board'] : null;
-        // Update session_visite_count based on the value of 'is_session_visite'
-        $number = PatientProfile::where('patient_user_id', $validatedData['patient_user_id'])->first();
+            // Handle boolean flags
+            $validatedData['is_session_visite'] = $request->has('is_session_visite') ? 1 : null;
+            $isSessionVisite = $validatedData['is_session_visite'];
+            $is_board = $validatedData['is_board'] ?? null;
 
-        $report = new ReviewReport();
-        $report->patient_user_id = $validatedData['patient_user_id'];
-        $report->mobile = $number->mobile;
-        $report->doctor_user_id = $validatedData['doctor_user_id'];
-        $report->created_by  = Auth::user()->id;
-        $report->no_of_visite = $validatedData['no_of_visite'];
-        $report->last_visited_date = $validatedData['last_visited_date'];
+            // Get the patient's mobile number
+            $number = PatientProfile::where('patient_user_id', $validatedData['patient_user_id'])->first();
 
-        $report->physical_improvement = $validatedData['physical_improvement'];
-        $report->comment = $validatedData['comment'];
-        $report->is_session_visite = $validatedData['is_session_visite'];
-       // $report->session_visite_count = $isSessionVisite;
+            // Create a new report
+            $report = new ReviewReport();
+            $report->patient_user_id = $validatedData['patient_user_id'];
+            $report->mobile = $number->mobile;
+            $report->doctor_user_id = $validatedData['doctor_user_id'];
+            $report->created_by = Auth::user()->id;
+            $report->no_of_visite = $validatedData['no_of_visite'];
+            $report->last_visited_date = $validatedData['last_visited_date'];
+            $report->physical_improvement = $validatedData['physical_improvement'];
+            $report->comment = $validatedData['comment'];
+            $report->is_session_visite = $validatedData['is_session_visite'];
 
-        if($isSessionVisite == 1){
-            $count = $validatedData['session_visite_count'];
-            $add = ReviewReport::where('patient_user_id', $validatedData['patient_user_id'])->where('is_session_visite', 1)->latest()->first();
+            // Update session_visite_count
+            if ($isSessionVisite == 1) {
+                $count = $validatedData['session_visite_count'];
+                $add = ReviewReport::where('patient_user_id', $validatedData['patient_user_id'])
+                    ->where('is_session_visite', 1)
+                    ->latest()
+                    ->first();
 
-            if($count){
-                $report->session_visite_count = $count;
-            }else{
-                if($add){
-                    $report->session_visite_count = $add->session_visite_count + 1;
-                }
-                else{
-                    $report->session_visite_count = 1;
-                }
+                $report->session_visite_count = $count ?: ($add ? $add->session_visite_count + 1 : 1);
             }
 
-        }
-        if (isset($is_board) && $is_board == 1) {
-            $report->is_board = 1;
-        }
+            // Set is_board if applicable
+            if (isset($is_board) && $is_board == 1) {
+                $report->is_board = 1;
+            }
 
-        $report->save();
-        foreach ($validatedData['problem_id'] as $problemId) {
-            $problemToReport = new ReportAndProblem();
-            $problemToReport->review_report_id = $report->id;
-            $problemToReport->problem_id = $problemId;
-            $problemToReport->doctor_user_id = $report->doctor_user_id;
-            $problemToReport->last_visited_date = $report->last_visited_date;
-            $problemToReport->patient_user_id = $report->patient_user_id;
-            $problemToReport->save();
+            // Save the report
+            $report->save();
+
+            // Attach comments to the report
+            foreach ($validatedData['comment_id'] as $commentId) {
+                $commentToReport = new ReportAndComment();
+                $commentToReport->review_report_id = $report->id;
+                $commentToReport->comment_id = $commentId;
+                $commentToReport->doctor_user_id = $report->doctor_user_id;
+                $commentToReport->patient_user_id = $report->patient_user_id;
+                $commentToReport->save();
+            }
+
+            // Attach problems to the report
+            foreach ($validatedData['problem_id'] as $problemId) {
+                $problemToReport = new ReportAndProblem();
+                $problemToReport->review_report_id = $report->id;
+                $problemToReport->problem_id = $problemId;
+                $problemToReport->doctor_user_id = $report->doctor_user_id;
+                $problemToReport->last_visited_date = $report->last_visited_date;
+                $problemToReport->patient_user_id = $report->patient_user_id;
+                $problemToReport->save();
+            }
+
+            // Create a nutritionist visit
+            $nuVisit = new NutritionistVisit();
+            $nuVisit->patient_user_id = $validatedData['patient_user_id'];
+            $nuVisit->review_report_id = $report->id;
+            $nuVisit->save();
+
+            // Commit the transaction
+            DB::commit();
+
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
-        $nuVisit = new NutritionistVisit();
-        $nuVisit->patient_user_id = $validatedData['patient_user_id'];
-        $nuVisit->review_report_id = $report->id;
-        $nuVisit->save();
-        return response()->json(['success'=>true]);
     }
+
     public function creating(Request $request){
         $patients = PatientProfile::all();
         $doctors = DoctorProfile::all();
         $problems = Problem::orderBy('id', 'DESC')->get();
-        return view('medical_report.create', compact('patients','doctors', 'problems'));
+        $comments = Comment::all();
+
+        return view('medical_report.create', compact('patients','doctors', 'problems', 'comments'));
     }
     /**
      * Display the specified resource.
@@ -190,7 +223,7 @@ class ReviewReportController extends Controller
 
         $today = Carbon::now()->format('Y-m-d');
 
-        $lastVisitedDate = ReviewReport::with('problems')->where('patient_user_id', $id)
+        $lastVisitedDate = ReviewReport::with('problems', 'comments')->where('patient_user_id', $id)
         ->latest('created_at')
         ->first();
         $ltsSession = ReviewReport::where('patient_user_id', $id)->where('is_session_visite', 1)->latest('created_at')->first();
@@ -220,16 +253,17 @@ class ReviewReportController extends Controller
      */
     public function edit(ReviewReport $reviewReport, $id)
     {
-        $report = ReviewReport::with(['problems', 'patient', 'doctor'])->findOrFail($id);
+        $report = ReviewReport::with(['problems', 'patient', 'doctor', 'comments'])->findOrFail($id);
         $doctors = DoctorProfile::all();
         $patients = PatientProfile::all();
         $patient_medical_tests  = MedicalTest::all();
         $problems = Problem::all();
+        $comments = Comment::all();
         $selectedProblems = $report->problems->pluck('id')->toArray();
         $count = ReviewReport::where('patient_user_id', $report->patient_user_id)->sum('session_visite_count');
+        $selectedComment= $report->comments->pluck('id')->toArray();
 
-
-        return view('medical_report.edit', compact('report', 'doctors', 'patients', 'patient_medical_tests', 'problems', 'selectedProblems', 'count'));
+        return view('medical_report.edit', compact('report', 'doctors', 'patients', 'patient_medical_tests', 'problems', 'selectedProblems', 'count', 'comments', 'selectedComment'));
     }
 
     /**
@@ -254,12 +288,15 @@ class ReviewReportController extends Controller
             'no_of_coffee_anema' => 'nullable',
             'no_of_sauna' => 'nullable',
             'no_of_phototherapy' => 'nullable',
-            'problem_id' => 'nullable',
+            'problem_id' => 'required',
             'physical_improvement' => 'required',
             'comment' => 'nullable|string',
+            'comment_id' => 'required',
         ]);
 
         try {
+            DB::enableQueryLog();
+
             // Log before finding the report
             Log::info("Attempting to update ReviewReport with ID: $id");
 
@@ -309,26 +346,56 @@ class ReviewReportController extends Controller
             Log::info("ReviewReport updated successfully.");
 
             // Sync problems if provided
-            if (isset($validatedData['problem_id'])) {
-                Log::info("Syncing problems...");
-                $report->problems()->sync($validatedData['problem_id']);
+                if (isset($validatedData['problem_id'])) {
+                    Log::info("Syncing problems...");
 
-                foreach ($validatedData['problem_id'] as $problemId) {
-                    // Use updateOrCreate to update if exists or create if not
-                    $problemToReport = ReportAndProblem::firstOrNew([
-                        'review_report_id' => $report->id,
-                        'problem_id' => $problemId,
-                    ]);
+                    // Sync the problems - this will add new ones and detach old ones
+                    $report->problems()->sync($validatedData['problem_id']);
 
-                    // Update the record with new information
-                    $problemToReport->doctor_user_id = $report->doctor_user_id;
-                    $problemToReport->last_visited_date = $report->last_visited_date;
-                    $problemToReport->patient_user_id = $report->patient_user_id;
-                    $problemToReport->save();
+                    foreach ($validatedData['problem_id'] as $problemId) {
+                        Log::info("Updating or creating for problem_id: {$problemId}", [
+                            'doctor_user_id' => $report->doctor_user_id,
+                            'last_visited_date' => $report->last_visited_date,
+                            'patient_user_id' => $report->patient_user_id,
+                        ]);
+                        // Use updateOrCreate to update if exists or create if not
+                        $problemToReport = ReportAndProblem::updateOrCreate(
+                            [
+                                'review_report_id' => $report->id,
+                                'problem_id' => $problemId,
+                            ],
+                            [
+                                'doctor_user_id' => $report->doctor_user_id,
+                                'last_visited_date' => $report->last_visited_date,
+                                'patient_user_id' => $report->patient_user_id,
+                            ]
+                        );
+                    }
+                    Log::info("Problems synced successfully.");
                 }
+            if (isset($validatedData['comment_id'])) {
+                Log::info("Syncing Comments...");
 
+                // Sync the comments - this will add new ones and detach old ones
+                $report->comments()->sync($validatedData['comment_id']);
 
-                Log::info("Problems synced successfully.");
+                foreach ($validatedData['comment_id'] as $commentId) {
+                    // Use updateOrCreate to update if exists or create if not
+                    $problemToReport = ReportAndComment::updateOrCreate(
+                        [
+                            'review_report_id' => $report->id,
+                            'comment_id' => $commentId,
+                        ],
+                        [
+                            'doctor_user_id' => $report->doctor_user_id,
+                            'patient_user_id' => $report->patient_user_id,
+                        ]
+                    );
+                }
+            }
+            $queries = DB::getQueryLog();
+            foreach ($queries as $query) {
+                Log::info('Executed Query: ', $query);
             }
 
             return response()->json(['success' => 'Patient Report updated successfully.'], 200);

@@ -140,6 +140,12 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div>
+                                <label for="comment_id" class="form-label">Comment</label>
+                                <select name="comment_id[]" id="comments" class="form-control old-comment" multiple required>
+                                </select>
+                            </div>
                             <div>
                                 <label for="comment" class="form-label">Comment</label>
                                 <textarea name="comment" id="comment" class="form-control" rows="2" placeholder="Comment of this patient"></textarea>
@@ -174,6 +180,7 @@
             $('#physical_improvement').prop('checked', false);
             $('#comment').val('');
             $('#problem').empty();
+            $('#comment_id').empty();
 
 
         }
@@ -192,6 +199,8 @@
         var doctors = @json($doctors);
         var selectedProblem = @json($selectedProblems);
         var problems = @json($problems);
+        var comments = @json($comments);
+        var selectedComment = @json($selectedComment);
 
         $.each(patients, function(index, patient) {
             $('#patient_user_id').append('<option value="' + patient.patient_user_id + '">' +
@@ -202,6 +211,10 @@
             $('#doctor_user_id').append('<option value="' + doctors.user_id + '">' +
                 doctors.first_name + '</option>');
         });
+        // $.each(comments, function(index, comment) {
+        //     $('#comment_id').append('<option value="' + comment.id + '">' +
+        //         comment.name + '</option>');
+        // });
 
         var reportID = "<?php echo $report->id; ?>";
 
@@ -270,6 +283,17 @@
         }
         updateSelect2Options(problems, selectedProblem);
 
+        function updateComment(comments, selectedComment) {
+            var $select = $('#comments');
+            $select.empty();
+            $.each(comments, function(key, comment) {
+                $select.append('<option class="d-none" value="' + comment.id + '">' + comment.name + '</option>');
+            });
+
+            $select.val(selectedComment).trigger('change');
+        }
+        updateComment(comments, selectedComment);
+
         $('#updateReport').off('submit').on('submit', function(e) {
             e.preventDefault();
             var form = $('#updateReport')[0];
@@ -324,6 +348,15 @@ $(document).ready(function(){
 
         },
     })
+    new MultiSelectTag('comments', {
+            rounded: true,    // default true
+
+        placeholder: 'Search',  // default Search...
+        tagColor: {
+
+        },
+    })
 });
+
 </script>
 

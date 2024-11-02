@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Problem;
+use App\Models\ReviewReport;
 class ProblemController extends Controller
 {
     /**
@@ -68,4 +69,35 @@ class ProblemController extends Controller
     {
         //
     }
+
+    public function problemWisePatient(Request $request) {
+        if ($request->ajax()) {
+            $problems = Problem::with(['reports.patient.profile'])->get(); // Eager load reports, patients, and their profiles
+
+            return datatables($problems)
+                ->addColumn('patient_info', function ($problem) {
+                    // Use a collection to store unique patients
+                    $uniquePatients = collect();
+
+                    // Collect patient info from reports
+                    foreach ($problem->reports as $report) {
+                        $patient = $report->patient;
+                        if ($patient) {
+                            $profile = $patient->profile; 
+                            $key = $patient->id;
+                            if (!$uniquePatients->has($key)) {
+                                $uniquePatients->put($key, $profile ? "{$patient->username} ({$profile->mobile})" : 'No Profile');
+                            }
+                        }
+                    }
+
+                    return $uniquePatients->values()->implode(', ') ?? 'No Patients'; // Return unique patients
+                })
+                ->rawColumns(['patient_info'])
+                ->make(true); // Ensure to call make(true) to return JSON response
+        }
+
+        return view('problem.problem_wise_patient');
+    }
+
 }

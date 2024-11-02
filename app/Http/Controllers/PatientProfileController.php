@@ -9,6 +9,7 @@ use App\Models\PatientProfile;
 use App\Models\GeoUpazillas;
 use App\Models\ReviewReport;
 use App\Models\PatientSubscription;
+use App\Models\PatientUser;
 use App\Models\ReportAndProblem;
 use App\Models\Problem;
 use Illuminate\Support\Facades\DB;
@@ -70,18 +71,28 @@ class PatientProfileController extends Controller
         $no_of_phototherapy = $reports->sum('no_of_phototherapy');
         $no_of_physiotherapy = $reports->sum('no_of_physiotherapy');
         $no_of_coffee_anema = $reports->sum('no_of_coffee_anema');
-
+        
         $problems = ReportAndProblem::select('problems.name', DB::raw('count(report_and_problems.problem_id) as problem_count'))
         ->join('problems', 'report_and_problems.problem_id', '=', 'problems.id')
-        ->where('patient_user_id', $userId) // Change to 'doctor_user_id' if needed
+        ->where('patient_user_id', $userId)
         ->groupBy('problems.name')
         ->get();
+
+        // Format the problems for output
+        $problemData = [];
+        foreach ($problems as $problem) {
+            $problemData[] = [
+                'name' => $problem->name,
+                'problem_count' => $problem->problem_count,
+            ];
+        }
+
 
 
         $totalTherapy = $no_of_ozone_therapy + $no_of_hijama_therapy + $on_of_acupuncture + $no_of_sauna + $no_of_phototherapy + $no_of_physiotherapy + $no_of_coffee_anema;
 
 
-        return view('patient.profile', compact('patientProfile', 'firstVisit', 'reports', 'noOfVisit','bd_medicine', 'us_medicine', 'no_of_test', 'totalTherapy', 'total_improvement', 'yes_improvement', 'lastReport', 'subscript',  'problems'));
+        return view('patient.profile', compact('patientProfile', 'firstVisit', 'reports', 'noOfVisit','bd_medicine', 'us_medicine', 'no_of_test', 'totalTherapy', 'total_improvement', 'yes_improvement', 'lastReport', 'subscript',  'problems',));
     }
 
     /**
