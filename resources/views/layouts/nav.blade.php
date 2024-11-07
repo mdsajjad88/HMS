@@ -68,6 +68,11 @@
                         {{ __('Comment wise Patient') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('references.index') ? 'active' : '' }}" href="{{ route('references.index') }}">
+                        {{ __('Reference wise Patient') }}
+                    </a>
+                </li>
 
                 @endif
             </ul>

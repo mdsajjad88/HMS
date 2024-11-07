@@ -22,14 +22,15 @@ class ReviewReport extends Model
         'is_session_visite',
         'session_visite_count',
         'created_by',
-        'modified_by'
+        'modified_by',
+        'reference_id',
     ];
     protected $dates = ['deleted_at'];
     public function patient()
     {
         return $this->belongsTo(PatientUser::class, 'patient_user_id');
     }
-   
+
 
     public function problems()
     {
@@ -49,6 +50,10 @@ class ReviewReport extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'modified_by');
+    }
+    public function reference()
+    {
+        return $this->belongsTo(Reference::class, 'reference_id');
     }
     public function comments()
     {

@@ -12,6 +12,7 @@ use App\Models\PatientUser;
 use App\Models\PrescribedMedicine;
 use App\Models\PrescriptionTherapie;
 use App\Models\Problem;
+use App\Models\Reference;
 use App\Models\ReviewReport;
 use App\Models\Comment;
 use App\Models\ReportAndProblem;
@@ -32,21 +33,20 @@ class ReviewReportController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $user = Auth::user(); // Get the currently authenticated user
+            $user = Auth::user();
 
-            // Check user role and set up query
             if ($user->role === 'admin') {
-                $data = ReviewReport::with('problems')->select('review_reports.*')->latest()->get(); // Fetch all doctor profiles
+                $data = ReviewReport::with('problems', 'reference')->select('review_reports.*')->latest()->get();
             } elseif ($user->role === 'user') {
 
                 $startOfDay = Carbon::today();
                 $endOfDay = Carbon::tomorrow();
-                $data = ReviewReport::with('problems')->select('review_reports.*') // Fetch all doctor profiles
+                $data = ReviewReport::with('problems')->select('review_reports.*')
                 ->whereBetween('created_at', [$startOfDay, $endOfDay])
-                    ->orderBy('id', 'DESC') // Records older than 24 hours
+                    ->orderBy('id', 'DESC')
                     ->get();
             } else {
-                $data = collect(); // Return an empty collection if the role is not recognized
+                $data = collect();
             }
 
 
@@ -77,6 +77,9 @@ class ReviewReportController extends Controller
                       $data->updated_at->format('H:i:s')."</small>";
                     }
                     return ' ';
+                })
+                ->addColumn('reference',function ($data) {
+                    return $data->reference->name ?? '';
                 })
                 ->rawColumns(['action','editor_name', 'user_name'])
                 ->make(true);
@@ -122,6 +125,7 @@ class ReviewReportController extends Controller
                 'is_session_visite' => 'nullable',
                 'session_visite_count' => 'nullable',
                 'is_board' => 'nullable',
+                'reference_id' => 'required',
                 'comment_id' => 'required|array',
             ]);
 
@@ -144,6 +148,7 @@ class ReviewReportController extends Controller
             $report->physical_improvement = $validatedData['physical_improvement'];
             $report->comment = $validatedData['comment'];
             $report->is_session_visite = $validatedData['is_session_visite'];
+            $report->reference_id = $validatedData['reference_id'];
 
             // Update session_visite_count
             if ($isSessionVisite == 1) {
@@ -208,8 +213,9 @@ class ReviewReportController extends Controller
         $doctors = DoctorProfile::all();
         $problems = Problem::orderBy('id', 'DESC')->get();
         $comments = Comment::all();
+        $references = Reference::all();
 
-        return view('medical_report.create', compact('patients','doctors', 'problems', 'comments'));
+        return view('medical_report.create', compact('patients','doctors', 'problems', 'comments', 'references'));
     }
     /**
      * Display the specified resource.
@@ -253,7 +259,7 @@ class ReviewReportController extends Controller
      */
     public function edit(ReviewReport $reviewReport, $id)
     {
-        $report = ReviewReport::with(['problems', 'patient', 'doctor', 'comments'])->findOrFail($id);
+        $report = ReviewReport::with(['problems', 'patient', 'doctor', 'comments', 'reference'])->findOrFail($id);
         $doctors = DoctorProfile::all();
         $patients = PatientProfile::all();
         $patient_medical_tests  = MedicalTest::all();
@@ -262,8 +268,8 @@ class ReviewReportController extends Controller
         $selectedProblems = $report->problems->pluck('id')->toArray();
         $count = ReviewReport::where('patient_user_id', $report->patient_user_id)->sum('session_visite_count');
         $selectedComment= $report->comments->pluck('id')->toArray();
-
-        return view('medical_report.edit', compact('report', 'doctors', 'patients', 'patient_medical_tests', 'problems', 'selectedProblems', 'count', 'comments', 'selectedComment'));
+        $references = Reference::all();
+        return view('medical_report.edit', compact('report', 'doctors', 'patients', 'patient_medical_tests', 'problems', 'selectedProblems', 'count', 'comments', 'selectedComment', 'references'));
     }
 
     /**
@@ -292,6 +298,7 @@ class ReviewReportController extends Controller
             'physical_improvement' => 'required',
             'comment' => 'nullable|string',
             'comment_id' => 'required',
+            'reference_id' => 'required',
         ]);
 
         try {
@@ -335,6 +342,7 @@ class ReviewReportController extends Controller
             $report->physical_improvement = $validatedData['physical_improvement'];
             $report->comment = $validatedData['comment'];
             $report->modified_by = Auth::user()->id;
+            $report->reference_id = $validatedData['reference_id'];
             $doctor = $request->input('doctor_user_id');
             // Log before saving the report
             Log::info("Attempting to save ReviewReport changes...");

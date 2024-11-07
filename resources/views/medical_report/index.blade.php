@@ -28,6 +28,7 @@
                             <th>Board?</th>
                             <th>S.V No</th>
                             <th>Problems</th>
+                            <th>Reference</th>
                             <th class="added_by">Added by</th>
                             <th>Updated by</th>
                             <th>Actions</th>
@@ -123,6 +124,11 @@
                     {
                         data: 'problems',
                         name: 'problems',
+
+                    },
+                    {
+                        data: 'reference',
+                        name: 'reference',
 
                     },
                     {

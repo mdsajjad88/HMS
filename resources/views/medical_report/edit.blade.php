@@ -1,7 +1,8 @@
 <style>
     .select2-container--default .select2-selection--multiple {
-    z-index: 1051; /* Higher than the modal backdrop */
-}
+        z-index: 1051;
+        /* Higher than the modal backdrop */
+    }
 </style>
 <div class="modal fade" id="reportEditModal" tabindex="-1" aria-labelledby="reportCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -119,8 +120,9 @@
                             </div>
                             <div style="z-index: 2000" class="row">
                                 <label class="form-label">Problems<span id="star">*</span></label>
-                                <div class="col-12" >
-                                    <select  name="problem_id[]" id="problem" class="form-control d-none" multiple required></select>
+                                <div class="col-12">
+                                    <select name="problem_id[]" id="problem" class="form-control d-none" multiple
+                                        required></select>
                                 </div>
 
                             </div>
@@ -131,11 +133,13 @@
                                 </label>
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <input type="radio" class="btn-check" name="physical_improvement" id="success-outlined" value="1" required>
+                                        <input type="radio" class="btn-check" name="physical_improvement"
+                                            id="success-outlined" value="1" required>
                                         <label class="btn btn-outline-success" for="success-outlined">Yes</label>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="radio" class="btn-check" name="physical_improvement" id="dark-outlined" value="0" required>
+                                        <input type="radio" class="btn-check" name="physical_improvement"
+                                            id="dark-outlined" value="0" required>
                                         <label class="btn btn-outline-success" for="dark-outlined">No</label>
                                     </div>
                                 </div>
@@ -143,7 +147,13 @@
 
                             <div>
                                 <label for="comment_id" class="form-label">Comment</label>
-                                <select name="comment_id[]" id="comments" class="form-control old-comment" multiple required>
+                                <select name="comment_id[]" id="comments" class="form-control old-comment" multiple
+                                    required>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="reference_id" class="form-label">Reference</label>
+                                <select name="reference_id" id="reference_id" class="form-control" required>
                                 </select>
                             </div>
                             <div>
@@ -181,17 +191,18 @@
             $('#comment').val('');
             $('#problem').empty();
             $('#comment_id').empty();
+            $('#reference_id').empty();
 
 
         }
 
-    resetForm();
+        resetForm();
 
-    function calculateMedicineTotal() {
-        var bd = parseInt($('#bd_medicine').val()) || 0;
-        var us = parseInt($('#us_medicine').val()) || 0;
-        $('#no_of_medicine').val(bd + us);
-    }
+        function calculateMedicineTotal() {
+            var bd = parseInt($('#bd_medicine').val()) || 0;
+            var us = parseInt($('#us_medicine').val()) || 0;
+            $('#no_of_medicine').val(bd + us);
+        }
 
         $('#bd_medicine, #us_medicine').on('keyup', calculateMedicineTotal);
 
@@ -201,6 +212,7 @@
         var problems = @json($problems);
         var comments = @json($comments);
         var selectedComment = @json($selectedComment);
+        var references = @json($references);
 
         $.each(patients, function(index, patient) {
             $('#patient_user_id').append('<option value="' + patient.patient_user_id + '">' +
@@ -211,6 +223,10 @@
             $('#doctor_user_id').append('<option value="' + doctors.user_id + '">' +
                 doctors.first_name + '</option>');
         });
+        $.each(references, function(index, reference) {
+            $('#reference_id').append('<option value="' + reference.id + '">' +
+                reference.name + '</option>');
+        });
         // $.each(comments, function(index, comment) {
         //     $('#comment_id').append('<option value="' + comment.id + '">' +
         //         comment.name + '</option>');
@@ -218,7 +234,7 @@
 
         var reportID = "<?php echo $report->id; ?>";
 
-            var doctor = "<?php echo $report->doctor->id; ?>";
+        var doctor = "<?php echo $report->doctor->id; ?>";
 
 
         var patient = "<?php echo $report->patient_user_id; ?>";
@@ -235,7 +251,13 @@
         $('#no_of_medicine').val('<?php echo $report->no_of_medicine; ?>');
         $('#no_of_test').val('<?php echo $report->no_of_test; ?>');
         $('#comment').val('<?php echo $report->comment; ?>');
+        var referenceId = '<?php echo $report->reference ? $report->reference->id : ''; ?>';
 
+        if (referenceId) {
+            $('#reference_id').val(referenceId);
+        } else {
+            $('#reference_id').val('');
+        }
 
 
         var no_of_ozone_therapy = parseInt('<?php echo $report->no_of_ozone_therapy; ?>');
@@ -272,11 +294,13 @@
         } else if (physicalImprovment == 0) {
             $('#dark-outlined').prop('checked', true);
         }
+
         function updateSelect2Options(problems, selectedProblem) {
             var $select = $('#problem');
             $select.empty();
             $.each(problems, function(key, problem) {
-                $select.append('<option class="d-none" value="' + problem.id + '">' + problem.name + '</option>');
+                $select.append('<option class="d-none" value="' + problem.id + '">' + problem.name +
+                    '</option>');
             });
 
             $select.val(selectedProblem).trigger('change');
@@ -287,7 +311,8 @@
             var $select = $('#comments');
             $select.empty();
             $.each(comments, function(key, comment) {
-                $select.append('<option class="d-none" value="' + comment.id + '">' + comment.name + '</option>');
+                $select.append('<option class="d-none" value="' + comment.id + '">' + comment.name +
+                    '</option>');
             });
 
             $select.val(selectedComment).trigger('change');
@@ -337,26 +362,24 @@
         });
     });
 
-$(document).ready(function(){
- $('.mult-select-tag').empty();
+    $(document).ready(function() {
+        $('.mult-select-tag').empty();
 
-    new MultiSelectTag('problem', {
-            rounded: true,    // default true
+        new MultiSelectTag('problem', {
+            rounded: true, // default true
 
-        placeholder: 'Search',  // default Search...
-        tagColor: {
+            placeholder: 'Search', // default Search...
+            tagColor: {
 
-        },
-    })
-    new MultiSelectTag('comments', {
-            rounded: true,    // default true
+            },
+        })
+        new MultiSelectTag('comments', {
+            rounded: true, // default true
 
-        placeholder: 'Search',  // default Search...
-        tagColor: {
+            placeholder: 'Search', // default Search...
+            tagColor: {
 
-        },
-    })
-});
-
+            },
+        })
+    });
 </script>
-

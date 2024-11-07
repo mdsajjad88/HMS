@@ -123,12 +123,20 @@
                 <div class="mb-3">
                     <label for="comments" class="form-label">Comments <span id="star" class="commentError">*</span></label>
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md-5">
                             <select name="comment_id[]" id="comments" class="form-control new-comment" multiple required>
                             </select>
                         </div>
                         <div class="col-md-2 text-end">
                             <a href="{{ action([\App\Http\Controllers\CommentController::class, 'create']) }}" class="btn btn-primary create_comment"><i class="fas fa-plus"></i>Add</a>
+                        </div>
+                        <div class="col-md-5">
+                            <select name="reference_id" id="reference_id" class="form-control" required>
+                                <option value="" selected disabled>Select Reference</option>
+                                @foreach ($references as $reference)
+                                    <option value="{{ $reference->id }}">{{ ucfirst($reference->name) }}</option>
+                                @endforeach
+                               </select>
                         </div>
                     </div>
                 </div>
@@ -215,6 +223,7 @@
         $.each(problems, function (index, problem) {
             $('#problem_id').append('<option value="' + problem.id + '">' + problem.name + '</option>');
         });
+
 
         $('#patient_user_id').on('change', function () {
             // Clear fields

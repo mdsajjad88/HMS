@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -90,34 +92,89 @@ class CommentController extends Controller
     {
         //
     }
-    public function commentmWisePatient(Request $request){
-            if ($request->ajax()) {
-                $comments = Comment::with(['reports.patient.profile'])->get(); // Eager load reports, patients, and their profiles
 
-                return datatables($comments)
-                    ->addColumn('patient_info', function ($comment) {
-                        // Use a collection to store unique patients
-                        $uniquePatients = collect();
 
-                        // Collect patient info from reports
-                        foreach ($comment->reports as $report) {
-                            $patient = $report->patient;
-                            if ($patient) {
-                                $profile = $patient->profile;
-                                $key = $patient->id;
-                                if (!$uniquePatients->has($key)) {
-                                    $uniquePatients->put($key, $profile ? "{$patient->username} ({$profile->mobile})" : 'No Profile');
-                                }
-                            }
-                        }
+    public function commentWisePatient(Request $request)
+    {
+        // Log initial request information
+        Log::info('commentWisePatient method called', [
+            'start_date' => $request->get('start_date'),
+            'end_date' => $request->get('end_date'),
+            'comment_id' => $request->get('comment_id'),
+        ]);
+        DB::statement("SET SESSION group_concat_max_len = 1000000");
 
-                        return $uniquePatients->values()->implode(', ') ?? 'No Patients'; // Return unique patients
-                    })
-                    ->rawColumns(['patient_info'])
-                    ->make(true); // Ensure to call make(true) to return JSON response
+        if ($request->ajax()) {
+            $startDate = $request->get('start_date');
+            $endDate = $request->get('end_date');
+
+            // Log the dates that are being used in the query
+            Log::info('Processing Ajax request with date range', [
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+
+            // Build the query for comments
+            $commentsQuery = DB::table('comments')
+                ->join('report_and_comments', 'report_and_comments.comment_id', '=', 'comments.id')
+                ->join('review_reports', 'review_reports.id', '=', 'report_and_comments.review_report_id')
+                ->leftJoin('patient_users', 'patient_users.id', '=', 'review_reports.patient_user_id')
+                ->leftJoin('patient_profiles', 'patient_profiles.patient_user_id', '=', 'patient_users.id')
+                ->select(
+                    'comments.id as comment_id',
+                    DB::raw("CONCAT(comments.name, ' (', COUNT(patient_users.id), ')') as comment_name_with_count"),
+                    'comments.description as comment_description',
+                    DB::raw("GROUP_CONCAT(CONCAT(patient_users.username, ' (', patient_profiles.mobile, '/', review_reports.last_visited_date, ')') SEPARATOR ', ') as patient_info"),
+                    DB::raw("COUNT(patient_users.id) as patient_count")
+                )
+                ->groupBy('comments.id', 'comments.name', 'comments.description');
+
+            // Log the query before adding any filters
+            Log::info('Base query built', [
+                'sql' => $commentsQuery->toSql(),
+                'bindings' => $commentsQuery->getBindings()
+            ]);
+
+            // Apply filters based on comment_id, start_date, and end_date
+            if ($request->has('comment_id') && $request->comment_id != '') {
+                $commentsQuery->where('comments.id', $request->comment_id);
+                Log::info('Filtering by comment_id', ['comment_id' => $request->comment_id]);
             }
 
-            return view('comment.comment_wise_patient');
+            if ($startDate && $endDate) {
+                $commentsQuery->whereBetween('review_reports.last_visited_date', [$startDate, $endDate]);
+                Log::info('Filtering by date range', ['start_date' => $startDate, 'end_date' => $endDate]);
+            } elseif ($startDate) {
+                $commentsQuery->where('review_reports.last_visited_date', '>=', $startDate);
+                Log::info('Filtering by start date', ['start_date' => $startDate]);
+            } elseif ($endDate) {
+                $commentsQuery->where('review_reports.last_visited_date', '<=', $endDate);
+                Log::info('Filtering by end date', ['end_date' => $endDate]);
+            }
 
+            // Execute the query
+            $comments = $commentsQuery->get();
+
+            // Log the result of the query
+            Log::info('Query executed, number of comments fetched', [
+                'comments_count' => $comments->count(),
+            ]);
+
+            return datatables()->of($comments)
+                ->addColumn('patient_info', function ($comment) {
+                    // Log when a patient info is processed
+                    Log::info('Processing patient_info for comment', ['comment_id' => $comment->comment_id, 'patient_info' => $comment->patient_info]);
+                    return $comment->patient_info ?: 'No Patients';
+                })
+                ->rawColumns(['patient_info'])
+                ->make(true);
+        }
+
+        // Log when the page view is being returned (non-ajax request)
+        Log::info('Returning comment view for non-ajax request');
+
+        $comments = Comment::all();
+        return view('comment.comment_wise_patient', compact('comments'));
     }
+
 }

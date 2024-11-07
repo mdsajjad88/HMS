@@ -10,7 +10,7 @@ class PatientProfile extends Model
     use HasFactory;
     protected $table = 'patient_profiles';
     protected $fillable=[
-        'patient_user_id ', 'first_name', 'last_name', 'email', 'mobile',
+        'patient_user_id', 'first_name', 'last_name', 'email', 'mobile',
         'gender', 'date_of_birth', 'nid','age','profession', 'referral', 'disease_id', 'created_by',
         'created', 'modified_by', 'is_regular', 'is_subscriptions_3_months',
         'is_subscriptions_6_months', 'modified', 'photo', 'photo_dir',
